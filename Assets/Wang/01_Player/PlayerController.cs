@@ -18,10 +18,10 @@ public sealed class PlayerController : MonoBehaviour
     private static readonly int IdleJumpTriggerHash = Animator.StringToHash("Jumping");
     private static readonly int RunningJumpTriggerHash = Animator.StringToHash("RunningJump");
     private static readonly int JumpFinishedTriggerHash = Animator.StringToHash("JumpFinished");
+    private static readonly int RollTriggerHash = Animator.StringToHash("Roll");
 
     [Header("Movement")]
     [SerializeField, Min(0f)] private float m_fWalkSpeed = 2f;
-    [SerializeField, Min(0f)] private float m_fRunSpeed = 4f;
     [SerializeField, Min(0f)] private float m_fSprintSpeed = 6f;
     [Tooltip("이동 중 방향 전환 속도(도/초)")]
     [SerializeField, Min(1f)] private float m_fDirectionTurnSpeed = 360f;
@@ -29,6 +29,10 @@ public sealed class PlayerController : MonoBehaviour
     [Header("Jump")]
     [SerializeField, Min(0f)] private float m_fJumpSpeed = 5f;
     [SerializeField] private LayerMask m_iGroundLayers = ~0;
+
+    [Header("Roll")]
+    [SerializeField, Min(0f)] private float m_fRollIPower = 8f;
+    [SerializeField, Min(0f)] private float m_fRollDeceleration = 16f;
 
     [Header("Rotate")]
     [SerializeField, Min(0f)] private float m_fRotateSensitivity = 3f;
@@ -40,6 +44,7 @@ public sealed class PlayerController : MonoBehaviour
 
     private bool m_bJump;
     private bool m_bGrounded;
+    private bool m_bRolling;
 
     private float m_fJumpAnimationSpeed = 1f;
     private Collider m_refGroundCollider;
@@ -70,18 +75,32 @@ public sealed class PlayerController : MonoBehaviour
     private void BindInput()
     {
         m_refInputManager.OnJumpButtonPressed += StartJumpAnimation;
+        m_refInputManager.OnRollButtonPressed += Roll;
         m_refInputManager.OnInputCanceled += ResetMovement;
     }
 
     private void Update()
     {
+        ApplyRotation();
+
+        if (m_bRolling)
+            return;
 
         ApplyInput();
     }
 
     private void FixedUpdate()
     {
-        Vector3 vVelocity = ViewRotation * new Vector3(m_vMoveDir.x, 0f, m_vMoveDir.y) * (m_fMoveSpeed * m_vMoveInput.magnitude);
+        Vector3 vVelocity;
+        if (m_bRolling)
+        {
+            vVelocity = m_refRigidbody.linearVelocity;
+            vVelocity.y = 0f;
+            vVelocity = Vector3.MoveTowards(vVelocity, Vector3.zero, m_fRollDeceleration * Time.fixedDeltaTime);
+        }
+        else
+            vVelocity = ViewRotation * new Vector3(m_vMoveDir.x, 0f, m_vMoveDir.y) * (m_fMoveSpeed * m_vMoveInput.magnitude);
+
         vVelocity.y = m_refRigidbody.linearVelocity.y;
 
         m_refRigidbody.linearVelocity = vVelocity;
@@ -94,13 +113,16 @@ public sealed class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         m_refInputManager.OnJumpButtonPressed -= StartJumpAnimation;
+        m_refInputManager.OnRollButtonPressed -= Roll;
         m_refInputManager.OnInputCanceled -= ResetMovement;
+        FinishRoll();
         ResetMovement();
         ResumeJumpAnimation();
 
         m_refAnimator.ResetTrigger(IdleJumpTriggerHash);
         m_refAnimator.ResetTrigger(RunningJumpTriggerHash);
         m_refAnimator.ResetTrigger(JumpFinishedTriggerHash);
+        m_refAnimator.ResetTrigger(RollTriggerHash);
         m_refGroundCollider = null;
         m_bGrounded = false;
     }
@@ -108,7 +130,7 @@ public sealed class PlayerController : MonoBehaviour
 
     private void StartJumpAnimation()
     {
-        if (!m_bGrounded || m_bJump )
+        if (!m_bGrounded || m_bJump || m_bRolling)
             return;
 
         m_refAnimator.ResetTrigger(JumpFinishedTriggerHash);
@@ -119,10 +141,45 @@ public sealed class PlayerController : MonoBehaviour
             m_refAnimator.SetTrigger(IdleJumpTriggerHash);
     }
 
+    private void Roll()
+    {
+        if (m_bRolling)
+            return;
+
+        m_bRolling = true;
+        m_refAnimator.SetTrigger(RollTriggerHash);
+
+        Vector2 vInput = m_refInputManager.InputInfo.MoveDir;
+        Vector3 vDirection = Vector3.forward;
+        if (vInput.sqrMagnitude > 0.001f)
+            vDirection = new Vector3(vInput.x, 0f, vInput.y).normalized;
+        vDirection = ViewRotation * vDirection;
+
+        m_refRigidbody.rotation = Quaternion.LookRotation(vDirection);
+    }
+
+    // 구르기 시작 프레임에서 Animation Event
+    public void StartRoll()
+    {   
+        Vector3 vVelocity = m_refRigidbody.linearVelocity;
+        Vector3 vDirection = m_refRigidbody.rotation * Vector3.forward;
+
+        vVelocity.x = 0f;
+        vVelocity.z = 0f;
+        m_refRigidbody.linearVelocity = vVelocity;
+        m_refRigidbody.AddForce(vDirection * m_fRollIPower, ForceMode.Impulse);
+    }
+
+    // 구르기 마지막 프레임에서 Animation Event
+    public void FinishRoll()
+    {
+        m_bRolling = false;
+    }
+
     // 발이 떨어지는 프레임에서 Animation Event
     public void Jump()
     {
-        if (!isActiveAndEnabled || m_bJump || !m_bGrounded)
+        if (!isActiveAndEnabled || m_bJump || !m_bGrounded || m_bRolling)
             return;
 
         m_bJump = true;
@@ -211,6 +268,16 @@ public sealed class PlayerController : MonoBehaviour
         m_refAnimator.SetBool(GroundHash, m_bGrounded);
     }
 
+    private void ApplyRotation()
+    {
+        float fMouseX = m_refInputManager.InputInfo.Delta.x;
+        float fY = fMouseX * m_fRotateSensitivity;
+        m_fRotateY = Mathf.Repeat(m_fRotateY + fY, 360f);
+
+        if (!m_bRolling)
+            m_refRigidbody.rotation = ViewRotation;
+    }
+
     private void ApplyInput()
     {
         bool bRun = m_refInputManager.IsRunHeld;
@@ -219,11 +286,6 @@ public sealed class PlayerController : MonoBehaviour
         tInputInfo tInput = m_refInputManager.InputInfo;
 
         Vector2 vInput = tInput.MoveDir;
-        float fMouseX = tInput.Delta.x;
-
-        float fY = fMouseX * m_fRotateSensitivity;
-        m_fRotateY = Mathf.Repeat(m_fRotateY + fY, 360f);
-        m_refRigidbody.rotation = ViewRotation;
 
         m_vMoveInput = Vector2.ClampMagnitude(vInput, 1f);
 
@@ -244,16 +306,8 @@ public sealed class PlayerController : MonoBehaviour
         float fSpeed;
         if (bRun && bMoving)
         {
-            if (!bStrafe && m_vMoveInput.y >= 0f)
-            {
-                fSpeed = 2f;
-                m_fMoveSpeed = m_fSprintSpeed;
-            }
-            else
-            {
-                fSpeed = 1f;
-                m_fMoveSpeed = m_fRunSpeed;
-            }
+            fSpeed = 2f;
+            m_fMoveSpeed = m_fSprintSpeed;
         }
         else
         {
@@ -270,6 +324,7 @@ public sealed class PlayerController : MonoBehaviour
 
     private void ResetMovement()
     {
+        m_refAnimator.ResetTrigger(RollTriggerHash);
         m_vMoveInput = Vector2.zero;
         m_vMoveDir = Vector2.zero;
         m_fMoveSpeed = 0f;

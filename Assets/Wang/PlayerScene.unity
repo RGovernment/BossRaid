@@ -612,6 +612,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InputManager
   m_refMoveActionReference: {fileID: 4779693922336479234, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
   m_refJumpActionReference: {fileID: 3461780680243384183, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
+  m_refRollActionReference: {fileID: -5342537862888148995, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
   m_refRunActionReference: {fileID: 4058306500598205392, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
   m_refStrafeActionReference: {fileID: 4258115475599811262, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
   m_refDeltaActionReference: {fileID: 2510881913319377289, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
@@ -12092,6 +12093,8 @@ MonoBehaviour:
   m_iGroundLayers:
     serializedVersion: 2
     m_Bits: 128
+  m_fRollIPower: 16
+  m_fRollDeceleration: 16
   m_fRotateSensitivity: 3
   m_fRotateSpeed: 90
 --- !u!95 &2795648065523925504

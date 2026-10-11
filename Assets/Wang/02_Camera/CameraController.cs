@@ -5,11 +5,13 @@ using UnityEngine.Serialization;
                 CameraController
 기능 : 시선 방향을 유지하는 백뷰 추적, 마우스 상하 회전과 벽 충돌 보정
  *///////////////////////////////////////////
+
 public class CameraController : MonoBehaviour
 {
     [Header("Follow Camera")]
     [SerializeField] private Transform m_refTarget;
     [SerializeField] private Vector3 m_vCameraOffset = new Vector3(0f, 2.3f, -4f);
+
     [FormerlySerializedAs("cameraLookHeight")]
     [SerializeField] private float m_fCameraLookHeight = 1.3f;
     [SerializeField, Min(0f)] private float m_fPitchSensitivity = 0.15f;
@@ -38,19 +40,24 @@ public class CameraController : MonoBehaviour
         Vector3 vPivot = m_refTarget.position + Vector3.up * m_fCameraLookHeight;
         Vector3 vOffset = qYaw * Quaternion.Euler(m_fPitch, 0f, 0f)
             * (m_vCameraOffset - Vector3.up * m_fCameraLookHeight);
+
         float fDistance = vOffset.magnitude;
         if (fDistance <= 0.001f)
             return;
 
+
         Vector3 vDirection = vOffset / fDistance;
         int iHitCount = Physics.SphereCastNonAlloc(vPivot, m_fCollisionRadius, vDirection, m_arrCameraHits,
             fDistance, m_iCollisionLayers, QueryTriggerInteraction.Ignore);
+
+        //맞은 타겟 살짝 앞으로
         for (int i = 0; i < iHitCount; i++)
         {
             RaycastHit tHit = m_arrCameraHits[i];
             if (!tHit.transform.IsChildOf(m_refTarget))
                 fDistance = Mathf.Min(fDistance, Mathf.Max(0.05f, tHit.distance - 0.05f));
         }
+
         transform.position = vPivot + vDirection * fDistance;
         transform.LookAt(vPivot);
     }

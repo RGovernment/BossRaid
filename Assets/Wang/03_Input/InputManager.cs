@@ -20,6 +20,7 @@ public sealed class InputManager : MonoBehaviour
     public static InputManager m_Instance { get; private set; }
 
     public event Action OnJumpButtonPressed;
+    public event Action OnRollButtonPressed;
     public event Action OnInputCanceled;
     public event Action OnRunButtonStarted;
     public event Action OnRunButtonReleased;
@@ -29,6 +30,7 @@ public sealed class InputManager : MonoBehaviour
     [Header("Input Actions")]
     [SerializeField] private InputActionReference m_refMoveActionReference;
     [SerializeField] private InputActionReference m_refJumpActionReference;
+    [SerializeField] private InputActionReference m_refRollActionReference;
     [SerializeField] private InputActionReference m_refRunActionReference;
     [SerializeField] private InputActionReference m_refStrafeActionReference;
     [SerializeField] private InputActionReference m_refDeltaActionReference;
@@ -36,6 +38,7 @@ public sealed class InputManager : MonoBehaviour
     private InputAction m_refMoveAction;
     private InputAction m_refDeltaAction;
     private InputAction m_refJumpAction;
+    private InputAction m_refRollAction;
     private InputAction m_refRunAction;
     private InputAction m_refStrafeAction;
     private tInputInfo m_tInputInfo;
@@ -60,6 +63,7 @@ public sealed class InputManager : MonoBehaviour
         m_refMoveAction = m_refMoveActionReference.action;
         m_refDeltaAction = m_refDeltaActionReference.action;
         m_refJumpAction = m_refJumpActionReference.action;
+        m_refRollAction = m_refRollActionReference.action;
         m_refRunAction = m_refRunActionReference.action;
         m_refStrafeAction = m_refStrafeActionReference.action;
     }
@@ -70,6 +74,7 @@ public sealed class InputManager : MonoBehaviour
             return;
 
         m_refJumpAction.performed += OnJumpButtonPerformed;
+        m_refRollAction.performed += OnRollButtonPerformed;
         m_refRunAction.started += OnRunButtonStartedPerformed;
         m_refRunAction.canceled += OnRunButtonCanceledPerformed;
         m_refStrafeAction.started += OnStrafeButtonStartedPerformed;
@@ -95,6 +100,7 @@ public sealed class InputManager : MonoBehaviour
             return;
 
         m_refJumpAction.performed -= OnJumpButtonPerformed;
+        m_refRollAction.performed -= OnRollButtonPerformed;
         m_refRunAction.started -= OnRunButtonStartedPerformed;
         m_refRunAction.canceled -= OnRunButtonCanceledPerformed;
         m_refStrafeAction.started -= OnStrafeButtonStartedPerformed;
@@ -120,6 +126,15 @@ public sealed class InputManager : MonoBehaviour
     {
         if (HasGameplayInput)
             OnJumpButtonPressed?.Invoke();
+    }
+
+    private void OnRollButtonPerformed(InputAction.CallbackContext _tContext)
+    {
+        if (HasGameplayInput)
+        {
+            m_tInputInfo.MoveDir = m_refMoveAction.ReadValue<Vector2>();
+            OnRollButtonPressed?.Invoke();
+        }
     }
 
     private void OnRunButtonStartedPerformed(InputAction.CallbackContext _tContext)
@@ -149,6 +164,7 @@ public sealed class InputManager : MonoBehaviour
         m_refMoveAction.Enable();
         m_refDeltaAction.Enable();
         m_refJumpAction.Enable();
+        m_refRollAction.Enable();
         m_refRunAction.Enable();
         m_refStrafeAction.Enable();
     }
@@ -158,6 +174,7 @@ public sealed class InputManager : MonoBehaviour
         m_refMoveAction.Disable();
         m_refDeltaAction.Disable();
         m_refJumpAction.Disable();
+        m_refRollAction.Disable();
         m_refRunAction.Disable();
         m_refStrafeAction.Disable();
     }
