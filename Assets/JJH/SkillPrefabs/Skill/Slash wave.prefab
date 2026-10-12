@@ -9832,6 +9832,7 @@ GameObject:
   - component: {fileID: 1038738119620619482}
   - component: {fileID: 5424852245913622643}
   - component: {fileID: 8658547281440974595}
+  - component: {fileID: 6351511233283561192}
   m_Layer: 0
   m_Name: SlashWind
   m_TagString: Untagged
@@ -13498,9 +13499,9 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
-    type: 0
+    type: 1
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
@@ -13569,7 +13570,7 @@ ParticleSystem:
     m_Bounce:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -13622,7 +13623,7 @@ ParticleSystem:
     m_EnergyLossOnCollision:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 1
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -14727,6 +14728,20 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
+--- !u!114 &6351511233283561192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6033781382346474951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d3515c6433046b4bb2fb92eb46897a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillProjectileTrigger
+  skillRoot: {fileID: 6827441755587028516}
+  ps: {fileID: 5424852245913622643}
 --- !u!1 &6505721572967687103
 GameObject:
   m_ObjectHideFlags: 0
@@ -19667,7 +19682,6 @@ GameObject:
   - component: {fileID: 2905528052358831991}
   - component: {fileID: 1695223866178920437}
   - component: {fileID: 6496426049024340294}
-  - component: {fileID: 6205064542628264525}
   m_Layer: 0
   m_Name: SlashPath
   m_TagString: Untagged
@@ -23334,7 +23348,7 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 1
+    enabled: 0
     serializedVersion: 4
     type: 1
     collisionMode: 0
@@ -24563,20 +24577,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
---- !u!114 &6205064542628264525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7340009752606946526}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d3515c6433046b4bb2fb92eb46897a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SkillProjectileTrigger
-  skillRoot: {fileID: 6827441755587028516}
-  ps: {fileID: 1695223866178920437}
 --- !u!1 &8516379957100609147
 GameObject:
   m_ObjectHideFlags: 0

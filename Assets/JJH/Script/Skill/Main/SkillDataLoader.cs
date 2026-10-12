@@ -33,7 +33,6 @@ public class SkillDataLoader : MonoBehaviour
         try
         {
             skillJson = Resources.Load<TextAsset>(ASSET_DATA_PATH + SKILL_DATA).text;
-            Debug.Log(skillJson);
         }
         catch (Exception e)
         {
