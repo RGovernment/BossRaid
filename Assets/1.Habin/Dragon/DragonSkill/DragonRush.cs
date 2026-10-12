@@ -14,9 +14,6 @@ public class DragonRush : MonoBehaviour
 
     [Header("돌진")]
     [Min(0.01f)]
-    [SerializeField] private float rushDistance = 12f;
-
-    [Min(0.01f)]
     [SerializeField] private float rushDuration = 0.8f;
 
     [Header("준비")]
@@ -57,7 +54,7 @@ public class DragonRush : MonoBehaviour
 
     private bool isAttacking;
     private float attackHeight;
-    private Vector3 rushDirection;
+    private Vector3 rushDestination;
 
     private void Awake()
     {
@@ -80,48 +77,37 @@ public class DragonRush : MonoBehaviour
             return;
 
         isAttacking = true;
-
-        // 공격 시작 시 보스의 높이를 저장합니다.
         attackHeight = bossRoot.position.y;
-
-        // 타겟과 같은 위치여도 사용할 초기 수평 방향입니다.
-        float directionY = bossRoot.eulerAngles.y;
-
-        rushDirection =
-            Quaternion.Euler(0f, directionY, 0f) * Vector3.forward;
 
         rushRoutine = StartCoroutine(RushRoutine());
     }
 
     private bool HasRequiredReferences()
     {
-        if (animator != null &&
-            bossRoot != null &&
-            target != null &&
-            attackPrefab != null)
+        if (animator == null ||
+            bossRoot == null ||
+            target == null ||
+            attackPrefab == null)
         {
-            return true;
+            Debug.LogError(
+                "Animator, Boss Root, Target, Attack Prefab을 연결하세요.",
+                this
+            );
+
+            return false;
         }
 
-        Debug.LogError(
-            "Animator, Boss Root, Target, Attack Prefab을 연결하세요.",
-            this
-        );
-
-        return false;
+        return true;
     }
 
     private IEnumerator RushRoutine()
     {
         PlayAnimation(preparationState);
-
         currentTelegraph = Instantiate(attackPrefab);
-
-        currentTelegraph.transform.localScale =
-            new Vector3(rushWidth, 1f, rushDistance);
 
         float elapsed = 0f;
 
+        // 준비 중에는 타겟을 따라 경로를 갱신합니다.
         while (elapsed < preparationTime)
         {
             if (target == null)
@@ -142,23 +128,17 @@ public class DragonRush : MonoBehaviour
             yield break;
         }
 
-        // 마지막으로 방향을 계산한 뒤 고정합니다.
+        // 이 시점의 플레이어 위치를 최종 목적지로 고정합니다.
         UpdateAim();
-
-        Vector3 startPosition = bossRoot.position;
-        startPosition.y = attackHeight;
-
-        Vector3 endPosition =
-            startPosition + rushDirection * rushDistance;
-
-        // 타겟 높이와 관계없이 같은 높이로 이동합니다.
-        endPosition.y = attackHeight;
 
         PlayAnimation(rushState);
 
-        moveTween = bossRoot.DOMove(endPosition, rushDuration)
-            .SetEase(Ease.Linear)
-            .SetLink(gameObject);
+        moveTween = bossRoot.DOMove(
+            rushDestination,
+            rushDuration
+        )
+        .SetEase(Ease.Linear)
+        .SetLink(gameObject);
 
         yield return moveTween.WaitForCompletion();
 
@@ -167,37 +147,50 @@ public class DragonRush : MonoBehaviour
 
     private void UpdateAim()
     {
-        Vector3 bossPosition = bossRoot.position;
-        bossPosition.y = attackHeight;
-        bossRoot.position = bossPosition;
+        Vector3 startPosition = bossRoot.position;
+        startPosition.y = attackHeight;
 
-        Vector3 direction = target.position - bossPosition;
+        bossRoot.position = startPosition;
 
-        // 위아래 방향은 무시하고 바닥 평면만 사용합니다.
-        direction.y = 0f;
+        rushDestination = target.position;
+        rushDestination.y = attackHeight;
 
-        float minimumDistanceSquared =
-            minimumTargetDistance * minimumTargetDistance;
+        Vector3 direction = rushDestination - startPosition;
+        float distance = direction.magnitude;
 
-        if (direction.sqrMagnitude > minimumDistanceSquared)
-            rushDirection = direction.normalized;
+        float yaw = bossRoot.eulerAngles.y;
 
-        Quaternion rotation =
-            Quaternion.LookRotation(rushDirection, Vector3.up);
+        if (distance > minimumTargetDistance)
+        {
+            yaw = Mathf.Atan2(
+                direction.x,
+                direction.z
+            ) * Mathf.Rad2Deg;
+        }
 
-        // X·Z 기울기 없이 Y축으로만 회전합니다.
-        bossRoot.rotation = rotation;
+        // X·Z 회전은 유지하고 Y축 방향만 변경합니다.
+        Vector3 bossAngles = bossRoot.eulerAngles;
+        bossAngles.y = yaw;
+        bossRoot.eulerAngles = bossAngles;
+
+        // 장판은 수평으로 배치합니다.
+        Quaternion telegraphRotation =
+            Quaternion.Euler(0f, yaw, 0f);
 
         Vector3 telegraphCenter =
-            bossPosition + rushDirection * rushDistance * Half;
+            (startPosition + rushDestination) * Half;
 
         telegraphCenter.y =
             attackHeight + telegraphHeightOffset;
 
         currentTelegraph.transform.SetPositionAndRotation(
             telegraphCenter,
-            rotation
+            telegraphRotation
         );
+
+        // 기본 크기가 1인 장판 기준입니다.
+        currentTelegraph.transform.localScale =
+            new Vector3(rushWidth, 1f, distance);
     }
 
     private void PlayAnimation(string stateName)
