@@ -41,7 +41,6 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
             int effectId = prefab.Id;
 
             int currentId = effectId;
-
             // 오브젝트 풀링 (각 스킬 별로 별도 생성)
             IObjectPool<SkillBase> poolInstance = new ObjectPool<SkillBase>(
                 createFunc: () => CreateSkillEffect(currentId),
@@ -56,9 +55,12 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         }
     }
 
-    public void UseSkill(int id)
+    public bool UseSkill(int id)
     {
+        if (currentActiveSkill != null) return false;
+
         queuedSkillId = id;
+        return true;
     }
 
     public void ReceiveAnimEvent(string eventName)
@@ -73,7 +75,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
                 break;
 
             case "ColliderOn":
-                if (currentActiveSkill != null)
+                if (currentActiveSkill != null && queuedSkillId != 0)
                     currentActiveSkill.SkillColliderOn();
                 break;
 
@@ -91,7 +93,6 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     private SkillBase CreateSkillEffect(int id)
     {
         SkillBase baseCk = null;
-
         foreach (var item in prefabs)
         {
             if (item.Id == id)
@@ -126,6 +127,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         obj.gameObject.SetActive(false);
         obj.hitEffect.gameObject.SetActive(false);
         currentActiveSkill = null;
+        queuedSkillId = 0;
     }
 
 }

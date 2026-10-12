@@ -13,7 +13,7 @@ public class SkillHitTrigger : MonoBehaviour
     {
         if (parentSkill == null) return;
 
-        // 닿은 충돌체(other) 정보를 부모의 특정 함수로 토스해줍니다.
+        // 이후 플레이어 객체가 정해질 경우 보스만 피격되도록 변경
         if (other.TryGetComponent(out SkillBase.Player player))
         {
             parentSkill.DamageTrigger(player);

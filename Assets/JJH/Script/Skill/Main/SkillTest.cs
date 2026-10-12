@@ -6,7 +6,6 @@ public class SkillTest : MonoBehaviour
     private static readonly int TestHash = Animator.StringToHash("Test");
     [SF] private SkillSpawner skillSpawner;
     [SF] private Animator animator;
-    [SF] private int testSkillId = 1000; // 테스트할 스킬 ID
 
     void Update()
     {
@@ -14,18 +13,23 @@ public class SkillTest : MonoBehaviour
 
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            TriggerTestSkill();
+            TriggerTestSkill(1000);
+        }
+
+        if (Keyboard.current.leftAltKey.wasPressedThisFrame)
+        {
+            TriggerTestSkill(1001);
         }
     }
 
-    private void TriggerTestSkill()
+    private void TriggerTestSkill(int id)
     {
-        Debug.Log($"[테스트] {testSkillId}번 스킬 시전!");
+        bool success = skillSpawner.UseSkill(id);
 
-        // 앞서 설계한 프로세스 작동
-        // 1. 스패너에게 지금 쓸 스킬 ID 예약
-        skillSpawner.UseSkill(testSkillId);
+        if (!success) return;
 
         animator.SetTrigger(TestHash);
+
+        Debug.Log($"[테스트] {id}번 스킬 시전!");
     }
 }

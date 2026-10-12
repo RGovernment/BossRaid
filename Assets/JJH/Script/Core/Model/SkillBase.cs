@@ -26,7 +26,7 @@ public abstract class SkillBase : MonoBehaviour
 
     // 활성화/ 비활성화시 상위 이벤트에 구독
 
-    public void Init(int id,IObjectPool<SkillBase> pool)
+    public void Init(int id, IObjectPool<SkillBase> pool)
     {
         Id = id;
         this.pool = pool;
@@ -34,12 +34,14 @@ public abstract class SkillBase : MonoBehaviour
 
     public void SkillColliderOn()
     {
-        hitbox.enabled = true;
+        if(hitbox != null)
+            hitbox.enabled = true;
     }
 
     public void SkillColliderOff()
     {
-        hitbox.enabled = false;
+        if(hitbox != null)
+            hitbox.enabled = false;
     }
 
     /// <summary>
@@ -76,7 +78,6 @@ public abstract class SkillBase : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("작동함");
         if (other.TryGetComponent(out Player player))
         {
             DamageTrigger(player);

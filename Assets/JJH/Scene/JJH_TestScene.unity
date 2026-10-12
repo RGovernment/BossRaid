@@ -608,6 +608,7 @@ MonoBehaviour:
   PlayerWeaponTransform: {fileID: 389760107}
   prefabs:
   - {fileID: 2149734916138580870, guid: 352390f9b9cfd5348a8a47a87b8ed89c, type: 3}
+  - {fileID: 6827441755587028516, guid: eca9466c0f915f4478f0907bc29116fa, type: 3}
   ProjectileHit: 0
   queuedSkillId: 0
 --- !u!1 &1574702788
@@ -873,7 +874,7 @@ Transform:
   m_GameObject: {fileID: 1981253569}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.61, y: 0.91, z: 6.44}
+  m_LocalPosition: {x: 3.61, y: 0.91, z: 11.4}
   m_LocalScale: {x: 1, y: 1.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
