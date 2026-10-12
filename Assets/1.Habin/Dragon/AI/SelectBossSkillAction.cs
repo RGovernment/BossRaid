@@ -12,9 +12,9 @@ public partial class SelectBossSkillAction : Action
     [SerializeReference] public BlackboardVariable<GameObject> Target;
     [SerializeReference] public BlackboardVariable<BossSkillType> SelectedSkill;
     [SerializeReference] public BlackboardVariable<BossSkillType> LastSkill;
-    // 완성한 스킬만 운석·충격파는 추후 추가
-     private BossSkillType[] meleeSkills = { BossSkillType.Slam, BossSkillType.TailWhip };
-     private BossSkillType[] rangedSkills = { BossSkillType.Rush };
+
+    private BossSkillType[] meleeSkills = { BossSkillType.Slam, BossSkillType.TailWhip, BossSkillType.Meteor };
+    private BossSkillType[] rangedSkills = { BossSkillType.Rush, BossSkillType.Meteor };
 
 
     protected override Status OnStart()

@@ -16,6 +16,7 @@ public partial class ExecuteBossSkillAction : Action
     private DragonSlam slam;
     private DragonTailWhip tailWhip;
     private DragonRush rush;
+    private DragonMeteor meteor;
     private BossSkillType executingSkill;
 
     protected override Status OnStart()
@@ -26,6 +27,7 @@ public partial class ExecuteBossSkillAction : Action
         slam = Self.Value.GetComponent<DragonSlam>();
         tailWhip = Self.Value.GetComponent<DragonTailWhip>();
         rush = Self.Value.GetComponent<DragonRush>();
+        meteor = Self.Value.GetComponent<DragonMeteor>();
 
         // 다른 공격이 실행 중이면 시작하지 않습니다.
         if ((slam != null && slam.IsAttacking) || (tailWhip != null && tailWhip.IsAttacking) || (rush != null && rush.IsAttacking))
@@ -55,6 +57,14 @@ public partial class ExecuteBossSkillAction : Action
 
                 rush.SetTarget(Target.Value.transform);
                 rush.Rush();
+                break;
+
+            case BossSkillType.Meteor:
+                if (meteor == null || !meteor.isActiveAndEnabled)
+                    return Status.Failure;
+
+                meteor.SetTarget(Target.Value.transform);
+                meteor.Meteor();
                 break;
 
             default:
@@ -99,6 +109,9 @@ public partial class ExecuteBossSkillAction : Action
             case BossSkillType.Rush:
                 return rush != null && rush.IsAttacking;
 
+            case BossSkillType.Meteor:
+                return meteor != null && meteor.IsAttacking;
+
             default:
                 return false;
         }
@@ -116,6 +129,9 @@ public partial class ExecuteBossSkillAction : Action
 
             case BossSkillType.Rush:
                 return rush != null && rush.isActiveAndEnabled;
+
+            case BossSkillType.Meteor:
+                return meteor != null && meteor.isActiveAndEnabled;
 
             default:
                 return false;

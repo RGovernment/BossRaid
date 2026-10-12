@@ -162,9 +162,10 @@ GameObject:
   - component: {fileID: 941780521}
   - component: {fileID: 941780520}
   - component: {fileID: 941780519}
-  m_Layer: 0
+  - component: {fileID: 941780523}
+  m_Layer: 3
   m_Name: Plane
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -263,6 +264,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &941780523
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941780518}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10, y: 2.220446e-16, z: 10}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1237201794
 GameObject:
   m_ObjectHideFlags: 0
@@ -768,6 +790,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8949355229495808193, guid: 02a579c40ee2d7644ad306ca275db19a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8705783211747820510}
+    - targetCorrespondingSourceObject: {fileID: 8949355229495808193, guid: 02a579c40ee2d7644ad306ca275db19a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8705783211747820512}
   m_SourcePrefab: {fileID: 100100000, guid: 02a579c40ee2d7644ad306ca275db19a, type: 3}
 --- !u!4 &4561502369378472815 stripped
 Transform:
@@ -932,6 +957,103 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 8705783211747820498}
+--- !u!114 &8705783211747820512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8705783211747820498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60c37b28d0aa9947a13baf699873895, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DragonMeteor
+  target: {fileID: 1722403661}
+  telegraphPrefab: {fileID: 903277129626046256, guid: a8d348d0e3c28d6489510af27e8581c0, type: 3}
+  meteorPrefab: {fileID: 725651299976626730, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+  meteorCount: 30
+  scatterRadius: 20
+  impactRadius: 2
+  spawnHeight: 30
+  warningTime: 1
+  meteorInterval: 0.1
+  telegraphHeightOffset: 0.03
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  groundSearchHeight: 30
+  groundSearchDepth: 60
+  testKey: 109
+  animator: {fileID: 0}
+  summonState: Base Layer.Fire Head 2
+  idleState: Base Layer.Idle
+  transitionTime: 0.1
+--- !u!1001 &9213635234693835877
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 725651299976626730, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+      propertyPath: maxLifetime
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 853566211987549480, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.47
+      objectReference: {fileID: 0}
+    - target: {fileID: 853566211987549480, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 853566211987549480, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 6.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 853566211987549480, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 853566211987549480, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 853566211987549480, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 853566211987549480, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 853566211987549480, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 853566211987549480, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 853566211987549480, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8841519712863186046, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+      propertyPath: m_Name
+      value: 'MeteorPrefab          '
+      objectReference: {fileID: 0}
+    - target: {fileID: 8841519712863186046, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6f08e47f50610a840a67dae06168b5e8, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -945,3 +1067,4 @@ SceneRoots:
   - {fileID: 1600737656}
   - {fileID: 1237201795}
   - {fileID: 7812392993297026202}
+  - {fileID: 9213635234693835877}

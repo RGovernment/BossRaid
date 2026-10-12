@@ -95,10 +95,7 @@ public partial class MoveToTargetAction : Action
 
     private float GetStopRange()
     {
-        // 현재 원거리 스킬은 Rush 하나입니다.
-        // 직전 스킬이 Rush라면 근거리까지 접근합니다.
-        bool canUseRush = LastSkill.Value != BossSkillType.Rush;
-        return canUseRush ? ranges.RangedRange : ranges.MeleeRange;
+        return ranges.RangedRange;
     }
 
     private float GetHorizontalDistance()
