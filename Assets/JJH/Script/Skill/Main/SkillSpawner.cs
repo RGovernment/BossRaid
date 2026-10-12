@@ -82,6 +82,11 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
             case "ColliderOff":
                 if (currentActiveSkill != null)
                     currentActiveSkill.SkillColliderOff();
+                    currentActiveSkill = null;
+                break;
+            case "SkillOff":
+                if (currentActiveSkill != null)
+                    currentActiveSkill = null;
                 break;
         }
     }

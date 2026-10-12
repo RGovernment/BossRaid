@@ -21,24 +21,16 @@ public class SkillTest : MonoBehaviour
         {
             bool val = TriggerTestSkill(1000);
             if (!val) return;
-            Debug.Log("----");
-            Debug.Log(nowCoolSk1);
-            Debug.Log(nowCoolSk2);
+
             nowCoolSk1 = Time.time + skill1Cooldown;
-            Debug.Log(nowCoolSk1);
-            Debug.Log(nowCoolSk2);
         }
 
         if (Keyboard.current.leftAltKey.wasPressedThisFrame && nowCoolSk2 < Time.time)
         {
             bool val = TriggerTestSkill(1001);
             if (!val) return;
-            Debug.Log("====");
-            Debug.Log(nowCoolSk1);
-            Debug.Log(nowCoolSk2);
+
             nowCoolSk2 = Time.time + skill2Cooldown;
-            Debug.Log(nowCoolSk1);
-            Debug.Log(nowCoolSk2);
             
         }
     }
