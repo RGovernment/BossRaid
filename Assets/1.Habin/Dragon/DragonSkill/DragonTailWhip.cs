@@ -22,8 +22,7 @@ public class DragonTailWhip : MonoBehaviour
 
     [Header("애니메이션")]
     [SerializeField]
-    private string animationState =
-        "Base Layer.Tail Whip R";
+    private string animationState = "Base Layer.Tail Whip R";
 
     [Min(0f)]
     [SerializeField] private float transitionTime = 0.1f;
@@ -45,6 +44,7 @@ public class DragonTailWhip : MonoBehaviour
     private Vector3 attackCenter;
     private Quaternion attackRotation;
 
+    public bool IsAttacking => isAttacking;
     private void Awake()
     {
         if (animator == null)

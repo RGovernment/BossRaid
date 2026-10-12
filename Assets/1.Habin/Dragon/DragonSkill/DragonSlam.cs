@@ -19,6 +19,7 @@ public class DragonSlam : MonoBehaviour
     private CircleTelegraph currentTelegraph;
     private bool isAttacking;
     private bool hasHit;
+    public bool IsAttacking => isAttacking;
     private void Awake()
     {
         if (animator == null)
