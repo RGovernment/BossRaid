@@ -19636,6 +19636,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1555560036488647766}
   - component: {fileID: 6811186335417789572}
+  - component: {fileID: 5840522428522837738}
   m_Layer: 0
   m_Name: HitBox
   m_TagString: Untagged
@@ -19679,6 +19680,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.7, y: 0.1, z: 3.5}
   m_Center: {x: -0.3, y: 0, z: -0.1}
+--- !u!114 &5840522428522837738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4894850867851407718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63f9c5ffe03735842908d6b95e41551a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillHitTrigger
 --- !u!1 &5556347869788152398
 GameObject:
   m_ObjectHideFlags: 0

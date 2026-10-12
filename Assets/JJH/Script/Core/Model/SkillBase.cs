@@ -9,11 +9,12 @@ public abstract class SkillBase : MonoBehaviour
     /// </summary>
     public class Player : MonoBehaviour
     {
-        public int atkPoint;
-        public int hp;
+        public int atkPoint = 10;
+        public int hp = 100;
         public void TakeDamage(int damage)
         {
             hp = Mathf.Max(0, hp - damage);
+            Debug.Log(hp);
         }
     }
 
@@ -29,11 +30,6 @@ public abstract class SkillBase : MonoBehaviour
     {
         Id = id;
         this.pool = pool;
-    }
-
-    public void SkillEffectOn()
-    {
-        pool.Get();
     }
 
     public void SkillColliderOn()
@@ -80,12 +76,16 @@ public abstract class SkillBase : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("작동함");
         if (other.TryGetComponent(out Player player))
         {
             DamageTrigger(player);
             HealTrigger(player);
             DebuffTrigger(player);
             BuffTrigger(player);
+
+            hitEffect.transform.position = player.transform.position;
+            hitEffect.gameObject.SetActive(true);
         }
     }
 

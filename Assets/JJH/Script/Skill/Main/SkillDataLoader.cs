@@ -21,6 +21,9 @@ public class SkillDataLoader : MonoBehaviour
     public void Start()
     {
         SkillDataList = new();
+        SkillData = new();
+
+        ResourceLoad();
     }
 
     public void ResourceLoad()
@@ -30,6 +33,7 @@ public class SkillDataLoader : MonoBehaviour
         try
         {
             skillJson = Resources.Load<TextAsset>(ASSET_DATA_PATH + SKILL_DATA).text;
+            Debug.Log(skillJson);
         }
         catch (Exception e)
         {

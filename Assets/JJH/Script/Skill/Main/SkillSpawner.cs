@@ -1,3 +1,4 @@
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using System;
 using System.Buffers.Text;
@@ -5,6 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Pool;
+using static UnityEngine.Rendering.DebugUI;
 using HIn = UnityEngine.HideInInspector;
 using SF = UnityEngine.SerializeField;
 
@@ -25,7 +27,8 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     private Dictionary<int, IObjectPool<SkillBase>> effectPool;
 
     [HIn] public bool ProjectileHit;
-
+    [SF] private int queuedSkillId;
+    private SkillBase currentActiveSkill;
     #endregion
 
 
@@ -50,6 +53,34 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
             );
 
             effectPool[effectId] = poolInstance;
+        }
+    }
+
+    public void UseSkill(int id)
+    {
+        queuedSkillId = id;
+    }
+
+    public void ReceiveAnimEvent(string eventName)
+    {
+        switch (eventName)
+        {
+            case "SkillOn":
+                if (effectPool.TryGetValue(queuedSkillId, out var pool))
+                {
+                    currentActiveSkill = pool.Get();
+                }
+                break;
+
+            case "ColliderOn":
+                if (currentActiveSkill != null)
+                    currentActiveSkill.SkillColliderOn();
+                break;
+
+            case "ColliderOff":
+                if (currentActiveSkill != null)
+                    currentActiveSkill.SkillColliderOff();
+                break;
         }
     }
 
@@ -87,7 +118,6 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     {
         obj.gameObject.SetActive(true);
         obj.rootParticle.Play(true);
-        obj.hitEffect.gameObject.SetActive(true);
     }
 
     private void EffectEnd(SkillBase obj)
@@ -95,6 +125,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         obj.rootParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         obj.gameObject.SetActive(false);
         obj.hitEffect.gameObject.SetActive(false);
+        currentActiveSkill = null;
     }
 
 }
