@@ -26,22 +26,34 @@ public abstract class SkillBase
 
     }
 
-    public void DamageTrigger()
+    /// <summary>
+    /// 피해를 주는 효과가 존재할 경우 구현
+    /// </summary>
+    public virtual void DamageTrigger()
     {
 
     }
 
-    public void HealTrigger()
+    /// <summary>
+    /// 회복 시키는 효과가 존재할 경우 구현
+    /// </summary>
+    public virtual void HealTrigger()
     {
 
     }
 
-    public void DebuffTrigger()
+    /// <summary>
+    /// 디버프를 부여하는 효과가 존재할 경우 구현
+    /// </summary>
+    public virtual void DebuffTrigger()
     {
 
     }
 
-    public void BuffTrigger()
+    /// <summary>
+    /// 버프를 부여하는 효과가 존재할 경우 구현
+    /// </summary>
+    public virtual void BuffTrigger()
     {
 
     }
