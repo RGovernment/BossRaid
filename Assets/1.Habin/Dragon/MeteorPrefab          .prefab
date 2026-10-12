@@ -210,5 +210,5 @@ MonoBehaviour:
   fallSpeed: 30
   groundLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 128
   maxLifetime: 5
