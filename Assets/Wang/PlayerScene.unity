@@ -12016,6 +12016,7 @@ GameObject:
   - component: {fileID: 2795648065523925501}
   - component: {fileID: 2795648065523925503}
   - component: {fileID: 2795648065523925504}
+  - component: {fileID: 2795648065523925505}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -12085,18 +12086,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea4e81022e1b694398963e9ce8b5a34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  m_fWalkSpeed: 2
-  m_fRunSpeed: 4
-  m_fSprintSpeed: 6
-  m_fDirectionTurnSpeed: 360
-  m_fJumpSpeed: 5
+  m_fRotateSensitivity: 3
+--- !u!114 &2795648065523925505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2795648065516518480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa3870763adba54e9060a3eff7bc57a, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FSM
+  m_listState:
+  - {fileID: 11400000, guid: 2a20a3441c1243e296454df92239f719, type: 2}
+  - {fileID: 11400000, guid: 762e59ef32ed43658b5b5e9f42036cc7, type: 2}
+  - {fileID: 11400000, guid: 1984b319a37b451ca56b7818959fcf70, type: 2}
+  - {fileID: 11400000, guid: 689d51060c1a470199c3582df43b368b, type: 2}
+  - {fileID: 11400000, guid: 4b7fd88b53f44c8e988f6640269382da, type: 2}
+  m_eInitialState: 0
   m_iGroundLayers:
     serializedVersion: 2
     m_Bits: 128
-  m_fRollIPower: 16
-  m_fRollDeceleration: 16
-  m_fRotateSensitivity: 3
-  m_fRotateSpeed: 90
 --- !u!95 &2795648065523925504
 Animator:
   serializedVersion: 7

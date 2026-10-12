@@ -60,18 +60,17 @@ public sealed class InputManager : MonoBehaviour
 
         m_Instance = this;
         DontDestroyOnLoad(gameObject);
+        Init();
+    }
+
+    private void Init()
+    {
         m_refMoveAction = m_refMoveActionReference.action;
         m_refDeltaAction = m_refDeltaActionReference.action;
         m_refJumpAction = m_refJumpActionReference.action;
         m_refRollAction = m_refRollActionReference.action;
         m_refRunAction = m_refRunActionReference.action;
         m_refStrafeAction = m_refStrafeActionReference.action;
-    }
-
-    private void OnEnable()
-    {
-        if (m_Instance != this)
-            return;
 
         m_refJumpAction.performed += OnJumpButtonPerformed;
         m_refRollAction.performed += OnRollButtonPerformed;
@@ -79,6 +78,12 @@ public sealed class InputManager : MonoBehaviour
         m_refRunAction.canceled += OnRunButtonCanceledPerformed;
         m_refStrafeAction.started += OnStrafeButtonStartedPerformed;
         m_refStrafeAction.canceled += OnStrafeButtonCanceledPerformed;
+    }
+
+    private void OnEnable()
+    {
+        if (m_Instance != this)
+            return;
 
         EnableActions();
         m_bFocused = true;
@@ -99,20 +104,23 @@ public sealed class InputManager : MonoBehaviour
         if (m_Instance != this)
             return;
 
+        DisableActions();
+        m_bFocused = false;
+        CancelInput();
+    }
+
+    private void OnDestroy()
+    {
+        if (m_Instance != this)
+            return;
+
         m_refJumpAction.performed -= OnJumpButtonPerformed;
         m_refRollAction.performed -= OnRollButtonPerformed;
         m_refRunAction.started -= OnRunButtonStartedPerformed;
         m_refRunAction.canceled -= OnRunButtonCanceledPerformed;
         m_refStrafeAction.started -= OnStrafeButtonStartedPerformed;
         m_refStrafeAction.canceled -= OnStrafeButtonCanceledPerformed;
-        DisableActions();
-        CancelInput();
-    }
-
-    private void OnDestroy()
-    {
-        if (m_Instance == this)
-            m_Instance = null;
+        m_Instance = null;
     }
 
     private void OnApplicationFocus(bool _bFocused)
@@ -125,7 +133,10 @@ public sealed class InputManager : MonoBehaviour
     private void OnJumpButtonPerformed(InputAction.CallbackContext _tContext)
     {
         if (HasGameplayInput)
+        {
+            m_tInputInfo.MoveDir = m_refMoveAction.ReadValue<Vector2>();
             OnJumpButtonPressed?.Invoke();
+        }
     }
 
     private void OnRollButtonPerformed(InputAction.CallbackContext _tContext)
