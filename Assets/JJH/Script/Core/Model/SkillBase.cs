@@ -1,35 +1,55 @@
+using System;
 using UnityEngine;
-
-public abstract class SkillBase
+using UnityEngine.Pool;
+using SF = UnityEngine.SerializeField;
+public abstract class SkillBase : MonoBehaviour
 {
-    public string Name;
-    public int Id;
-    public int Value;
-    public int OtherValue;
-    public int Cooldown;
-    public int UpgradeType;
-    public string Description;
-
-    public SkillBase(int id, string name, int value, int cooldown, string description, int upgradeType = 0, int otherValue = 0)
+    /// <summary>
+    /// 더미용 플레이어 임시 객체
+    /// </summary>
+    public class Player : MonoBehaviour
     {
-        Id = id;
-        Name = name;
-        Value = value;
-        Cooldown = cooldown;
-        Description = description;
-        UpgradeType = upgradeType;
-        OtherValue = otherValue;
+        public int atkPoint;
+        public int hp;
+        public void TakeDamage(int damage)
+        {
+            hp = Mathf.Max(0, hp - damage);
+        }
     }
 
-    public void Init()
-    {
+    public Collider hitbox;
+    public ParticleSystem rootParticle;
+    public IObjectPool<SkillBase> pool;
+    public HitEffect hitEffect;
+    public int Id;
 
+    // 활성화/ 비활성화시 상위 이벤트에 구독
+
+    public void Init(int id,IObjectPool<SkillBase> pool)
+    {
+        Id = id;
+        this.pool = pool;
+    }
+
+    public void SkillEffectOn()
+    {
+        pool.Get();
+    }
+
+    public void SkillColliderOn()
+    {
+        hitbox.enabled = true;
+    }
+
+    public void SkillColliderOff()
+    {
+        hitbox.enabled = false;
     }
 
     /// <summary>
     /// 피해를 주는 효과가 존재할 경우 구현
     /// </summary>
-    public virtual void DamageTrigger(int value)
+    public virtual void DamageTrigger(Player player)
     {
 
     }
@@ -37,7 +57,7 @@ public abstract class SkillBase
     /// <summary>
     /// 회복 시키는 효과가 존재할 경우 구현
     /// </summary>
-    public virtual void HealTrigger(int value)
+    public virtual void HealTrigger(Player player)
     {
 
     }
@@ -45,7 +65,7 @@ public abstract class SkillBase
     /// <summary>
     /// 디버프를 부여하는 효과가 존재할 경우 구현
     /// </summary>
-    public virtual void DebuffTrigger()
+    public virtual void DebuffTrigger(Player player)
     {
 
     }
@@ -53,8 +73,24 @@ public abstract class SkillBase
     /// <summary>
     /// 버프를 부여하는 효과가 존재할 경우 구현
     /// </summary>
-    public virtual void BuffTrigger()
+    public virtual void BuffTrigger(Player player)
     {
 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent(out Player player))
+        {
+            DamageTrigger(player);
+            HealTrigger(player);
+            DebuffTrigger(player);
+            BuffTrigger(player);
+        }
+    }
+
+    private void OnParticleSystemStopped()
+    {
+        pool.Release(this);
     }
 }
