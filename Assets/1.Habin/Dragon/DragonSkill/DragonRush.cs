@@ -30,17 +30,11 @@ public class DragonRush : MonoBehaviour
     [SerializeField] private float telegraphHeightOffset = 0.03f;
 
     [Header("애니메이션")]
-    [SerializeField]
-    private string preparationState =
-        "Base Layer.Idle";
+    [SerializeField] private string preparationState = "Base Layer.Idle";
 
-    [SerializeField]
-    private string rushState =
-        "Base Layer.Run";
+    [SerializeField] private string rushState = "Base Layer.Run";
 
-    [SerializeField]
-    private string endState =
-        "Base Layer.Idle";
+    [SerializeField] private string endState = "Base Layer.Idle";
 
     [Min(0f)]
     [SerializeField] private float transitionTime = 0.1f;
@@ -55,6 +49,7 @@ public class DragonRush : MonoBehaviour
     private bool isAttacking;
     private float attackHeight;
     private Vector3 rushDestination;
+    public bool IsAttacking => isAttacking;
 
     private void Awake()
     {
@@ -231,5 +226,10 @@ public class DragonRush : MonoBehaviour
         rushRoutine = null;
         moveTween = null;
         isAttacking = false;
+    }
+
+    public void SetTarget(Transform newTarget)
+    {
+        target = newTarget;
     }
 }
