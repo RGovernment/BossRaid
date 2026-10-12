@@ -7,7 +7,7 @@ public class Slash : SkillBase
     {
     }
 
-    public override void DamageTrigger()
+    public override void DamageTrigger(int Damage)
     {
         
     }

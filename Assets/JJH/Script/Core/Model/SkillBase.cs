@@ -29,7 +29,7 @@ public abstract class SkillBase
     /// <summary>
     /// 피해를 주는 효과가 존재할 경우 구현
     /// </summary>
-    public virtual void DamageTrigger()
+    public virtual void DamageTrigger(int value)
     {
 
     }
@@ -37,7 +37,7 @@ public abstract class SkillBase
     /// <summary>
     /// 회복 시키는 효과가 존재할 경우 구현
     /// </summary>
-    public virtual void HealTrigger()
+    public virtual void HealTrigger(int value)
     {
 
     }

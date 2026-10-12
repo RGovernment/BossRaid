@@ -1,0 +1,11 @@
+{
+  "1000": {
+    "Name" : "베기",
+    "Id": 1000,
+    "Value" : "250",
+    "OtherValue": 0,
+    "Cooldown" : 3,
+    "UpgradeType" : 0,
+    "Description": "전방에 검을 휘둘러 [Value]%의 피해를 가한다."
+  }
+}
