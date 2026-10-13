@@ -101,6 +101,7 @@ public sealed class PlayerMoveState : PlayerState
     {
         Vector3 vVelocity = m_refOwner.ViewRotation * new Vector3(m_vMoveDir.x, 0f, m_vMoveDir.y)
             * (m_fMoveSpeed * m_vMoveInput.magnitude);
+
         vVelocity.y = m_refOwner.Rigidbody.linearVelocity.y;
         m_refOwner.Rigidbody.linearVelocity = vVelocity;
     }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using static InputManager;
+using static FSM;
 
 [RequireComponent(typeof(FSM), typeof(Animator), typeof(Rigidbody))]
 public sealed class Player : MonoBehaviour, ITakeDamgeable
@@ -11,9 +12,13 @@ public sealed class Player : MonoBehaviour, ITakeDamgeable
 
     private FSM m_refFSM;
 
-
+    private ObjectInfo m_refObjectInfo = new();
     private void Awake()
     {
+        //임시 코드 -> SO로 수정
+        m_refObjectInfo.CurrentHP = 100.0f;
+        m_refObjectInfo.CurrentSpeed = 2.0f;
+
         Init();
     }
 
@@ -58,6 +63,13 @@ public sealed class Player : MonoBehaviour, ITakeDamgeable
 
     public void TakeDamage(tAttackInfo _tInfo)
     {
-        m_refFSM.ReceiveHit(_tInfo);
+        if (m_refFSM.CurrentState?.Type == eStateType.Dead)
+            return;
+
+        m_refObjectInfo.CurrentHP -= _tInfo.Damage;
+        //if(m_refObjectInfo.CurrentHP >)
+
+        m_refFSM.TakeDamage(_tInfo);
+
     }
 }

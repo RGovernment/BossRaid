@@ -19,8 +19,8 @@ public interface ITakeDamgeable
 
 public class ObjectInfo 
 {
-    float CurrentHP;
-    float CurrentSpeed;
+    public float CurrentHP = 100.0f;
+    public float CurrentSpeed;
 
 }
 

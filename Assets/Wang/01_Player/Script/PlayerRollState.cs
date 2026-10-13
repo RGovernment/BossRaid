@@ -57,9 +57,12 @@ public sealed class PlayerRollState : PlayerState
 
     public override bool CanEnter()
     {
-        if (m_Instance.HasGameplayInput == false ||
-            m_refOwner.CurrentState.Type == eStateType.Jump ||
-            m_refOwner.CurrentState.Type == eStateType.Hit)
+        if (m_Instance.HasGameplayInput == false)
+            return false;
+
+        if (m_refOwner.CurrentState.Type == eStateType.Jump ||
+            m_refOwner.CurrentState.Type == eStateType.Hit ||
+            m_refOwner.CurrentState.Type == eStateType.FallDown)
             return false;
 
         return true;

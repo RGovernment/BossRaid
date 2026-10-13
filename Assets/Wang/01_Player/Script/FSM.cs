@@ -13,6 +13,7 @@ public sealed class FSM : MonoBehaviour
         Roll,
         Hit,
         Dead,
+        FallDown,
     }
 
     [SerializeField] private List<SOState> m_listState = new List<SOState>();
@@ -90,7 +91,7 @@ public sealed class FSM : MonoBehaviour
 
     private void CancelInput()
     {
-        if (m_refCurState?.Type != eStateType.Hit)
+        if (m_refCurState?.Type != eStateType.Hit && m_refCurState?.Type != eStateType.FallDown)
             Stop();
     }
 
@@ -99,25 +100,34 @@ public sealed class FSM : MonoBehaviour
         return ChangeState(m_eInitialState);
     }
 
-    public void ReceiveHit(tAttackInfo _tInfo)
+    public void TakeDamage(tAttackInfo _tInfo)
     {
-        if (m_refCurState?.Type == eStateType.Hit)
-            return;
+        eStateType _eCurState = m_refCurState.Type;
 
-        PlayerHitState refHitState = FindState<PlayerHitState>(eStateType.Hit);
-        if (refHitState == null)
+        if (_eCurState == eStateType.Jump || !IsGrounded)
         {
-            Debug.LogError("FSM에 SOHitState가 등록되지 않았습니다.", this);
-            return;
+            PlayerHitState refDownState = FindState<PlayerHitState>(eStateType.FallDown);
+            if (refDownState == null)
+                return;
+            refDownState.SetHitInfo(_tInfo);
         }
 
-        refHitState.PrepareHit(_tInfo);
-        ChangeState(eStateType.Hit);
+        if (_eCurState != eStateType.Jump)
+        {
+            PlayerHitState refHitState = FindState<PlayerHitState>(eStateType.Hit);
+            if (refHitState == null)
+                return;
+            refHitState.SetHitInfo(_tInfo);
+        }
+
+        ChangeState(_eCurState);
     }
 
     public void UpdateState()
     {
-        if (m_Instance.HasGameplayInput == false && m_refCurState?.Type != eStateType.Hit)
+        if (m_Instance.HasGameplayInput == false &&
+            m_refCurState?.Type != eStateType.Hit &&
+            m_refCurState?.Type != eStateType.FallDown)
         {
             Stop();
             return;

@@ -82,6 +82,9 @@ public sealed class PlayerJumpState : PlayerState
         if (m_refOwner.CurrentState.Type == eStateType.Hit)
             return false;
 
+        if (m_refOwner.CurrentState.Type == eStateType.FallDown)
+            return false;
+
         return m_refOwner.IsGrounded;
     }
 
@@ -113,6 +116,7 @@ public sealed class PlayerJumpState : PlayerState
             }
         }
 
+        //여기 좀 다시 봐야겠다
         //여기서 좀 강하게 연결됨 
         eStateType eMoveState = m_Instance.IsRunHeld ? eStateType.Run : eStateType.Walk;
         PlayerMoveState refMovement = m_refOwner.FindState<PlayerMoveState>(eMoveState);
