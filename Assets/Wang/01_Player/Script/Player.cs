@@ -48,7 +48,6 @@ public sealed class Player : MonoBehaviour, ITakeDamgeable
 
     private void Update()
     {
-        if(m_refTest.)
         if (m_Instance.HasGameplayInput)
         {
             float fRotate = m_Instance.InputInfo.Delta.x * m_fRotateSensitivity;
