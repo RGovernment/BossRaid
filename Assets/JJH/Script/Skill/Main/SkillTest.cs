@@ -18,7 +18,9 @@ public class SkillTest : MonoBehaviour
     void Update()
     {
         if (Keyboard.current == null) return;
-        
+        if (animator.IsInTransition(0)) return;
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("SlashEffect") ||
+            animator.GetCurrentAnimatorStateInfo(0).IsName("BladeDanceEffect2")) return;
         if (Keyboard.current.spaceKey.wasPressedThisFrame && nowCoolSk1 < Time.time)
         {
             bool val = TriggerTestSkill(1000);

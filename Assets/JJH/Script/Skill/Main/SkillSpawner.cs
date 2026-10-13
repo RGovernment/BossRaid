@@ -68,7 +68,8 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         switch (eventName)
         {
             case "SkillOn":
-                if (effectPool.TryGetValue(queuedSkillId, out var pool))
+                if (queuedSkillId != 0 && 
+                    effectPool.TryGetValue(queuedSkillId, out var pool))
                 {
                     currentActiveSkill = pool.Get();
                 }
@@ -82,11 +83,11 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
             case "ColliderOff":
                 if (currentActiveSkill != null)
                     currentActiveSkill.SkillColliderOff();
-                    currentActiveSkill = null;
                 break;
             case "SkillOff":
-                if (currentActiveSkill != null)
+
                     currentActiveSkill = null;
+                queuedSkillId = 0;
                 break;
         }
     }
@@ -131,8 +132,6 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         obj.rootParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         obj.gameObject.SetActive(false);
         obj.hitEffect.gameObject.SetActive(false);
-        currentActiveSkill = null;
-        queuedSkillId = 0;
     }
 
 }
