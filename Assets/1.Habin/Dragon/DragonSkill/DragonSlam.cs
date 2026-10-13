@@ -32,9 +32,8 @@ public class DragonSlam : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            Debug.Log("스페이스 입력됨");
             Slam();
         }
     }
@@ -70,8 +69,6 @@ public class DragonSlam : MonoBehaviour
     {
         animator.CrossFadeInFixedTime(slamAnimationState, 0.3f);
     }
-
-    // Animation Event: 바닥을 치는 순간
     public void SlamHit()
     {
         if (!isAttacking || hasHit)
@@ -79,12 +76,12 @@ public class DragonSlam : MonoBehaviour
 
         hasHit = true;
 
-        Debug.Log("내려찍기 타격!");
+        slamHitBox.GetComponent<AttackDamage>().ResetHits();
         slamHitBox.enabled = true;
+        Debug.Log("내려찍기 타격!");
         RemoveTelegraph();
     }
 
-    // Animation Event: 공격 모션 끝
     public void SlamEnd()
     {
         Debug.Log("내려찍기 종료");
@@ -103,9 +100,18 @@ public class DragonSlam : MonoBehaviour
         }
     }
 
+    private void CleanupAttack()
+    {
+        if (slamHitBox != null)
+            slamHitBox.enabled = false;
+
+        RemoveTelegraph();
+        hasHit = false;
+        isAttacking = false;
+    }
+
     private void OnDisable()
     {
-        RemoveTelegraph();
-        isAttacking = false;
+        CleanupAttack();
     }
 }

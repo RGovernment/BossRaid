@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7009480650864482963}
   - component: {fileID: 8169085431122171080}
   - component: {fileID: 2964938956815025968}
-  - component: {fileID: 4012262329020732477}
   m_Layer: 0
   m_Name: Visual
   m_TagString: Untagged
@@ -91,27 +90,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &4012262329020732477
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4461452539842191585}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8841519712863186046
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,8 +102,9 @@ GameObject:
   - component: {fileID: 7494938176918318829}
   - component: {fileID: 2910746898834376360}
   - component: {fileID: 725651299976626730}
+  - component: {fileID: -7388149306935455327}
   m_Layer: 0
-  m_Name: 'MeteorPrefab          '
+  m_Name: MeteorPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -162,7 +141,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -211,4 +190,23 @@ MonoBehaviour:
   groundLayers:
     serializedVersion: 2
     m_Bits: 128
+  playerLayers:
+    serializedVersion: 2
+    m_Bits: 64
   maxLifetime: 5
+--- !u!114 &-7388149306935455327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8841519712863186046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad0ec984ba0a34046b8c5e7c58bd1625, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttackDamage
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  boss: {fileID: 0}
