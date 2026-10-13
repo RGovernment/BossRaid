@@ -10,7 +10,7 @@ public class DragonMeteor : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private CircleTelegraph telegraphPrefab;
     [SerializeField] private MeteorProjectile meteorPrefab;
-
+    [SerializeField] private DragonBoss boss;
     [Header("운석 수")]
     [Min(1)]
     [SerializeField] private int meteorCount = 10;
@@ -62,6 +62,10 @@ public class DragonMeteor : MonoBehaviour
     {
         if (animator == null)
             animator = GetComponent<Animator>();
+
+        if (boss == null)
+            boss = GetComponent<DragonBoss>();
+
     }
 
     private void Update()
@@ -152,7 +156,7 @@ public class DragonMeteor : MonoBehaviour
 
         Vector3 spawnPosition = impactPoint + Vector3.up * spawnHeight;
         MeteorProjectile meteor = Instantiate(meteorPrefab, spawnPosition, Quaternion.identity);
-
+        meteor.GetComponent<AttackDamage>().SetBoss(boss);
         meteors.Add(meteor);
     }
 

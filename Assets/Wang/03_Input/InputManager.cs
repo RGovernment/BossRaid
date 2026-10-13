@@ -1,10 +1,9 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 /*///////////////////////////////////////////
                 tInputInfo / InputManager
-기능 : Inspector의 액션을 읽고 연속 입력과 C# 버튼 이벤트 전달
+기능 : Inspector의 액션 참조와 활성화 수명을 관리하고 연속 입력을 읽음
        포커스 해제·비활성화 시 입력 취소
  *///////////////////////////////////////////
 public struct tInputInfo
@@ -19,35 +18,31 @@ public sealed class InputManager : MonoBehaviour
 {
     public static InputManager m_Instance { get; private set; }
 
-    public event Action OnJumpButtonPressed;
-    public event Action OnRollButtonPressed;
-    public event Action OnInputCanceled;
-    public event Action OnRunButtonStarted;
-    public event Action OnRunButtonReleased;
-    public event Action OnStrafeButtonStarted;
-    public event Action OnStrafeButtonReleased;
-
     [Header("Input Actions")]
     [SerializeField] private InputActionReference m_refMoveActionReference;
     [SerializeField] private InputActionReference m_refJumpActionReference;
     [SerializeField] private InputActionReference m_refRollActionReference;
     [SerializeField] private InputActionReference m_refRunActionReference;
-    [SerializeField] private InputActionReference m_refStrafeActionReference;
     [SerializeField] private InputActionReference m_refDeltaActionReference;
+    [SerializeField] private InputActionReference m_refSkill0ActionReference;
 
     private InputAction m_refMoveAction;
     private InputAction m_refDeltaAction;
     private InputAction m_refJumpAction;
     private InputAction m_refRollAction;
     private InputAction m_refRunAction;
-    private InputAction m_refStrafeAction;
+    private InputAction m_refSkill0Action;
     private tInputInfo m_tInputInfo;
     private bool m_bFocused = true;
 
     public tInputInfo InputInfo => m_tInputInfo;
+    public InputAction MoveAction => m_refMoveAction;
+    public InputAction JumpAction => m_refJumpAction;
+    public InputAction RollAction => m_refRollAction;
+    public InputAction Skill0Action => m_refSkill0Action;
+
     public bool HasGameplayInput => m_bFocused && Time.timeScale > 0f;
     public bool IsRunHeld => HasGameplayInput && m_refRunAction.IsPressed();
-    public bool IsStrafeHeld => HasGameplayInput && m_refStrafeAction.IsPressed();
 
     private void Awake()
     {
@@ -60,25 +55,24 @@ public sealed class InputManager : MonoBehaviour
 
         m_Instance = this;
         DontDestroyOnLoad(gameObject);
+        Init();
+    }
+
+    private void Init()
+    {
         m_refMoveAction = m_refMoveActionReference.action;
         m_refDeltaAction = m_refDeltaActionReference.action;
         m_refJumpAction = m_refJumpActionReference.action;
         m_refRollAction = m_refRollActionReference.action;
         m_refRunAction = m_refRunActionReference.action;
-        m_refStrafeAction = m_refStrafeActionReference.action;
+        m_refSkill0Action = m_refSkill0ActionReference.action;
+
     }
 
     private void OnEnable()
     {
         if (m_Instance != this)
             return;
-
-        m_refJumpAction.performed += OnJumpButtonPerformed;
-        m_refRollAction.performed += OnRollButtonPerformed;
-        m_refRunAction.started += OnRunButtonStartedPerformed;
-        m_refRunAction.canceled += OnRunButtonCanceledPerformed;
-        m_refStrafeAction.started += OnStrafeButtonStartedPerformed;
-        m_refStrafeAction.canceled += OnStrafeButtonCanceledPerformed;
 
         EnableActions();
         m_bFocused = true;
@@ -99,83 +93,48 @@ public sealed class InputManager : MonoBehaviour
         if (m_Instance != this)
             return;
 
-        m_refJumpAction.performed -= OnJumpButtonPerformed;
-        m_refRollAction.performed -= OnRollButtonPerformed;
-        m_refRunAction.started -= OnRunButtonStartedPerformed;
-        m_refRunAction.canceled -= OnRunButtonCanceledPerformed;
-        m_refStrafeAction.started -= OnStrafeButtonStartedPerformed;
-        m_refStrafeAction.canceled -= OnStrafeButtonCanceledPerformed;
+        m_bFocused = false;
         DisableActions();
         CancelInput();
     }
 
     private void OnDestroy()
     {
-        if (m_Instance == this)
-            m_Instance = null;
+        if (m_Instance != this)
+            return;
+
+        m_Instance = null;
     }
 
-    private void OnApplicationFocus(bool _bFocused)
-    {
-        m_bFocused = _bFocused;
-        if (_bFocused == false)
-            CancelInput();
-    }
-
-    private void OnJumpButtonPerformed(InputAction.CallbackContext _tContext)
-    {
-        if (HasGameplayInput)
-            OnJumpButtonPressed?.Invoke();
-    }
-
-    private void OnRollButtonPerformed(InputAction.CallbackContext _tContext)
-    {
-        if (HasGameplayInput)
-        {
-            m_tInputInfo.MoveDir = m_refMoveAction.ReadValue<Vector2>();
-            OnRollButtonPressed?.Invoke();
-        }
-    }
-
-    private void OnRunButtonStartedPerformed(InputAction.CallbackContext _tContext)
-    {
-        if (HasGameplayInput)
-            OnRunButtonStarted?.Invoke();
-    }
-
-    private void OnRunButtonCanceledPerformed(InputAction.CallbackContext _tContext) => OnRunButtonReleased?.Invoke();
-    private void OnStrafeButtonStartedPerformed(InputAction.CallbackContext _tContext)
-    {
-        if (HasGameplayInput)
-            OnStrafeButtonStarted?.Invoke();
-    }
-    private void OnStrafeButtonCanceledPerformed(InputAction.CallbackContext _tContext) => OnStrafeButtonReleased?.Invoke();
+    //private void OnApplicationFocus(bool _bFocused)
+    //{
+    //    m_bFocused = _bFocused;
+    //    if (_bFocused == false)
+    //        CancelInput();
+    //}
 
     private void CancelInput()
     {
         m_tInputInfo = default;
-        OnRunButtonReleased?.Invoke();
-        OnStrafeButtonReleased?.Invoke();
-        OnInputCanceled?.Invoke();
     }
 
     private void EnableActions()
     {
+        m_refSkill0Action.Enable();
         m_refMoveAction.Enable();
         m_refDeltaAction.Enable();
         m_refJumpAction.Enable();
         m_refRollAction.Enable();
         m_refRunAction.Enable();
-        m_refStrafeAction.Enable();
     }
 
     private void DisableActions()
     {
+        m_refSkill0Action.Disable();
         m_refMoveAction.Disable();
         m_refDeltaAction.Disable();
         m_refJumpAction.Disable();
         m_refRollAction.Disable();
         m_refRunAction.Disable();
-        m_refStrafeAction.Disable();
     }
 }

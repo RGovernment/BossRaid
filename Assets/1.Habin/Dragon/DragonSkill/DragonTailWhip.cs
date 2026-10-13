@@ -8,7 +8,8 @@ public class DragonTailWhip : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private Transform attackPoint;
     [SerializeField] private HalfCircleTelegraph attackPrefab;
-
+    [SerializeField] private CapsuleCollider tailHitBox;
+    
     [Header("공격 범위")]
     [Min(0.01f)]
     [SerializeField] private float attackRadius = 7f;
@@ -95,12 +96,7 @@ public class DragonTailWhip : MonoBehaviour
         {
             return true;
         }
-
-        Debug.LogError(
-            "Animator, Attack Point, Attack Prefab을 연결하세요.",
-            this
-        );
-
+        Debug.LogError("Animator, Attack Point, Attack Prefab을 연결하세요.",this);
         return false;
     }
 
@@ -125,8 +121,6 @@ public class DragonTailWhip : MonoBehaviour
         currentTelegraph.transform.localScale =
             new Vector3(diameter, 1f, diameter);
     }
-
-    // Animation Event: 꼬리를 휘두르기 직전
     public void TailWhipReady()
     {
         if (!isAttacking || isReady)
@@ -137,7 +131,6 @@ public class DragonTailWhip : MonoBehaviour
 
         TryStartSwing();
     }
-
     private void OnTelegraphFilled()
     {
         if (!isAttacking)
@@ -146,44 +139,35 @@ public class DragonTailWhip : MonoBehaviour
         isFilled = true;
         TryStartSwing();
     }
-
     private void TryStartSwing()
     {
-        if (!isAttacking ||
-            !isReady ||
-            !isFilled ||
-            isSwinging)
+        if (!isAttacking || !isReady || !isFilled || isSwinging)
         {
             return;
         }
 
         isSwinging = true;
 
-        // 몸을 코드로 회전시키지 않고 모션만 재개합니다.
         animator.speed = originalAnimatorSpeed;
     }
-
-    // Animation Event: 꼬리가 타격하는 순간
     public void TailWhipHit()
     {
         if (!isAttacking || !isSwinging || hasHit)
             return;
 
         hasHit = true;
+        tailHitBox.GetComponent<AttackDamage>().ResetHits();
+        tailHitBox.enabled = true;
 
         Debug.Log("뒤쪽 꼬리치기 타격!", this);
 
-        // 이후 attackCenter, attackRotation, attackRadius로
-        // 반원 범위의 데미지를 판정합니다.
-
         RemoveTelegraph();
     }
-
-    // Animation Event: 공격 모션 종료
     public void TailWhipEnd()
     {
         if (!isAttacking)
             return;
+        tailHitBox.enabled = false;
         CleanupAttack();
     }
 
@@ -198,6 +182,9 @@ public class DragonTailWhip : MonoBehaviour
 
     private void CleanupAttack()
     {
+        if (tailHitBox != null)
+            tailHitBox.enabled = false;
+
         RemoveTelegraph();
 
         if (isAttacking && animator != null)

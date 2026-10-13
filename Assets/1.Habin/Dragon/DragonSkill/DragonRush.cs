@@ -11,6 +11,7 @@ public class DragonRush : MonoBehaviour
     [SerializeField] private Transform bossRoot;
     [SerializeField] private Transform target;
     [SerializeField] private GameObject attackPrefab;
+    [SerializeField] private CapsuleCollider rushHitBox;
 
     [Header("돌진")]
     [Min(0.01f)]
@@ -79,15 +80,9 @@ public class DragonRush : MonoBehaviour
 
     private bool HasRequiredReferences()
     {
-        if (animator == null ||
-            bossRoot == null ||
-            target == null ||
-            attackPrefab == null)
+        if (animator == null || bossRoot == null || target == null || attackPrefab == null || rushHitBox == null)
         {
-            Debug.LogError(
-                "Animator, Boss Root, Target, Attack Prefab을 연결하세요.",
-                this
-            );
+            Debug.LogError("Animator, Boss Root, Target, Attack Prefab을 연결하세요.",this);
 
             return false;
         }
@@ -122,16 +117,11 @@ public class DragonRush : MonoBehaviour
             FinishAttack();
             yield break;
         }
-
-        // 이 시점의 플레이어 위치를 최종 목적지로 고정합니다.
         UpdateAim();
-
         PlayAnimation(rushState);
-
-        moveTween = bossRoot.DOMove(
-            rushDestination,
-            rushDuration
-        )
+        rushHitBox.GetComponent<AttackDamage>().ResetHits();
+        rushHitBox.enabled = true;
+        moveTween = bossRoot.DOMove(rushDestination,rushDuration)
         .SetEase(Ease.Linear)
         .SetLink(gameObject);
 
@@ -198,12 +188,15 @@ public class DragonRush : MonoBehaviour
 
     private void FinishAttack()
     {
+        if (rushHitBox != null)
+            rushHitBox.enabled = false;
         RemoveTelegraph();
         PlayAnimation(endState);
 
         moveTween = null;
         rushRoutine = null;
         isAttacking = false;
+
     }
 
     private void RemoveTelegraph()
@@ -219,6 +212,8 @@ public class DragonRush : MonoBehaviour
     {
         if (rushRoutine != null)
             StopCoroutine(rushRoutine);
+        if (rushHitBox != null)
+            rushHitBox.enabled = false;
 
         moveTween?.Kill();
         RemoveTelegraph();
