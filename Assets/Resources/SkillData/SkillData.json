@@ -1,0 +1,29 @@
+[
+  {
+    "Name": "베기",
+    "Id": 1000,
+    "Value": "250",
+    "OtherValue": 0,
+    "Cooldown": 3,
+    "UpgradeType": 0,
+    "Description": "전방에 검을 휘둘러 [Value]%의 피해를 가한다."
+  },
+  {
+    "Name": "검기",
+    "Id": 1001,
+    "Value": "300",
+    "OtherValue": 0,
+    "Cooldown": 10,
+    "UpgradeType": 0,
+    "Description": "전방으로 검기를 내보내 [Value]%의 피해를 가한다."
+  },
+  {
+    "Name": "난참",
+    "Id": 1002,
+    "Value": "500",
+    "OtherValue": 0,
+    "Cooldown": 20,
+    "UpgradeType": 0,
+    "Description": "전방을 수 없이 베어 [Value]%의 피해를 가한다."
+  }
+]
