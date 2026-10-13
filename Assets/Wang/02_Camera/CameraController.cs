@@ -21,13 +21,13 @@ public class CameraController : MonoBehaviour
     [SerializeField, Min(0.01f)] private float m_fCollisionRadius = 0.2f;
     [SerializeField] private LayerMask m_iCollisionLayers = ~0;
 
-    private PlayerController m_refPlayer;
+    private Player m_refPlayer;
     private float m_fPitch;
     private readonly RaycastHit[] m_arrCameraHits = new RaycastHit[16];
 
     private void Awake()
     {
-        m_refPlayer = m_refTarget.GetComponent<PlayerController>();
+        m_refPlayer = m_refTarget.GetComponent<Player>();
     }
 
     private void LateUpdate()

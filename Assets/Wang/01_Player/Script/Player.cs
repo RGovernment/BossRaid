@@ -2,14 +2,15 @@ using UnityEngine;
 using static InputManager;
 
 [RequireComponent(typeof(FSM), typeof(Animator), typeof(Rigidbody))]
-public sealed class PlayerController : MonoBehaviour
+public sealed class Player : MonoBehaviour, ITakeDamgeable
 {
+    //스킬같은 우선권이 밀릴 때도 마우스 회전을 받기 위해서 Player쪽에서 관리
     [SerializeField, Min(0f)] private float m_fRotateSensitivity = 3f;
+    private float m_fRotateY;
+    public Quaternion ViewRotation => Quaternion.Euler(0f, m_fRotateY, 0f);
 
     private FSM m_refFSM;
-    private float m_fRotateY;
 
-    public Quaternion ViewRotation => Quaternion.Euler(0f, m_fRotateY, 0f);
 
     private void Awake()
     {
@@ -53,5 +54,10 @@ public sealed class PlayerController : MonoBehaviour
     private void OnDestroy()
     {
         m_refFSM.Dispose();
+    }
+
+    public void TakeDamage(tAttackInfo _tInfo)
+    {
+        m_refFSM.ReceiveHit(_tInfo);
     }
 }

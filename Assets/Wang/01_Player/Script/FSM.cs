@@ -11,6 +11,8 @@ public sealed class FSM : MonoBehaviour
         Run,
         Jump,
         Roll,
+        Hit,
+        Dead,
     }
 
     [SerializeField] private List<SOState> m_listState = new List<SOState>();
@@ -20,19 +22,19 @@ public sealed class FSM : MonoBehaviour
     private readonly Dictionary<eStateType, AnimatorEvent> m_hashAnimEvent = new Dictionary<eStateType, AnimatorEvent>();
     private readonly Dictionary<eStateType, PlayerState> m_hashState = new Dictionary<eStateType, PlayerState>();
     private PlayerState m_refCurState;
-    private PlayerController m_refController;
+    private Player m_refPlayer;
     private Collider m_refGroundCollider;
 
     public PlayerState CurrentState => m_refCurState;
     public PlayerState PreviousState { get; private set; }
     public Animator Animator { get; private set; }
     public Rigidbody Rigidbody { get; private set; }
-    public Quaternion ViewRotation => m_refController.ViewRotation;
+    public Quaternion ViewRotation => m_refPlayer.ViewRotation;
     public bool IsGrounded => m_refGroundCollider != null && Rigidbody.linearVelocity.y <= 0.1f;
 
-    public bool Init(PlayerController _refController)
+    public bool Init(Player _refController)
     {
-        m_refController = _refController;
+        m_refPlayer = _refController;
         Animator = GetComponent<Animator>();
         Rigidbody = GetComponent<Rigidbody>();
 
@@ -88,7 +90,8 @@ public sealed class FSM : MonoBehaviour
 
     private void CancelInput()
     {
-        Stop();
+        if (m_refCurState?.Type != eStateType.Hit)
+            Stop();
     }
 
     public bool StartState()
@@ -96,16 +99,29 @@ public sealed class FSM : MonoBehaviour
         return ChangeState(m_eInitialState);
     }
 
+    public void ReceiveHit(tAttackInfo _tInfo)
+    {
+        if (m_refCurState?.Type == eStateType.Hit)
+            return;
+
+        PlayerHitState refHitState = FindState<PlayerHitState>(eStateType.Hit);
+        if (refHitState == null)
+        {
+            Debug.LogError("FSM에 SOHitState가 등록되지 않았습니다.", this);
+            return;
+        }
+
+        refHitState.PrepareHit(_tInfo);
+        ChangeState(eStateType.Hit);
+    }
+
     public void UpdateState()
     {
-        if (!m_Instance.HasGameplayInput)
+        if (m_Instance.HasGameplayInput == false && m_refCurState?.Type != eStateType.Hit)
         {
             Stop();
             return;
         }
-
-        if (m_refCurState == null)
-            StartState();
 
         m_refCurState?.UpdateState();
     }

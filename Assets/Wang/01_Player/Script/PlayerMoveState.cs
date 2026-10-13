@@ -77,8 +77,15 @@ public sealed class PlayerMoveState : PlayerState
         {
             float fCurrentAngle = Mathf.Atan2(m_vMoveDir.x, m_vMoveDir.y) * Mathf.Rad2Deg;
             float fTargetAngle = Mathf.Atan2(m_vMoveInput.x, m_vMoveInput.y) * Mathf.Rad2Deg;
-            float fDirectionAngle = Mathf.MoveTowardsAngle(fCurrentAngle, fTargetAngle,
-                m_fDirectionTurnSpeed * Time.deltaTime) * Mathf.Deg2Rad;
+            float fFinalAngle = fTargetAngle;
+            //45도 이내만 보간해서 움직이게
+            if (Mathf.Abs(Mathf.DeltaAngle(fCurrentAngle, fTargetAngle)) <= 45f)
+            {
+                fFinalAngle = Mathf.MoveTowardsAngle(fCurrentAngle, fTargetAngle,
+                    m_fDirectionTurnSpeed * Time.deltaTime);
+            }
+
+            float fDirectionAngle = fFinalAngle * Mathf.Deg2Rad;
             m_vMoveDir = new Vector2(Mathf.Sin(fDirectionAngle), Mathf.Cos(fDirectionAngle));
         }
 

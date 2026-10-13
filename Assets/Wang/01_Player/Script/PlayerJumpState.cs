@@ -79,6 +79,9 @@ public sealed class PlayerJumpState : PlayerState
         if (m_refOwner.CurrentState.Type == eStateType.Roll)
             return false;
 
+        if (m_refOwner.CurrentState.Type == eStateType.Hit)
+            return false;
+
         return m_refOwner.IsGrounded;
     }
 
@@ -121,7 +124,6 @@ public sealed class PlayerJumpState : PlayerState
         }
 
         m_refMovementState.UpdateMovement();
-
         m_refOwner.Animator.SetBool(GroundHash, m_ePhase != eJumpPhase.Start && bGrounded);
         m_refOwner.Animator.SetFloat(JumpVerticalHash, m_refOwner.Rigidbody.linearVelocity.y);
     }
