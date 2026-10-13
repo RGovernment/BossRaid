@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using static InputManager;
 
 public sealed class FSM : MonoBehaviour
@@ -13,7 +14,6 @@ public sealed class FSM : MonoBehaviour
         Roll,
         Hit,
         Dead,
-        FallDown,
     }
 
     [SerializeField] private List<SOState> m_listState = new List<SOState>();
@@ -91,7 +91,7 @@ public sealed class FSM : MonoBehaviour
 
     private void CancelInput()
     {
-        if (m_refCurState?.Type != eStateType.Hit && m_refCurState?.Type != eStateType.FallDown)
+        if (m_refCurState?.Type != eStateType.Hit)
             Stop();
     }
 
@@ -102,38 +102,34 @@ public sealed class FSM : MonoBehaviour
 
     public void TakeDamage(tAttackInfo _tInfo)
     {
-        eStateType _eCurState = m_refCurState.Type;
+        if (m_refCurState == null)
+            return;
 
-        if (_eCurState == eStateType.Jump || !IsGrounded)
-        {
-            PlayerHitState refDownState = FindState<PlayerHitState>(eStateType.FallDown);
-            if (refDownState == null)
-                return;
-            refDownState.SetHitInfo(_tInfo);
-        }
+        if (m_refCurState.Type == eStateType.Hit || m_refCurState.Type == eStateType.Dead)
+            return;
 
-        if (_eCurState != eStateType.Jump)
-        {
-            PlayerHitState refHitState = FindState<PlayerHitState>(eStateType.Hit);
-            if (refHitState == null)
-                return;
-            refHitState.SetHitInfo(_tInfo);
-        }
-
-        ChangeState(_eCurState);
+        PlayerHitState refHitState = FindState<PlayerHitState>(eStateType.Hit);
+        refHitState.SetHitInfo(_tInfo, m_refCurState.Type);
+        ChangeState(eStateType.Hit);
     }
 
     public void UpdateState()
     {
         if (m_Instance.HasGameplayInput == false &&
-            m_refCurState?.Type != eStateType.Hit &&
-            m_refCurState?.Type != eStateType.FallDown)
+            m_refCurState?.Type != eStateType.Hit)
         {
             Stop();
             return;
         }
 
         m_refCurState?.UpdateState();
+
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            Vector3 vFoward = transform.position + (transform.forward * 2.0f);
+            TakeDamage(new tAttackInfo(vFoward, 10));
+        }
+       
     }
 
     public void FixedUpdateState()

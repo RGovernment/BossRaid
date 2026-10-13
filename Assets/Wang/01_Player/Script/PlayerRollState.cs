@@ -61,8 +61,7 @@ public sealed class PlayerRollState : PlayerState
             return false;
 
         if (m_refOwner.CurrentState.Type == eStateType.Jump ||
-            m_refOwner.CurrentState.Type == eStateType.Hit ||
-            m_refOwner.CurrentState.Type == eStateType.FallDown)
+            m_refOwner.CurrentState.Type == eStateType.Hit)
             return false;
 
         return true;
