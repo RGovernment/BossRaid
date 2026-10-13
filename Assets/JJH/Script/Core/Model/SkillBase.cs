@@ -18,8 +18,10 @@ public abstract class SkillBase : MonoBehaviourPunCallbacks
             Debug.Log(hp);
         }
     }
-
+    [Header("필요시 설정")]
     public Collider hitbox;
+
+    [Header("필수 설정")]
     public ParticleSystem rootParticle;
     public IObjectPool<SkillBase> pool;
     public HitEffect hitEffect;

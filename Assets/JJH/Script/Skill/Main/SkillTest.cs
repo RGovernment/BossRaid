@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using SF = UnityEngine.SerializeField;
@@ -7,6 +8,7 @@ public class SkillTest : MonoBehaviour
     private static readonly int Test2Hash = Animator.StringToHash("Test2");
     [SF] private SkillSpawner skillSpawner;
     [SF] private Animator animator;
+    [SF] private SkillPointer pointer;
 
     private float skill1Cooldown = 3;
     private float skill2Cooldown = 10;
@@ -15,12 +17,36 @@ public class SkillTest : MonoBehaviour
     private float nowCoolSk1 = 0;
     private float nowCoolSk2 = 0;
     private float nowCoolSk3 = 0;
-    void Update()
+
+    private bool isSkillTargeting;
+
+    private async UniTask PointerCk()
+    {
+        isSkillTargeting = true;
+        Vector3? data = await pointer.ActiveSkillPointer();
+
+        if(data != null)
+        {
+            bool val = TriggerTestSkill(1003);
+            if (!val) return;
+
+            nowCoolSk3 = Time.time + skill3Cooldown;
+        }
+
+        isSkillTargeting = false;
+    }
+
+    private void Update()
     {
         if (Keyboard.current == null) return;
         if (animator.IsInTransition(0)) return;
 
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && nowCoolSk1 < Time.time)
+        if(Keyboard.current.eKey.wasPressedThisFrame && !isSkillTargeting)
+        {
+            PointerCk().Forget();
+        }
+
+/*        if (Keyboard.current.spaceKey.wasPressedThisFrame && nowCoolSk1 < Time.time)
         {
             bool val = TriggerTestSkill(1000);
             if (!val) return;
@@ -44,7 +70,7 @@ public class SkillTest : MonoBehaviour
 
             nowCoolSk3 = Time.time + skill3Cooldown;
 
-        }
+        }*/
     }
 
     private bool TriggerTestSkill(int id)
