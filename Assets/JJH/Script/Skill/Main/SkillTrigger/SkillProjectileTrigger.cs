@@ -17,7 +17,6 @@ public class SkillProjectileTrigger : MonoBehaviour
     // 파티클이 무언가와 부딪혔을 때 유니티가 자동으로 실행하는 함수
     void OnParticleCollision(GameObject other)
     {
-        Debug.Log("부딪치긴 함");
         if (other.TryGetComponent(out SkillBase.Player player))
         {
             skillRoot.DamageTrigger(player);

@@ -29,6 +29,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     [HIn] public bool ProjectileHit;
     [SF] private int queuedSkillId;
     private SkillBase currentActiveSkill;
+    private Vector3? targetPosition;
     #endregion
 
 
@@ -63,12 +64,22 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         return true;
     }
 
+    public bool UseSkillAOE(int id, Vector3 pos)
+    {
+        if (currentActiveSkill != null) return false;
+
+        queuedSkillId = id;
+        targetPosition = pos;
+        return true;
+    }
+
     public void ReceiveAnimEvent(string eventName)
     {
         switch (eventName)
         {
             case "SkillOn":
-                if (effectPool.TryGetValue(queuedSkillId, out var pool))
+                if (queuedSkillId != 0 && 
+                    effectPool.TryGetValue(queuedSkillId, out var pool))
                 {
                     currentActiveSkill = pool.Get();
                 }
@@ -82,13 +93,22 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
             case "ColliderOff":
                 if (currentActiveSkill != null)
                     currentActiveSkill.SkillColliderOff();
-                    currentActiveSkill = null;
                 break;
             case "SkillOff":
-                if (currentActiveSkill != null)
-                    currentActiveSkill = null;
+                currentActiveSkill = null;
+                queuedSkillId = 0;
+                targetPosition = null;
                 break;
         }
+    }
+
+    /// <summary>
+    /// 피격 등 기타 사유로 인해 스킬이 강제 취소되었을 경우 초기화 함수
+    /// </summary>
+    public void SkillUseUnLock()
+    {
+        currentActiveSkill = null;
+        queuedSkillId = 0;
     }
 
     /// <summary>
@@ -122,17 +142,20 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
 
     private void EffectStart(SkillBase obj)
     {
+        if(targetPosition != null)
+            obj.transform.position = targetPosition.Value;
         obj.gameObject.SetActive(true);
         obj.rootParticle.Play(true);
+        obj.transform.SetParent(null, true);
     }
 
     private void EffectEnd(SkillBase obj)
     {
         obj.rootParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         obj.gameObject.SetActive(false);
-        obj.hitEffect.gameObject.SetActive(false);
-        currentActiveSkill = null;
-        queuedSkillId = 0;
+        if(obj.hitEffect != null)
+            obj.hitEffect.gameObject.SetActive(false);
+        obj.transform.SetParent(transform);
     }
 
 }

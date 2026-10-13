@@ -29526,7 +29526,7 @@ GameObject:
   - component: {fileID: 2804674186944804486}
   - component: {fileID: 2149734916138580870}
   m_Layer: 0
-  m_Name: Sword Slash 1(Clone)
+  m_Name: SwordSlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
