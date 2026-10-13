@@ -1,0 +1,149 @@
+using System.Collections;
+using UnityEngine;
+
+public class DragonShockwave : MonoBehaviour
+{
+    private const float RadiusToDiameter = 2f;
+
+    [Header("참조")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private Transform spawnPoint;
+    [SerializeField] private GameObject warningPrefab;
+    [SerializeField] private ShockwaveRing shockwavePrefab;
+
+    [Header("예고 장판")]
+    [SerializeField] private float warningHeightOffset = 0.03f;
+    [Header("애니메이션")]
+    [SerializeField] private string animationState = "Base Layer.Shockwave";
+
+    [Min(0f)]
+    [SerializeField] private float transitionTime = 0.1f;
+
+    [Header("테스트")]
+    [SerializeField] private KeyCode testKey = KeyCode.G;
+
+    private GameObject currentWarning;
+    private ShockwaveRing currentRing;
+    private Coroutine attackRoutine;
+
+    private Vector3 attackCenter;
+    private bool isAttacking;
+    private bool hasSpawned;
+    private bool motionEnded;
+
+    public bool IsAttacking => isAttacking;
+
+    private void Awake()
+    {
+        if (animator == null)
+            animator = GetComponent<Animator>();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(testKey))
+            Shockwave();
+    }
+
+    public void Shockwave()
+    {
+        if (isAttacking)
+            return;
+
+        if (animator == null || spawnPoint == null || warningPrefab == null || shockwavePrefab == null)
+        {
+            Debug.LogError("Animator, Spawn Point, Warning Prefab, Shockwave Prefab을 연결하세요.", this);
+            return;
+        }
+
+        isAttacking = true;
+        hasSpawned = false;
+        motionEnded = false;
+
+        // 공격 시작 위치를 저장해서 예고와 충격파 중심을 맞춥니다.
+        attackCenter = spawnPoint.position;
+
+        CreateWarning();
+        animator.CrossFadeInFixedTime(animationState, transitionTime);
+    }
+
+    private void CreateWarning()
+    {
+        Vector3 position = attackCenter + Vector3.up * warningHeightOffset;
+        currentWarning = Instantiate(warningPrefab, position, Quaternion.identity);
+
+        float diameter = shockwavePrefab.EndRadius * RadiusToDiameter;
+        currentWarning.transform.localScale = new Vector3(diameter, 1f, diameter);
+    }
+
+    // Shockwave 클립의 타격 순간에 연결합니다.
+    public void SpawnShockwave()
+    {
+        if (!isAttacking || hasSpawned)
+            return;
+
+        hasSpawned = true;
+        RemoveWarning();
+
+        currentRing = Instantiate(shockwavePrefab, attackCenter, shockwavePrefab.transform.rotation);
+        attackRoutine = StartCoroutine(WaitForEnd());
+    }
+
+    // Shockwave 클립의 종료 직전에 연결합니다.
+    public void ShockwaveMotionEnd()
+    {
+        if (!isAttacking)
+            return;
+
+        motionEnded = true;
+
+        if (!hasSpawned)
+        {
+            Debug.LogWarning("충격파 타격 이벤트가 실행되지 않았습니다.", this);
+            CleanupAttack();
+        }
+    }
+
+    private IEnumerator WaitForEnd()
+    {
+        // 고리 확산과 공격 모션이 모두 끝나야 공격을 종료합니다.
+        while (currentRing != null || !motionEnded)
+            yield return null;
+
+        attackRoutine = null;
+        CleanupAttack();
+
+        Debug.Log("충격파 공격 종료", this);
+    }
+
+    private void RemoveWarning()
+    {
+        if (currentWarning == null)
+            return;
+
+        Destroy(currentWarning);
+        currentWarning = null;
+    }
+
+    private void CleanupAttack()
+    {
+        RemoveWarning();
+
+        if (currentRing != null)
+            Destroy(currentRing.gameObject);
+
+        currentRing = null;
+        isAttacking = false;
+        hasSpawned = false;
+        motionEnded = false;
+    }
+
+    private void OnDisable()
+    {
+        if (attackRoutine != null)
+            StopCoroutine(attackRoutine);
+
+        attackRoutine = null;
+        CleanupAttack();
+    }
+}
