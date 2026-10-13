@@ -22,8 +22,11 @@ public class SkillHitTrigger : MonoBehaviour
             parentSkill.DebuffTrigger(player);
             parentSkill.BuffTrigger(player);
 
-            parentSkill.hitEffect.transform.position = player.transform.position;
-            parentSkill.hitEffect.gameObject.SetActive(true);
+            if(parentSkill.hitEffect != null)
+            {
+                parentSkill.hitEffect.transform.position = player.transform.position;
+                parentSkill.hitEffect.gameObject.SetActive(true);
+            }   
         }
     }
 }

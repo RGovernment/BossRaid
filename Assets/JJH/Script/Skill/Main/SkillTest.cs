@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using SF = UnityEngine.SerializeField;
 public class SkillTest : MonoBehaviour
 {
+    private static readonly int LightningHash = Animator.StringToHash("Lightning");
     private static readonly int TestHash = Animator.StringToHash("Test");
     private static readonly int Test2Hash = Animator.StringToHash("Test2");
     [SF] private SkillSpawner skillSpawner;
@@ -31,15 +32,17 @@ public class SkillTest : MonoBehaviour
         isSkillTargeting = true;
         Vector3? data = await pointer.ActiveSkillPointer();
 
-        if(data != null)
+        isSkillTargeting = false;
+
+        if (data != null)
         {
             bool val = TriggerTestSkill(1003, data.Value);
+
             if (!val) return;
 
             nowCoolSk4 = Time.time + skill4Cooldown;
+            animator.SetTrigger(LightningHash);
         }
-
-        isSkillTargeting = false;
     }
 
     private void Update()

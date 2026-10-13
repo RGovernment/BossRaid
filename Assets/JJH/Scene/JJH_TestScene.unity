@@ -634,6 +634,7 @@ MonoBehaviour:
   skillSpawner: {fileID: 1650309009}
   animator: {fileID: 1422566094}
   pointer: {fileID: 1167574535}
+  isMeleeTest: 0
 --- !u!4 &997615695
 Transform:
   m_ObjectHideFlags: 0

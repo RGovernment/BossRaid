@@ -84,4 +84,9 @@ public abstract class SkillBase : MonoBehaviourPunCallbacks
     {
         pool.Release(this);
     }
+
+    public void OnParticleSystemStoppedByChild()
+    {
+        pool.Release(this);
+    }
 }

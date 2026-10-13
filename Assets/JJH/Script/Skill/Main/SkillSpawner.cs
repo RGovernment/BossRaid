@@ -146,13 +146,16 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
             obj.transform.position = targetPosition.Value;
         obj.gameObject.SetActive(true);
         obj.rootParticle.Play(true);
+        obj.transform.SetParent(null, true);
     }
 
     private void EffectEnd(SkillBase obj)
     {
         obj.rootParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         obj.gameObject.SetActive(false);
-        obj.hitEffect.gameObject.SetActive(false);
+        if(obj.hitEffect != null)
+            obj.hitEffect.gameObject.SetActive(false);
+        obj.transform.SetParent(transform);
     }
 
 }
