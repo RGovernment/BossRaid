@@ -76,20 +76,6 @@ public abstract class SkillBase : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.TryGetComponent(out Player player))
-        {
-            DamageTrigger(player);
-            HealTrigger(player);
-            DebuffTrigger(player);
-            BuffTrigger(player);
-
-            hitEffect.transform.position = player.transform.position;
-            hitEffect.gameObject.SetActive(true);
-        }
-    }
-
     private void OnParticleSystemStopped()
     {
         pool.Release(this);

@@ -607,7 +607,8 @@ MonoBehaviour:
   PlayerWeaponTransform: {fileID: 389760107}
   prefabs:
   - {fileID: 2149734916138580870, guid: 352390f9b9cfd5348a8a47a87b8ed89c, type: 3}
-  - {fileID: 6827441755587028516, guid: eca9466c0f915f4478f0907bc29116fa, type: 3}
+  - {fileID: 6337506343531890366, guid: eca9466c0f915f4478f0907bc29116fa, type: 3}
+  - {fileID: 7739968402300561426, guid: 7ef039bfb3ff56144b0dccfa5df0d073, type: 3}
   ProjectileHit: 0
   queuedSkillId: 0
 --- !u!1 &1574702788
@@ -737,10 +738,9 @@ GameObject:
   - component: {fileID: 1981253572}
   - component: {fileID: 1981253571}
   - component: {fileID: 1981253570}
-  - component: {fileID: 1981253576}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Boss
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -873,26 +873,12 @@ Transform:
   m_GameObject: {fileID: 1981253569}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.61, y: 0.91, z: 8.38}
+  m_LocalPosition: {x: 6.73, y: 0.91, z: 8.31}
   m_LocalScale: {x: 1, y: 1.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1981253576
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1981253569}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f8329c036a36864b989f1d7c0af855d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HitTest
-  atkPoint: 10
-  hp: 100
 --- !u!1 &1995324976
 GameObject:
   m_ObjectHideFlags: 0

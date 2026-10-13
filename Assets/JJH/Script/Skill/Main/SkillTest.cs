@@ -4,15 +4,17 @@ using SF = UnityEngine.SerializeField;
 public class SkillTest : MonoBehaviour
 {
     private static readonly int TestHash = Animator.StringToHash("Test");
+    private static readonly int Test2Hash = Animator.StringToHash("Test2");
     [SF] private SkillSpawner skillSpawner;
     [SF] private Animator animator;
 
     private float skill1Cooldown = 3;
     private float skill2Cooldown = 10;
+    private float skill3Cooldown = 20;
 
     private float nowCoolSk1 = 0;
     private float nowCoolSk2 = 0;
-
+    private float nowCoolSk3 = 0;
     void Update()
     {
         if (Keyboard.current == null) return;
@@ -33,6 +35,15 @@ public class SkillTest : MonoBehaviour
             nowCoolSk2 = Time.time + skill2Cooldown;
             
         }
+
+        if (Keyboard.current.leftCtrlKey.wasPressedThisFrame && nowCoolSk3 < Time.time)
+        {
+            bool val = TriggerTestSkill(1002);
+            if (!val) return;
+
+            nowCoolSk3 = Time.time + skill3Cooldown;
+
+        }
     }
 
     private bool TriggerTestSkill(int id)
@@ -41,7 +52,10 @@ public class SkillTest : MonoBehaviour
 
         if (!success) return false;
 
-        animator.SetTrigger(TestHash);
+        if(id != 1002)
+            animator.SetTrigger(TestHash);
+        else 
+            animator.SetTrigger(Test2Hash);
 
         Debug.Log($"[테스트] {id}번 스킬 시전!");
 

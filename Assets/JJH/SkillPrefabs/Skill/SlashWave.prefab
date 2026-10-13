@@ -9833,6 +9833,7 @@ GameObject:
   - component: {fileID: 5424852245913622643}
   - component: {fileID: 8658547281440974595}
   - component: {fileID: 6351511233283561192}
+  - component: {fileID: 6889084354614436479}
   m_Layer: 0
   m_Name: SlashWind
   m_TagString: Untagged
@@ -13675,14 +13676,14 @@ ParticleSystem:
         m_RotationOrder: 4
     minKillSpeed: 0
     maxKillSpeed: 10000
-    radiusScale: 1
+    radiusScale: 2
     collidesWith:
       serializedVersion: 2
-      m_Bits: 4294967295
+      m_Bits: 256
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
-    collisionMessages: 0
+    collisionMessages: 1
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
@@ -14740,8 +14741,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d3515c6433046b4bb2fb92eb46897a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillProjectileTrigger
-  skillRoot: {fileID: 6827441755587028516}
+  skillRoot: {fileID: 6337506343531890366}
   ps: {fileID: 5424852245913622643}
+--- !u!65 &6889084354614436479
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6033781382346474951}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.99, y: 0.14, z: 1.38}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6505721572967687103
 GameObject:
   m_ObjectHideFlags: 0
@@ -14753,9 +14775,9 @@ GameObject:
   - component: {fileID: 3746754256614166046}
   - component: {fileID: 3730359321362822037}
   - component: {fileID: 1223065887793218702}
-  - component: {fileID: 6827441755587028516}
+  - component: {fileID: 6337506343531890366}
   m_Layer: 0
-  m_Name: Slash wave
+  m_Name: SlashWave
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19655,7 +19677,7 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
---- !u!114 &6827441755587028516
+--- !u!114 &6337506343531890366
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -19664,9 +19686,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6505721572967687103}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73b3bd9b997c9d54f8aeed47ea901bfd, type: 3}
+  m_Script: {fileID: 11500000, guid: 56a4b8de7e3d4714a9bc0b308d2bd45a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Slash
+  m_EditorClassIdentifier: Assembly-CSharp::SlashWave
   hitbox: {fileID: 0}
   rootParticle: {fileID: 3730359321362822037}
   hitEffect: {fileID: 4976469336287650362}
