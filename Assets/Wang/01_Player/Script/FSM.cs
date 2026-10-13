@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using static InputManager;
 
@@ -61,7 +62,7 @@ public sealed class FSM : MonoBehaviour
         foreach (var tKeyValue in m_hashState)
             tKeyValue.Value.Init();
 
-        m_Instance.OnInputCanceled += CancelInput;
+        m_Instance.MoveAction.canceled += CancelInput;
         return true;
     }
 
@@ -69,7 +70,7 @@ public sealed class FSM : MonoBehaviour
     {
         Stop();
         if (m_Instance != null)
-            m_Instance.OnInputCanceled -= CancelInput;
+            m_Instance.MoveAction.canceled -= CancelInput;
         foreach (var tKeyValue in m_hashState)
             tKeyValue.Value.Dispose();
 
@@ -89,8 +90,11 @@ public sealed class FSM : MonoBehaviour
         Dispose();
     }
 
-    private void CancelInput()
+    private void CancelInput(InputAction.CallbackContext _tContext)
     {
+        if (m_Instance.HasGameplayInput)
+            return;
+
         if (m_refCurState?.Type != eStateType.Hit)
             Stop();
     }

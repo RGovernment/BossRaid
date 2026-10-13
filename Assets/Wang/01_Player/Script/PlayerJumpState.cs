@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static FSM;
 using static InputManager;
 
@@ -42,7 +43,7 @@ public sealed class PlayerJumpState : PlayerState
     public override void Init()
     {
         base.Init();
-        m_Instance.OnJumpButtonPressed += RequestJump;
+        m_Instance.JumpAction.performed += RequestJump;
         // 각 클립 이벤트 시간순: 이륙, 공중 유지, 착지 동작 완료.
         m_refAnimEvent.RegisterFrame(m_refClip, m_arrClipEvents[0], Jump);
         m_refAnimEvent.RegisterFrame(m_refClip, m_arrClipEvents[1], StayJump);
@@ -55,7 +56,7 @@ public sealed class PlayerJumpState : PlayerState
     public override void Dispose()
     {
         if (m_Instance != null)
-            m_Instance.OnJumpButtonPressed -= RequestJump;
+            m_Instance.JumpAction.performed -= RequestJump;
 
         m_refAnimEvent.UnregisterFrame(m_refClip, m_arrClipEvents[0], Jump);
         m_refAnimEvent.UnregisterFrame(m_refClip, m_arrClipEvents[1], StayJump);
@@ -66,7 +67,7 @@ public sealed class PlayerJumpState : PlayerState
         base.Dispose();
     }
 
-    private void RequestJump()
+    private void RequestJump(InputAction.CallbackContext _tContext)
     {
         if (m_refOwner.CurrentState != null)
             m_refOwner.ChangeState(eStateType.Jump);
@@ -92,9 +93,10 @@ public sealed class PlayerJumpState : PlayerState
 
         eStateType eMoveState = m_Instance.IsRunHeld ? eStateType.Run : eStateType.Walk;
         m_refMovementState = m_refOwner.FindState<PlayerMoveState>(eMoveState);
-        m_refMovementState.StartMove(m_Instance.InputInfo.MoveDir.normalized);
+        Vector2 vInput = m_Instance.MoveAction.ReadValue<Vector2>();
+        m_refMovementState.StartMove(vInput.normalized);
 
-        bool bRunningJump = m_Instance.InputInfo.MoveDir.sqrMagnitude > 0.001f;
+        bool bRunningJump = vInput.sqrMagnitude > 0.001f;
         m_refOwner.Animator.ResetTrigger(JumpFinishedHash);
         m_refOwner.Animator.SetBool(GroundHash, false);
         m_refOwner.Animator.SetFloat(JumpVerticalHash, m_refOwner.Rigidbody.linearVelocity.y);

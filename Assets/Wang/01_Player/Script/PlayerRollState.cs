@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static FSM;
 using static InputManager;
 
@@ -34,7 +35,7 @@ public sealed class PlayerRollState : PlayerState
     public override void Init()
     {
         base.Init();
-        m_Instance.OnRollButtonPressed += RequestRoll;
+        m_Instance.RollAction.performed += RequestRoll;
         // 클립 이벤트 시간순: 구르기 시작, 종료.
         m_refAnimEvent.RegisterFrame(m_refClip, m_arrClipEvents[0], StartRoll);
         m_refAnimEvent.RegisterFrame(m_refClip, m_arrClipEvents[1], FinishRoll);
@@ -43,13 +44,13 @@ public sealed class PlayerRollState : PlayerState
     public override void Dispose()
     {
         if (m_Instance != null)
-            m_Instance.OnRollButtonPressed -= RequestRoll;
+            m_Instance.RollAction.performed -= RequestRoll;
         m_refAnimEvent.UnregisterFrame(m_refClip, m_arrClipEvents[0], StartRoll);
         m_refAnimEvent.UnregisterFrame(m_refClip, m_arrClipEvents[1], FinishRoll);
         base.Dispose();
     }
 
-    private void RequestRoll()
+    private void RequestRoll(InputAction.CallbackContext _tContext)
     {
         if (m_refOwner.CurrentState != null)
             m_refOwner.ChangeState(eStateType.Roll);
@@ -69,7 +70,7 @@ public sealed class PlayerRollState : PlayerState
 
     public override void Enter()
     {
-        Vector2 vInput = m_Instance.InputInfo.MoveDir;
+        Vector2 vInput = m_Instance.MoveAction.ReadValue<Vector2>();
         Vector3 vDirection = vInput.sqrMagnitude > 0.001f
             ? new Vector3(vInput.x, 0f, vInput.y).normalized : Vector3.forward;
 
