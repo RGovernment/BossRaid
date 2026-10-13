@@ -13,24 +13,30 @@ public class SkillTest : MonoBehaviour
     private float skill1Cooldown = 3;
     private float skill2Cooldown = 10;
     private float skill3Cooldown = 20;
+    private float skill4Cooldown = 15;
 
     private float nowCoolSk1 = 0;
     private float nowCoolSk2 = 0;
     private float nowCoolSk3 = 0;
+    private float nowCoolSk4 = 0;
+
+    public bool isMeleeTest = true;
 
     private bool isSkillTargeting;
 
     private async UniTask PointerCk()
     {
+        if (pointer == null) return;
+
         isSkillTargeting = true;
         Vector3? data = await pointer.ActiveSkillPointer();
 
         if(data != null)
         {
-            bool val = TriggerTestSkill(1003);
+            bool val = TriggerTestSkill(1003, data.Value);
             if (!val) return;
 
-            nowCoolSk3 = Time.time + skill3Cooldown;
+            nowCoolSk4 = Time.time + skill4Cooldown;
         }
 
         isSkillTargeting = false;
@@ -40,13 +46,14 @@ public class SkillTest : MonoBehaviour
     {
         if (Keyboard.current == null) return;
         if (animator.IsInTransition(0)) return;
-
-        if(Keyboard.current.eKey.wasPressedThisFrame && !isSkillTargeting)
-        {
-            PointerCk().Forget();
+        if (!isMeleeTest) { 
+            if(Keyboard.current.eKey.wasPressedThisFrame && !isSkillTargeting && nowCoolSk4 < Time.time)
+            {
+                PointerCk().Forget();
+            }
         }
 
-/*        if (Keyboard.current.spaceKey.wasPressedThisFrame && nowCoolSk1 < Time.time)
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && nowCoolSk1 < Time.time)
         {
             bool val = TriggerTestSkill(1000);
             if (!val) return;
@@ -70,7 +77,7 @@ public class SkillTest : MonoBehaviour
 
             nowCoolSk3 = Time.time + skill3Cooldown;
 
-        }*/
+        }
     }
 
     private bool TriggerTestSkill(int id)
@@ -82,6 +89,22 @@ public class SkillTest : MonoBehaviour
         if(id != 1002)
             animator.SetTrigger(TestHash);
         else 
+            animator.SetTrigger(Test2Hash);
+
+        Debug.Log($"[테스트] {id}번 스킬 시전!");
+
+        return true;
+    }
+
+    private bool TriggerTestSkill(int id, Vector3 pos)
+    {
+        bool success = skillSpawner.UseSkillAOE(id, pos);
+
+        if (!success) return false;
+
+        if (id != 1002)
+            animator.SetTrigger(TestHash);
+        else
             animator.SetTrigger(Test2Hash);
 
         Debug.Log($"[테스트] {id}번 스킬 시전!");

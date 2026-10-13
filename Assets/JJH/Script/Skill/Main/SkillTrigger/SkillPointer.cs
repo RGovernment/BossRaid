@@ -41,8 +41,22 @@ public class SkillPointer : MonoBehaviourPun
             isOutOfRange = false;
             SwitchParticle(false);
 
+            await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+
             while (true)
             {
+                if (Keyboard.current.eKey.wasPressedThisFrame)
+                {
+
+                    redParticle.gameObject.SetActive(false);
+                    blueParticle.gameObject.SetActive(false);
+
+                    if (CanUseSkill)
+                        return transform.position;
+                    else
+                        return null;
+                }
+
                 if (playerTransform == null)
                     throw new SkillTargetingException("조준할 플레이어가 존재하지 않습니다.");
             
@@ -74,40 +88,24 @@ public class SkillPointer : MonoBehaviourPun
                 if (currentDistance > maxRange)
                 {
                     finalPosition = playerFloorPos + (direction * maxRange);
-
+                    SwitchParticle(false);
                     if (!isOutOfRange)
-                    {
                         isOutOfRange = true;
-                        SwitchParticle(true);
-                    }
+                        
+                    
                 }
                 else
                 {
                     finalPosition = targetFloorPos;
-
+                    SwitchParticle(true);
                     if (isOutOfRange)
-                    {
                         isOutOfRange = false;
-                        SwitchParticle(false);
-                    }
                 }
 
                 finalPosition.y = playerTransform.position.y + yOffset;
 
                 transform.SetPositionAndRotation(finalPosition, 
                     Quaternion.Euler(0, playerTransform.eulerAngles.y, 0));
-
-                if (Keyboard.current.eKey.wasPressedThisFrame)
-                {
-
-                    redParticle.gameObject.SetActive(false);
-                    blueParticle.gameObject.SetActive(false);
-
-                    if (CanUseSkill)
-                        return transform.position;
-                    else 
-                        return transform.position;
-                }
             }
         }    
         // UniTask가 중간에 취소(오브젝트 파괴 등)되었을 때
@@ -128,13 +126,17 @@ public class SkillPointer : MonoBehaviourPun
     {
         if (type)
         {
-            redParticle.gameObject.SetActive(false);
-            blueParticle.gameObject.SetActive(true);
+            if(redParticle.gameObject.activeSelf)
+                redParticle.gameObject.SetActive(false);
+            if(!blueParticle.gameObject.activeSelf)
+                blueParticle.gameObject.SetActive(true);
         }
         else
         {
-            redParticle.gameObject.SetActive(true);
-            blueParticle.gameObject.SetActive(false);
+            if (!redParticle.gameObject.activeSelf)
+                redParticle.gameObject.SetActive(true);
+            if (blueParticle.gameObject.activeSelf)
+                blueParticle.gameObject.SetActive(false);
         }
     }
 

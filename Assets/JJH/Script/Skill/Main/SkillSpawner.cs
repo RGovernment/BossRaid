@@ -29,7 +29,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     [HIn] public bool ProjectileHit;
     [SF] private int queuedSkillId;
     private SkillBase currentActiveSkill;
-    private Transform targetTransform;
+    private Vector3? targetPosition;
     #endregion
 
 
@@ -64,12 +64,12 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         return true;
     }
 
-    public bool UseSkillAOE(int id, Transform targetTransform)
+    public bool UseSkillAOE(int id, Vector3 pos)
     {
         if (currentActiveSkill != null) return false;
 
         queuedSkillId = id;
-        this.targetTransform = targetTransform;
+        targetPosition = pos;
         return true;
     }
 
@@ -97,7 +97,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
             case "SkillOff":
                 currentActiveSkill = null;
                 queuedSkillId = 0;
-                targetTransform = null;
+                targetPosition = null;
                 break;
         }
     }
@@ -142,8 +142,8 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
 
     private void EffectStart(SkillBase obj)
     {
-        if(targetTransform != null)
-            obj.transform.position = targetTransform.position;
+        if(targetPosition != null)
+            obj.transform.position = targetPosition.Value;
         obj.gameObject.SetActive(true);
         obj.rootParticle.Play(true);
     }

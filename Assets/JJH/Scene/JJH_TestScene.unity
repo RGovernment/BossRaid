@@ -679,7 +679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillPointer
   playerTransform: {fileID: 1422566091}
-  maxRange: 10
+  maxRange: 15
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -718,6 +718,18 @@ PrefabInstance:
     - target: {fileID: 2562798496876678812, guid: 80e7b3b97f8fcce4da909cd728aef25e, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3461307205106712681, guid: 80e7b3b97f8fcce4da909cd728aef25e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3461307205106712681, guid: 80e7b3b97f8fcce4da909cd728aef25e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3461307205106712681, guid: 80e7b3b97f8fcce4da909cd728aef25e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3461307205106712681, guid: 80e7b3b97f8fcce4da909cd728aef25e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -879,7 +891,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b29e9aa519e32d4490c22860beeb918, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillAnimationBridge
-  spawner: {fileID: 101132010}
+  spawner: {fileID: 1650309009}
 --- !u!95 &1422566094 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 4084986103553270440, guid: aa0b9fbe8b860d0408a2afcb2ffbeec6, type: 3}
@@ -949,7 +961,7 @@ GameObject:
   - component: {fileID: 1574702791}
   - component: {fileID: 1574702790}
   - component: {fileID: 1574702789}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1067,6 +1079,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6097317906272434658, guid: b794d75469961614eb930049c5cf55a2, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097317906272434658, guid: b794d75469961614eb930049c5cf55a2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097317906272434658, guid: b794d75469961614eb930049c5cf55a2, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097317906272434658, guid: b794d75469961614eb930049c5cf55a2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -1165,7 +1189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ba35990805a73d449ec7def9b47adaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSpawner
-  PlayerTransform: {fileID: 695466690}
+  PlayerTransform: {fileID: 1422566091}
   PlayerWeaponTransform: {fileID: 0}
   prefabs:
   - {fileID: 6470620243002109106, guid: 4058f0ea81461664887f9383c1b6ecc3, type: 3}
@@ -1223,6 +1247,10 @@ PrefabInstance:
       propertyPath: m_refTarget
       value: 
       objectReference: {fileID: 1422566091}
+    - target: {fileID: 1428045902929853455, guid: d0b766d4a8e591849805be040df84539, type: 3}
+      propertyPath: m_fCameraLookHeight
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2865512771559399051, guid: d0b766d4a8e591849805be040df84539, type: 3}
       propertyPath: m_Name
       value: Main Camera (1)
