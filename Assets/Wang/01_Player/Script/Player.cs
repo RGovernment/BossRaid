@@ -1,5 +1,7 @@
 using UnityEngine;
+using static FSM;
 using static InputManager;
+using static UnityEngine.InputSystem.InputAction;
 
 [RequireComponent(typeof(FSM), typeof(Animator), typeof(Rigidbody))]
 public sealed class Player : MonoBehaviour, ITakeDamgeable
@@ -11,9 +13,18 @@ public sealed class Player : MonoBehaviour, ITakeDamgeable
 
     private FSM m_refFSM;
 
+    private ObjectInfo m_refObjectInfo = new();
+    public ObjectInfo ObjectInfo => m_refObjectInfo;
+
+    [SerializeField] private SkillSpawner m_refTest;
 
     private void Awake()
     {
+        //임시 코드 -> SO로 수정
+        m_refObjectInfo.CurrentHP = 100.0f;
+        m_refObjectInfo.CurrentSpeed = 2.0f;
+
+        m_refTest = GetComponentInChildren<SkillSpawner>();
         Init();
     }
 
@@ -25,6 +36,11 @@ public sealed class Player : MonoBehaviour, ITakeDamgeable
             enabled = false;
     }
 
+    private void Start()
+    {
+        InputManager.m_Instance.Skill0Action.started += Skill0;
+    }
+
     private void OnEnable()
     {
         m_refFSM.StartState();
@@ -32,6 +48,7 @@ public sealed class Player : MonoBehaviour, ITakeDamgeable
 
     private void Update()
     {
+        if(m_refTest.)
         if (m_Instance.HasGameplayInput)
         {
             float fRotate = m_Instance.InputInfo.Delta.x * m_fRotateSensitivity;
@@ -58,6 +75,18 @@ public sealed class Player : MonoBehaviour, ITakeDamgeable
 
     public void TakeDamage(tAttackInfo _tInfo)
     {
-        m_refFSM.ReceiveHit(_tInfo);
+        if (m_refFSM.CurrentState?.Type == eStateType.Dead)
+            return;
+
+        m_refObjectInfo.CurrentHP -= _tInfo.Damage;
+        //if(m_refObjectInfo.CurrentHP >)
+
+        m_refFSM.TakeDamage(_tInfo);
+    }
+
+    private void Skill0(CallbackContext _tCallback)
+    {
+        m_refFSM.Animator.SetTrigger("Test");
+        m_refTest.UseSkill(1001);
     }
 }

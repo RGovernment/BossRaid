@@ -7,7 +7,6 @@ public sealed class PlayerMoveState : PlayerState
     private static readonly int MoveXHash = Animator.StringToHash("MoveX");
     private static readonly int MoveYHash = Animator.StringToHash("MoveY");
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
-    private static readonly int StrafeHash = Animator.StringToHash("Strafe");
     private static readonly int GroundHash = Animator.StringToHash("Ground");
 
     private readonly float m_fMoveSpeed;
@@ -64,7 +63,7 @@ public sealed class PlayerMoveState : PlayerState
     public void StartMove(Vector2 _vMoveDirection)
     {
         m_vMoveDir = _vMoveDirection;
-        m_vMoveInput = Vector2.ClampMagnitude(m_Instance.InputInfo.MoveDir, 1f);
+        m_vMoveInput = Vector2.ClampMagnitude(m_Instance.MoveAction.ReadValue<Vector2>(), 1f);
     }
 
     // Jump에서도 같은 이동 계산을 사용하되 상태 전환은 호출한 State가 결정합니다.
@@ -94,13 +93,13 @@ public sealed class PlayerMoveState : PlayerState
         m_refOwner.Animator.SetFloat(MoveXHash, vAnimationValue.x);
         m_refOwner.Animator.SetFloat(MoveYHash, vAnimationValue.y);
         m_refOwner.Animator.SetFloat(SpeedHash, Type == eStateType.Run ? 2f : 0f);
-        m_refOwner.Animator.SetFloat(StrafeHash, m_Instance.IsStrafeHeld ? 1f : 0f);
     }
 
     public void ApplyMovement()
     {
         Vector3 vVelocity = m_refOwner.ViewRotation * new Vector3(m_vMoveDir.x, 0f, m_vMoveDir.y)
             * (m_fMoveSpeed * m_vMoveInput.magnitude);
+
         vVelocity.y = m_refOwner.Rigidbody.linearVelocity.y;
         m_refOwner.Rigidbody.linearVelocity = vVelocity;
     }
@@ -110,7 +109,6 @@ public sealed class PlayerMoveState : PlayerState
         m_refOwner.Animator.SetFloat(MoveXHash, 0f);
         m_refOwner.Animator.SetFloat(MoveYHash, 0f);
         m_refOwner.Animator.SetFloat(SpeedHash, 0f);
-        m_refOwner.Animator.SetFloat(StrafeHash, 0f);
     }
 
     public static eStateType SelectState()

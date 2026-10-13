@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using static InputManager;
 
 public sealed class FSM : MonoBehaviour
@@ -60,7 +62,7 @@ public sealed class FSM : MonoBehaviour
         foreach (var tKeyValue in m_hashState)
             tKeyValue.Value.Init();
 
-        m_Instance.OnInputCanceled += CancelInput;
+        m_Instance.MoveAction.canceled += CancelInput;
         return true;
     }
 
@@ -68,7 +70,7 @@ public sealed class FSM : MonoBehaviour
     {
         Stop();
         if (m_Instance != null)
-            m_Instance.OnInputCanceled -= CancelInput;
+            m_Instance.MoveAction.canceled -= CancelInput;
         foreach (var tKeyValue in m_hashState)
             tKeyValue.Value.Dispose();
 
@@ -88,8 +90,11 @@ public sealed class FSM : MonoBehaviour
         Dispose();
     }
 
-    private void CancelInput()
+    private void CancelInput(InputAction.CallbackContext _tContext)
     {
+        if (m_Instance.HasGameplayInput)
+            return;
+
         if (m_refCurState?.Type != eStateType.Hit)
             Stop();
     }
@@ -99,31 +104,36 @@ public sealed class FSM : MonoBehaviour
         return ChangeState(m_eInitialState);
     }
 
-    public void ReceiveHit(tAttackInfo _tInfo)
+    public void TakeDamage(tAttackInfo _tInfo)
     {
-        if (m_refCurState?.Type == eStateType.Hit)
+        if (m_refCurState == null)
+            return;
+
+        if (m_refCurState.Type == eStateType.Hit || m_refCurState.Type == eStateType.Dead)
             return;
 
         PlayerHitState refHitState = FindState<PlayerHitState>(eStateType.Hit);
-        if (refHitState == null)
-        {
-            Debug.LogError("FSM에 SOHitState가 등록되지 않았습니다.", this);
-            return;
-        }
-
-        refHitState.PrepareHit(_tInfo);
+        refHitState.SetHitInfo(_tInfo, m_refCurState.Type);
         ChangeState(eStateType.Hit);
     }
 
     public void UpdateState()
     {
-        if (m_Instance.HasGameplayInput == false && m_refCurState?.Type != eStateType.Hit)
+        if (m_Instance.HasGameplayInput == false &&
+            m_refCurState?.Type != eStateType.Hit)
         {
             Stop();
             return;
         }
 
         m_refCurState?.UpdateState();
+
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            Vector3 vFoward = transform.position + (transform.forward * 2.0f);
+            TakeDamage(new tAttackInfo(vFoward, 10));
+        }
+       
     }
 
     public void FixedUpdateState()
