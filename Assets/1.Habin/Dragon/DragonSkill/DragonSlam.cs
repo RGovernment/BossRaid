@@ -5,6 +5,11 @@ public class DragonSlam : MonoBehaviour
     [SerializeField] private Animator animator;
     [Header("장판 프리펩")]
     [SerializeField] private CircleTelegraph attackPrefab;
+    [Header("히트박스 프리펩")]
+    [SerializeField] private MeshCollider slamHitBox;
+    [SerializeField] private float hitBoxHeight = 2f;
+
+    private const float Half = 0.5f;
     [Header("장판 생성 위치")]
     [SerializeField] private Transform slamPoint;
     [Header("공격 범위")]
@@ -47,8 +52,14 @@ public class DragonSlam : MonoBehaviour
             Quaternion.identity
         );
 
-        currentTelegraph.transform.localScale =
-            new Vector3(slamRange, 1f, slamRange);
+        currentTelegraph.transform.localScale = new Vector3(slamRange, 1f, slamRange);
+        
+        //히트박스 생성
+        Transform hitBoxTransform = slamHitBox.transform;
+        Vector3 parentScale = hitBoxTransform.parent.lossyScale;
+
+        hitBoxTransform.localScale = new Vector3(slamRange / Mathf.Abs(parentScale.x), hitBoxHeight * Half / Mathf.Abs(parentScale.y), slamRange / Mathf.Abs(parentScale.z));
+        hitBoxTransform.localPosition = new Vector3(0f, hitBoxHeight * Half / Mathf.Abs(parentScale.y), 0f);
 
         // 공격을 시작하면 원이차기시작함
         currentTelegraph.Play(warningTime, null);
@@ -69,7 +80,7 @@ public class DragonSlam : MonoBehaviour
         hasHit = true;
 
         Debug.Log("내려찍기 타격!");
-        // 데미지 계산 추가
+        slamHitBox.enabled = true;
         RemoveTelegraph();
     }
 
@@ -77,8 +88,10 @@ public class DragonSlam : MonoBehaviour
     public void SlamEnd()
     {
         Debug.Log("내려찍기 종료");
-        RemoveTelegraph();
+        slamHitBox.enabled = false;
+        hasHit = false;
         isAttacking = false;
+        RemoveTelegraph();
     }
 
     private void RemoveTelegraph()

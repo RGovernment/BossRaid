@@ -4,7 +4,7 @@ public class DragonBoss : MonoBehaviour
 {
     [SerializeField] private MonsterData monsterData;
 
-    private float currentHp;
+    [SerializeField] private float currentHp;
 
     private void Awake()
     {

@@ -13,8 +13,8 @@ public partial class SelectBossSkillAction : Action
     [SerializeReference] public BlackboardVariable<BossSkillType> SelectedSkill;
     [SerializeReference] public BlackboardVariable<BossSkillType> LastSkill;
 
-    private BossSkillType[] meleeSkills = { BossSkillType.Slam, BossSkillType.TailWhip, BossSkillType.Meteor };
-    private BossSkillType[] rangedSkills = { BossSkillType.Rush, BossSkillType.Meteor };
+    private BossSkillType[] meleeSkills = { BossSkillType.Slam, BossSkillType.TailWhip, BossSkillType.Meteor, BossSkillType.Shockwave };
+    private BossSkillType[] rangedSkills = { BossSkillType.Rush, BossSkillType.Meteor, BossSkillType.Shockwave };
 
 
     protected override Status OnStart()
