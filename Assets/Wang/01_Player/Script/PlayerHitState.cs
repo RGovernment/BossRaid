@@ -20,7 +20,7 @@ public sealed class PlayerHitState : PlayerState
 
     public void PrepareHit(tAttackInfo _tInfo)
     {
-        m_vKnockbackDirection = -_tInfo.AttackDirection;
+        m_vKnockbackDirection = -_tInfo.Pos;
         m_vKnockbackDirection.y = 0f;
         m_vKnockbackDirection.Normalize();
     }
