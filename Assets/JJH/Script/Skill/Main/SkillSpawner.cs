@@ -29,6 +29,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     [HIn] public bool ProjectileHit;
     [SF] private int queuedSkillId;
     private SkillBase currentActiveSkill;
+    private Transform targetTransform;
     #endregion
 
 
@@ -63,6 +64,15 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         return true;
     }
 
+    public bool UseSkillAOE(int id, Transform targetTransform)
+    {
+        if (currentActiveSkill != null) return false;
+
+        queuedSkillId = id;
+        this.targetTransform = targetTransform;
+        return true;
+    }
+
     public void ReceiveAnimEvent(string eventName)
     {
         switch (eventName)
@@ -85,11 +95,20 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
                     currentActiveSkill.SkillColliderOff();
                 break;
             case "SkillOff":
-
-                    currentActiveSkill = null;
+                currentActiveSkill = null;
                 queuedSkillId = 0;
+                targetTransform = null;
                 break;
         }
+    }
+
+    /// <summary>
+    /// 피격 등 기타 사유로 인해 스킬이 강제 취소되었을 경우 초기화 함수
+    /// </summary>
+    public void SkillUseUnLock()
+    {
+        currentActiveSkill = null;
+        queuedSkillId = 0;
     }
 
     /// <summary>
@@ -123,6 +142,8 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
 
     private void EffectStart(SkillBase obj)
     {
+        if(targetTransform != null)
+            obj.transform.position = targetTransform.position;
         obj.gameObject.SetActive(true);
         obj.rootParticle.Play(true);
     }

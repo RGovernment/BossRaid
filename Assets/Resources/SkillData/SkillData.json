@@ -25,5 +25,14 @@
     "Cooldown": 20,
     "UpgradeType": 0,
     "Description": "전방을 수 없이 베어 [Value]%의 피해를 가한다."
+  },
+  {
+    "Name": "번개",
+    "Id": 1003,
+    "Value": "500",
+    "OtherValue": 0,
+    "Cooldown": 15,
+    "UpgradeType": 0,
+    "Description": "번개를 내리쳐 [Value]%의 피해를 가한다."
   }
 ]

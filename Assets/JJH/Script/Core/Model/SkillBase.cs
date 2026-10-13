@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System;
 using UnityEngine;
 using UnityEngine.Pool;
-using SF = UnityEngine.SerializeField;
-public abstract class SkillBase : MonoBehaviour
+
+public abstract class SkillBase : MonoBehaviourPunCallbacks
 {
     /// <summary>
     /// 더미용 플레이어 임시 객체
@@ -23,13 +24,14 @@ public abstract class SkillBase : MonoBehaviour
     public IObjectPool<SkillBase> pool;
     public HitEffect hitEffect;
     public int Id;
+    public int UpgradeType { get; private set; }
 
     // 활성화/ 비활성화시 상위 이벤트에 구독
-
-    public void Init(int id, IObjectPool<SkillBase> pool)
+    public void Init(int id, IObjectPool<SkillBase> pool, int UpgradeType = 0)
     {
         Id = id;
         this.pool = pool;
+        this.UpgradeType = UpgradeType;
     }
 
     public void SkillColliderOn()
