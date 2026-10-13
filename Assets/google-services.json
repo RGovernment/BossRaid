@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "591303383227",
+    "firebase_url": "https://fir-tset-c29c0-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "fir-tset-c29c0",
+    "storage_bucket": "fir-tset-c29c0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591303383227:android:6eb37732183c722e08719e",
+        "android_client_info": {
+          "package_name": "com.UnityTechnologies.com.unity.template.urpblank"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf9z-nZaMt0Bgbpx1U8PPcjEQ5CsE6JDI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
