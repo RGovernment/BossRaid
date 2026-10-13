@@ -3,12 +3,12 @@ using UnityEngine;
 
 public struct tAttackInfo
 {
-    public Vector3 AttackDirection;
+    public Vector3 Pos;
     public float Damage;
 
-    public tAttackInfo(Vector3 _vAttackDirection , float _fDamage)
+    public tAttackInfo(Vector3 _Pos , float _fDamage)
     {
-        AttackDirection = _vAttackDirection;
+        Pos = _Pos;
         Damage = _fDamage;
     }
 }

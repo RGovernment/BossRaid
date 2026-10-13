@@ -5,43 +5,36 @@ public sealed class PlayerHitState : PlayerState
 {
     private readonly float m_fKnockbackPower;
     private readonly float m_fKnockbackDeceleration;
+    private readonly float m_fHitDuration;
     private Vector3 m_vKnockbackDirection;
+    private float m_fEndTime;
     private bool m_bPendingImpulse;
 
-    private static readonly int HitHash = Animator.StringToHash("Hit");
-
-    public PlayerHitState(FSM _refOwner, AnimationClip _refClip, AnimationEvent[] _arrClipEvents,
-        float _fKnockbackPower, float _fKnockbackDeceleration)
-        : base(_refOwner, eStateType.Hit)
+    public PlayerHitState(FSM _refOwner, float _fKnockbackPower, float _fKnockbackDeceleration,
+        float _fHitDuration) : base(_refOwner, eStateType.Hit)
     {
-        m_refClip = _refClip;
-        m_arrClipEvents = _arrClipEvents;
         m_fKnockbackPower = _fKnockbackPower;
         m_fKnockbackDeceleration = _fKnockbackDeceleration;
+        m_fHitDuration = _fHitDuration;
     }
 
-    public override void Init()
+    public void PrepareHit(tAttackInfo _tInfo)
     {
-        base.Init();
-        m_refAnimEvent.RegisterFrame(m_refClip, m_arrClipEvents[0], FinishKnockBack);
-    }
-
-    public override void Dispose()
-    {
-        m_refAnimEvent.UnregisterFrame(m_refClip, m_arrClipEvents[0], FinishKnockBack);
-        base.Dispose();
+        m_vKnockbackDirection = -_tInfo.Pos;
+        m_vKnockbackDirection.y = 0f;
+        m_vKnockbackDirection.Normalize();
     }
 
     public override void Enter()
     {
-        //공중에서 맞으면?
-        m_refOwner.Animator.SetTrigger(HitHash);
+        m_fEndTime = Time.time + m_fHitDuration;
         m_bPendingImpulse = true;
     }
-    public override void Exit()
+
+    public override void UpdateState()
     {
-        m_bPendingImpulse = false;
-        base.Exit();
+        if (m_bPendingImpulse == false && Time.time >= m_fEndTime)
+            m_refOwner.ChangeState(PlayerMoveState.SelectState());
     }
 
     public override void FixedUpdateState()
@@ -62,17 +55,5 @@ public sealed class PlayerHitState : PlayerState
         vVelocity = Vector3.MoveTowards(vVelocity, Vector3.zero, m_fKnockbackDeceleration * Time.fixedDeltaTime);
         vVelocity.y = fVerticalSpeed;
         m_refOwner.Rigidbody.linearVelocity = vVelocity;
-    }
-
-    public void SetHitInfo(tAttackInfo _tInfo)
-    {
-        m_vKnockbackDirection = -_tInfo.AttackDirection;
-        m_vKnockbackDirection.y = 0f;
-        m_vKnockbackDirection.Normalize();
-    }
-
-    private void FinishKnockBack(AnimationEvent _refEvent)
-    {
-        m_refOwner.ChangeState(PlayerMoveState.SelectState());
     }
 }
