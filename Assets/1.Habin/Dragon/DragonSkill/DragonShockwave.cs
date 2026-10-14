@@ -86,6 +86,7 @@ public class DragonShockwave : MonoBehaviour
         RemoveWarning();
 
         currentRing = Instantiate(shockwavePrefab, attackCenter, shockwavePrefab.transform.rotation);
+        currentRing.SetBoss(GetComponent<DragonBoss>());
         attackRoutine = StartCoroutine(WaitForEnd());
     }
 
