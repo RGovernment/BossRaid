@@ -2,6 +2,7 @@ using UnityEngine;
 using static FSM;
 using static InputManager;
 using UnityEngine.Serialization;
+using Photon.Pun;
 
 [RequireComponent(typeof(FSM), typeof(Animator), typeof(Rigidbody))]
 public sealed class Player : MonoBehaviour, ITakeDamgeable
@@ -12,6 +13,8 @@ public sealed class Player : MonoBehaviour, ITakeDamgeable
     public Quaternion ViewRotation => Quaternion.Euler(0f, m_fRotateY, 0f);
 
     private FSM m_refFSM;
+    private PhotonView m_refPhotonView;
+    [SerializeField] private GameObject m_refLocalCamera;
 
     private ObjectInfo m_refObjectInfo = new();
     public ObjectInfo ObjectInfo => m_refObjectInfo;
@@ -22,6 +25,7 @@ public sealed class Player : MonoBehaviour, ITakeDamgeable
 
     private void Awake()
     {
+        m_refPhotonView = GetComponent<PhotonView>();
         //임시 코드 -> SO로 수정
         m_refObjectInfo.CurrentHP = 100.0f;
         m_refObjectInfo.CurrentSpeed = 2.0f;
@@ -41,12 +45,38 @@ public sealed class Player : MonoBehaviour, ITakeDamgeable
 
     private void OnEnable()
     {
+        if (m_refPhotonView != null && PhotonNetwork.InRoom && !m_refPhotonView.IsMine)
+            return;
+
         if (m_refObjectInfo.CurrentHP > 0f)
             m_refFSM.StartState();
     }
 
+    private void Start()
+    {
+        if (m_refPhotonView == null || !PhotonNetwork.InRoom || m_refPhotonView.IsMine)
+        {
+            if (m_refLocalCamera != null)
+                m_refLocalCamera.SetActive(true);
+            return;
+        }
+
+        //enabled = false;
+        //m_refFSM.enabled = false;
+        //// Disabling Update alone leaves the remote character's input callbacks subscribed.
+        //m_refFSM.Dispose();
+        //Rigidbody refBody = GetComponent<Rigidbody>();
+        //refBody.linearVelocity = Vector3.zero;
+        //refBody.angularVelocity = Vector3.zero;
+        //refBody.isKinematic = true;
+        //refBody.useGravity = false;
+    }
+
     private void Update()
     {
+        if (m_refPhotonView != null && PhotonNetwork.InRoom && !m_refPhotonView.IsMine)
+            return;
+
         if (m_Instance.HasGameplayInput)
         {
             float fRotate = m_Instance.InputInfo.Delta.x * m_fRotateSensitivity;
@@ -58,6 +88,9 @@ public sealed class Player : MonoBehaviour, ITakeDamgeable
 
     private void FixedUpdate()
     {
+        if (m_refPhotonView != null && PhotonNetwork.InRoom && !m_refPhotonView.IsMine)
+            return;
+
         m_refFSM.FixedUpdateState();
     }
 

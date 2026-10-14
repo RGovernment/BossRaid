@@ -18,7 +18,6 @@ public sealed class PlayerJumpState : PlayerState
     private readonly int RunningJumpHash = Animator.StringToHash("RunningJump");
     private readonly int JumpFinishedHash = Animator.StringToHash("JumpFinished");
     private readonly int GroundHash = Animator.StringToHash("Ground");
-    private readonly int JumpVerticalHash = Animator.StringToHash("JumpVertical");
 
     private readonly float m_fJumpSpeed;
     private readonly AnimationClip m_refRunningClip;
@@ -104,7 +103,6 @@ public sealed class PlayerJumpState : PlayerState
         bool bRunningJump = vInput.sqrMagnitude > 0.001f;
         m_refOwner.Animator.ResetTrigger(JumpFinishedHash);
         m_refOwner.Animator.SetBool(GroundHash, false);
-        m_refOwner.Animator.SetFloat(JumpVerticalHash, m_refOwner.Rigidbody.linearVelocity.y);
         m_refOwner.Animator.SetTrigger(bRunningJump ? RunningJumpHash : IdleJumpHash);
     }
 
@@ -121,25 +119,12 @@ public sealed class PlayerJumpState : PlayerState
             }
         }
 
-        //if (m_ePhase == eJumpPhase.Air)
-        //    m_refMovementState.UpdateMovement();
-
         m_refOwner.Animator.SetBool(GroundHash, m_ePhase != eJumpPhase.Start && bGrounded);
-        m_refOwner.Animator.SetFloat(JumpVerticalHash, m_refOwner.Rigidbody.linearVelocity.y);
     }
 
     public override void FixedUpdateState()
     {
-        //if (m_ePhase == eJumpPhase.Air)
-        //{
-        //    m_refMovementState.ApplyMovement();
-        //    return;
-        //}
-
-        //Vector3 vVelocity = m_refOwner.Rigidbody.linearVelocity;
-        //vVelocity.x = 0f;
-        //vVelocity.z = 0f;
-        //m_refOwner.Rigidbody.linearVelocity = vVelocity;
+      
     }
 
     public override void Exit()
@@ -150,7 +135,6 @@ public sealed class PlayerJumpState : PlayerState
         m_refOwner.Animator.ResetTrigger(RunningJumpHash);
         m_refOwner.Animator.SetTrigger(JumpFinishedHash);
         m_refOwner.Animator.SetBool(GroundHash, true);
-        m_refOwner.Animator.SetFloat(JumpVerticalHash, 0f);
     }
 
     private void Jump(AnimationEvent _refEvent)

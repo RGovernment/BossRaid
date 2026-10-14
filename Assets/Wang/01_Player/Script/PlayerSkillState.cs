@@ -77,5 +77,5 @@ public sealed class PlayerSkillState : PlayerState
     {
         m_iCurrentSkill = -1;
     }
-  
+
 }
