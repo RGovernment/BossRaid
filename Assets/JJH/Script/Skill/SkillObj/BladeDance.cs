@@ -2,13 +2,19 @@ using UnityEngine;
 
 public class BladeDance : SkillBase
 {
-    public override void DamageTrigger(Player player)
+    public override void DamageTrigger(ITakeDamgeable target, Player player)
     {
         int damage =
-            Mathf.RoundToInt(player.atkPoint
+            Mathf.RoundToInt(player.ObjectInfo.CurrentHP
             * (SkillDataLoader.Instance.SkillData[Id].Value / 100f));
 
-        player.TakeDamage(damage);
+        tAttackInfo info = new()
+        {
+            Pos = Vector3.zero,
+            Damage = damage
+        };
+
+        target.TakeDamage(info);
         hitEffect.gameObject.SetActive(true);
     }
 }
