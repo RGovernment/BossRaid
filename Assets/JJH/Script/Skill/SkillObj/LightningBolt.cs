@@ -1,10 +1,7 @@
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using System;
-using TMPro;
-using Unity.AppUI.UI;
 using UnityEngine;
-using static Constant_JJH;
+
 using SF = UnityEngine.SerializeField;
 public class LightningBolt : SkillBase, IProjectile
 {
@@ -23,7 +20,7 @@ public class LightningBolt : SkillBase, IProjectile
     public override void DamageTrigger(ITakeDamgeable target, Player player)
     {
         int damage =
-            Mathf.RoundToInt(player.ObjectInfo.CurrentHP
+            Mathf.RoundToInt(player.ObjectInfo.AtkPoint
             * (SkillDataLoader.Instance.SkillData[Id].Value / 100f));
 
         tAttackInfo info = new()

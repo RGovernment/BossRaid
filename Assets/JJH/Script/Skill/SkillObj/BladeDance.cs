@@ -5,7 +5,7 @@ public class BladeDance : SkillBase
     public override void DamageTrigger(ITakeDamgeable target, Player player)
     {
         int damage =
-            Mathf.RoundToInt(player.ObjectInfo.CurrentHP
+            Mathf.RoundToInt(player.ObjectInfo.AtkPoint
             * (SkillDataLoader.Instance.SkillData[Id].Value / 100f));
 
         tAttackInfo info = new()
