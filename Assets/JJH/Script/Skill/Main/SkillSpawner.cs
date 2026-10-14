@@ -30,6 +30,8 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     [SF] private int queuedSkillId;
     private SkillBase currentActiveSkill;
     private Vector3? targetPosition;
+
+    public bool IsSkillActive => currentActiveSkill != null;
     #endregion
 
 
