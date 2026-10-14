@@ -5,19 +5,7 @@ using UnityEngine.Pool;
 
 public abstract class SkillBase : MonoBehaviourPunCallbacks
 {
-    /// <summary>
-    /// 더미용 플레이어 임시 객체
-    /// </summary>
-    public class Player : MonoBehaviour
-    {
-        public int atkPoint = 10;
-        public int hp = 100;
-        public void TakeDamage(int damage)
-        {
-            hp = Mathf.Max(0, hp - damage);
-            Debug.Log(hp);
-        }
-    }
+
     [Header("필요시 설정")]
     public Collider hitbox;
 
@@ -27,13 +15,15 @@ public abstract class SkillBase : MonoBehaviourPunCallbacks
     public HitEffect hitEffect;
     public int Id;
     public int UpgradeType { get; private set; }
+    public Player UsePlayer { get; private set; }
 
     // 활성화/ 비활성화시 상위 이벤트에 구독
-    public void Init(int id, IObjectPool<SkillBase> pool, int UpgradeType = 0)
+    public void Init(int id, IObjectPool<SkillBase> pool,Player UsePlayer, int UpgradeType = 0)
     {
         Id = id;
         this.pool = pool;
         this.UpgradeType = UpgradeType;
+        this.UsePlayer = UsePlayer;
     }
 
     public void SkillColliderOn()
@@ -51,7 +41,7 @@ public abstract class SkillBase : MonoBehaviourPunCallbacks
     /// <summary>
     /// 피해를 주는 효과가 존재할 경우 구현
     /// </summary>
-    public virtual void DamageTrigger(Player player)
+    public virtual void DamageTrigger(ITakeDamgeable target, Player player)
     {
 
     }
@@ -82,6 +72,7 @@ public abstract class SkillBase : MonoBehaviourPunCallbacks
 
     private void OnParticleSystemStopped()
     {
+        if (hitbox.enabled) hitbox.enabled = false;
         pool.Release(this);
     }
 

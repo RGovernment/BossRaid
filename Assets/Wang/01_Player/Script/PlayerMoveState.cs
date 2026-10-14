@@ -55,7 +55,6 @@ public sealed class PlayerMoveState : PlayerState
 
     public override void Exit()
     {
-        // 방향은 다음 상태가 Enter에서 이어받습니다.
         ResetAnimation();
         m_refOwner.Animator.SetBool(GroundHash, false);
     }
@@ -66,7 +65,6 @@ public sealed class PlayerMoveState : PlayerState
         m_vMoveInput = Vector2.ClampMagnitude(m_Instance.MoveAction.ReadValue<Vector2>(), 1f);
     }
 
-    // Jump에서도 같은 이동 계산을 사용하되 상태 전환은 호출한 State가 결정합니다.
     public void UpdateMovement()
     {
         m_vMoveInput = Vector2.ClampMagnitude(m_Instance.InputInfo.MoveDir, 1f);

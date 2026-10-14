@@ -4,8 +4,9 @@
     "Id": 1000,
     "Value": "250",
     "OtherValue": 0,
-    "Cooldown": 3,
+    "Cooldown": 4,
     "UpgradeType": 0,
+    "AnimationType": "Horizontal",
     "Description": "전방에 검을 휘둘러 [Value]%의 피해를 가한다."
   },
   {
@@ -15,6 +16,7 @@
     "OtherValue": 0,
     "Cooldown": 10,
     "UpgradeType": 0,
+    "AnimationType": "Horizontal",
     "Description": "전방으로 검기를 내보내 [Value]%의 피해를 가한다."
   },
   {
@@ -24,6 +26,7 @@
     "OtherValue": 0,
     "Cooldown": 20,
     "UpgradeType": 0,
+    "AnimationType": "Vertical",
     "Description": "전방을 수 없이 베어 [Value]%의 피해를 가한다."
   },
   {
@@ -33,6 +36,17 @@
     "OtherValue": 0,
     "Cooldown": 15,
     "UpgradeType": 0,
+    "AnimationType": "GroundAttack",
+    "Description": "번개를 내리쳐 [Value]%의 피해를 가한다."
+  },
+  {
+    "Name": "라이트닝 볼트",
+    "Id": 1004,
+    "Value": "150",
+    "OtherValue": 0,
+    "Cooldown": 2,
+    "UpgradeType": 0,
+    "AnimationType": "Hand",
     "Description": "번개를 내리쳐 [Value]%의 피해를 가한다."
   }
 ]

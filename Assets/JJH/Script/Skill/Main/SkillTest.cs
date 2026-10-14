@@ -4,22 +4,27 @@ using UnityEngine.InputSystem;
 using SF = UnityEngine.SerializeField;
 public class SkillTest : MonoBehaviour
 {
-    private static readonly int LightningHash = Animator.StringToHash("Lightning");
-    private static readonly int TestHash = Animator.StringToHash("Test");
-    private static readonly int Test2Hash = Animator.StringToHash("Test2");
+    private static readonly int LightningHash = Animator.StringToHash("Ground");
+    private static readonly int LightningBoltHash = Animator.StringToHash("Hand");
+    private static readonly int TestHash = Animator.StringToHash("Horizontal");
+    private static readonly int Test2Hash = Animator.StringToHash("Vertical");
     [SF] private SkillSpawner skillSpawner;
     [SF] private Animator animator;
     [SF] private SkillPointer pointer;
 
     private float skill1Cooldown = 3;
+    
     private float skill2Cooldown = 10;
     private float skill3Cooldown = 20;
     private float skill4Cooldown = 15;
+
+    private float skill5Cooldown = 2;
 
     private float nowCoolSk1 = 0;
     private float nowCoolSk2 = 0;
     private float nowCoolSk3 = 0;
     private float nowCoolSk4 = 0;
+    private float nowCoolSk5 = 0;
 
     public bool isMeleeTest = true;
 
@@ -41,7 +46,6 @@ public class SkillTest : MonoBehaviour
             if (!val) return;
 
             nowCoolSk4 = Time.time + skill4Cooldown;
-            animator.SetTrigger(LightningHash);
         }
     }
 
@@ -49,10 +53,19 @@ public class SkillTest : MonoBehaviour
     {
         if (Keyboard.current == null) return;
         if (animator.IsInTransition(0)) return;
+
         if (!isMeleeTest) { 
             if(Keyboard.current.eKey.wasPressedThisFrame && !isSkillTargeting && nowCoolSk4 < Time.time)
             {
                 PointerCk().Forget();
+            }
+
+            if (Keyboard.current.qKey.wasPressedThisFrame && nowCoolSk5 < Time.time)
+            {
+                bool val = TriggerTestSkill(1004);
+                if (!val) return;
+
+                nowCoolSk5 = Time.time + skill5Cooldown;
             }
         }
 
@@ -89,10 +102,10 @@ public class SkillTest : MonoBehaviour
 
         if (!success) return false;
 
-        if(id != 1002)
-            animator.SetTrigger(TestHash);
-        else 
-            animator.SetTrigger(Test2Hash);
+        string SkillType
+            = SkillDataLoader.Instance.SkillData[id].AnimationType.ToString();
+
+        animator.SetTrigger(SkillType);
 
         Debug.Log($"[테스트] {id}번 스킬 시전!");
 
@@ -105,10 +118,10 @@ public class SkillTest : MonoBehaviour
 
         if (!success) return false;
 
-        if (id != 1002)
-            animator.SetTrigger(TestHash);
-        else
-            animator.SetTrigger(Test2Hash);
+        string SkillType 
+            = SkillDataLoader.Instance.SkillData[id].AnimationType.ToString();
+
+        animator.SetTrigger(SkillType);
 
         Debug.Log($"[테스트] {id}번 스킬 시전!");
 
