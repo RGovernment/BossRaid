@@ -35,6 +35,17 @@ public class SkillProjectileTrigger : MonoBehaviour
             }
 
         }
+        else
+        {
+            int numCollisionEvents = ps.GetCollisionEvents(other, collisionEvents);
+
+            if (numCollisionEvents > 0 && collisionEvents.Count > 0)
+            {
+                Vector3 hitPoint = collisionEvents[0].intersection;
+                skillRoot.hitEffect.transform.position = hitPoint;
+                skillRoot.hitEffect.gameObject.SetActive(true);
+            }
+        }
 
        
     }
