@@ -169,7 +169,17 @@ MonoBehaviour:
   warningHeightOffset: 0.03
   animationState: Base Layer.Shockwave
   transitionTime: 0.1
-  testKey: 110
+--- !u!114 &244535451 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 552876027419560983, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
+  m_PrefabInstance: {fileID: 1690113861761318019}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244535434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60c37b28d0aa9947a13baf699873895, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DragonMeteor
 --- !u!114 &244535453 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6682954385741188430, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
@@ -181,6 +191,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0038c16c34866b4f9e25c9c0dc0f7e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.BehaviorGraphAgent
+--- !u!114 &244535454 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9182472565477085338, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
+  m_PrefabInstance: {fileID: 1690113861761318019}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244535434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8075aaab1c370d941aba6155efe40a25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DragonRush
+--- !u!114 &244535455 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7480299335250442531, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
+  m_PrefabInstance: {fileID: 1690113861761318019}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244535434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaa54d1573daa0f44bea146e8f8a0308, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DragonTailWhip
 --- !u!114 &244535456 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3018738751698722231, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
@@ -301,6 +333,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DragonNetworkSkills
   slam: {fileID: 244535456}
+  tailWhip: {fileID: 244535455}
+  shockwave: {fileID: 244535450}
 --- !u!1 &264847713
 GameObject:
   m_ObjectHideFlags: 0
@@ -1569,6 +1603,34 @@ PrefabInstance:
       propertyPath: bodyCollider
       value: 
       objectReference: {fileID: 1130214192}
+    - target: {fileID: 1304956095490849685, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
+      propertyPath: behaviorAgent
+      value: 
+      objectReference: {fileID: 244535453}
+    - target: {fileID: 1304956095490849685, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
+      propertyPath: skillScripts.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1304956095490849685, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
+      propertyPath: 'skillScripts.Array.data[0]'
+      value: 
+      objectReference: {fileID: 244535456}
+    - target: {fileID: 1304956095490849685, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
+      propertyPath: 'skillScripts.Array.data[1]'
+      value: 
+      objectReference: {fileID: 244535455}
+    - target: {fileID: 1304956095490849685, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
+      propertyPath: 'skillScripts.Array.data[2]'
+      value: 
+      objectReference: {fileID: 244535454}
+    - target: {fileID: 1304956095490849685, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
+      propertyPath: 'skillScripts.Array.data[3]'
+      value: 
+      objectReference: {fileID: 244535451}
+    - target: {fileID: 1304956095490849685, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
+      propertyPath: 'skillScripts.Array.data[4]'
+      value: 
+      objectReference: {fileID: 244535450}
     - target: {fileID: 1789284351171509278, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.013828
@@ -1624,6 +1686,14 @@ PrefabInstance:
     - target: {fileID: 4016406118216517812, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5100207882644581382, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
+      propertyPath: sceneViewId
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5100207882644581382, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
+      propertyPath: observableSearch
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6682954385741188430, guid: 4738cb68ce30cb840a6a74e5e80cea38, type: 3}
       propertyPath: m_Enabled

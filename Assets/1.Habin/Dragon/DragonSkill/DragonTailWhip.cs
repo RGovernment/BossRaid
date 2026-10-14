@@ -28,9 +28,6 @@ public class DragonTailWhip : MonoBehaviour
     [Min(0f)]
     [SerializeField] private float transitionTime = 0.1f;
 
-    [Header("테스트")]
-    [SerializeField] private KeyCode testKey = KeyCode.T;
-
     private HalfCircleTelegraph currentTelegraph;
 
     private bool isAttacking;
@@ -50,12 +47,6 @@ public class DragonTailWhip : MonoBehaviour
     {
         if (animator == null)
             animator = GetComponent<Animator>();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(testKey))
-            TailWhip();
     }
 
     public void TailWhip()

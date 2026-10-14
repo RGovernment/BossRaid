@@ -7,6 +7,8 @@ public class DragonNetworkSkills : MonoBehaviourPun
     [Header("스킬 참조")]
     [SerializeField] private DragonSlam slam;
     [SerializeField] private DragonTailWhip tailWhip;
+    [SerializeField] private DragonShockwave shockwave;
+
 
     private void Awake()
     {
@@ -14,6 +16,8 @@ public class DragonNetworkSkills : MonoBehaviourPun
             slam = GetComponent<DragonSlam>();
         if(tailWhip == null)
             tailWhip = GetComponent<DragonTailWhip>();
+        if (shockwave == null)
+            shockwave = GetComponent<DragonShockwave>();
     }
 
     public bool PlaySlam()
@@ -30,6 +34,7 @@ public class DragonNetworkSkills : MonoBehaviourPun
 
         return true;
     }
+
     public bool PlayTailWhip()
     {
         if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient)
@@ -45,6 +50,24 @@ public class DragonNetworkSkills : MonoBehaviourPun
         return true;
 
     }
+    public bool PlayShockwave()
+    {
+        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient)
+            return false;
+
+        if (shockwave == null || !shockwave.isActiveAndEnabled || shockwave.IsAttacking)
+            return false;
+
+        shockwave.Shockwave();
+
+        if (!shockwave.IsAttacking)
+            return false;
+
+        photonView.RPC(nameof(ReceiveShockwave), RpcTarget.Others, transform.position, transform.rotation, shockwave.AttackCenter);
+
+        return true;
+    }
+
     [PunRPC]
     private void ReceiveSlam(Vector3 bossPosition, Quaternion bossRotation, PhotonMessageInfo info)
     {
@@ -71,4 +94,18 @@ public class DragonNetworkSkills : MonoBehaviourPun
 
         tailWhip.TailWhip();
     }
+    [PunRPC]
+    private void ReceiveShockwave(Vector3 bossPosition, Quaternion bossRotation, Vector3 attackCenter, PhotonMessageInfo info)
+    {
+        if (info.Sender != PhotonNetwork.MasterClient)
+            return;
+
+        if (shockwave == null || !shockwave.isActiveAndEnabled)
+            return;
+
+        transform.SetPositionAndRotation(bossPosition, bossRotation);
+
+        shockwave.Shockwave(attackCenter);
+    }
+
 }

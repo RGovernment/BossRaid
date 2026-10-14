@@ -56,7 +56,8 @@ public partial class ExecuteBossSkillAction : Action
                     if (tailWhip == null || !tailWhip.isActiveAndEnabled)
                         return Status.Failure;
                     DragonNetworkSkills networkSkills = Self.Value.GetComponent<DragonNetworkSkills>();
-
+                    if (networkSkills == null || !networkSkills.PlayTailWhip())
+                        return Status.Failure;
                     break;
                 }
 
@@ -77,11 +78,17 @@ public partial class ExecuteBossSkillAction : Action
                 break;
 
             case BossSkillType.Shockwave:
-                if (shockwave == null || !shockwave.isActiveAndEnabled)
-                    return Status.Failure;
+                {
+                    if (shockwave == null || !shockwave.isActiveAndEnabled)
+                        return Status.Failure;
 
-                shockwave.Shockwave();
-                break;
+                    DragonNetworkSkills networkSkills = Self.Value.GetComponent<DragonNetworkSkills>();
+
+                    if (networkSkills == null || !networkSkills.PlayShockwave())
+                        return Status.Failure;
+
+                    break;
+                }
 
             default:
                 return Status.Failure;

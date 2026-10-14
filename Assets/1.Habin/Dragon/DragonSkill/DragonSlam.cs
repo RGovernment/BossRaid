@@ -30,13 +30,6 @@ public class DragonSlam : MonoBehaviour
         if (animator == null)
             animator = GetComponent<Animator>();
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Slam();
-        }
-    }
 
     public void Slam()
     {
