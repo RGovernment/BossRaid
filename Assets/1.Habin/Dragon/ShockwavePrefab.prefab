@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5561539787039008999}
   - component: {fileID: 3684670819305561293}
   - component: {fileID: 4293226930731430624}
+  - component: {fileID: 6012698919715794380}
   m_Layer: 0
   m_Name: ShockwavePrefab
   m_TagString: Untagged
@@ -159,5 +160,22 @@ MonoBehaviour:
   startRadius: 2
   endRadius: 60
   ringWidth: 1
-  heightOffset: 0.15
+  heightOffset: 0.3
+  attackHeight: 0.8
   expandDuration: 5
+--- !u!114 &6012698919715794380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1985907908179249606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad0ec984ba0a34046b8c5e7c58bd1625, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttackDamage
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  boss: {fileID: 0}

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public sealed class AnimatorEvent
 {
-  
     private readonly Dictionary<(AnimationClip, int), Action<AnimationEvent>> m_hashFrameEvents = new();
 
     public void RegisterFrame(AnimationClip _refClip, AnimationEvent _refEvent, Action<AnimationEvent> _actCallback)

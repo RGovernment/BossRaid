@@ -21,7 +21,7 @@ public partial class SelectBossSkillAction : Action
     {
         if (Self == null || Self.Value == null || Target == null || Target.Value == null || SelectedSkill == null || LastSkill == null)
             return Status.Failure;
-
+        //초기화
         SelectedSkill.Value = BossSkillType.None;
 
         BossRangeSettings ranges = Self.Value.GetComponent<BossRangeSettings>();
@@ -29,12 +29,12 @@ public partial class SelectBossSkillAction : Action
         if (ranges == null)
             return Status.Failure;
 
+        //타겟과의 거리계산
         Vector3 offset = Target.Value.transform.position - Self.Value.transform.position;
         offset.y = 0f;
         float distance = offset.magnitude;
-        Debug.Log($"거리: {distance:F4}, 근거리 기준: {ranges.MeleeRange:F4}");
         BossSkillType[] skills;
-
+        //스킬 유형 선택
         if (distance <= ranges.MeleeRange)
             skills = meleeSkills;
         else if (distance <= ranges.RangedRange)
@@ -43,7 +43,7 @@ public partial class SelectBossSkillAction : Action
             return Status.Failure;
 
         var candidates = new System.Collections.Generic.List<BossSkillType>();
-
+        //직전 쓴 스킬 제외
         foreach (BossSkillType skill in skills)
         {
             if (skill == BossSkillType.None || skill == BossSkillType.Wipe || skill == LastSkill.Value)
@@ -55,7 +55,7 @@ public partial class SelectBossSkillAction : Action
 
         if (candidates.Count == 0)
             return Status.Failure;
-
+        //렌덤으로 스킬 선택 
         int index = UnityEngine.Random.Range(0, candidates.Count);
         SelectedSkill.Value = candidates[index];
 

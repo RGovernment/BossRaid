@@ -15,6 +15,7 @@ public sealed class FSM : MonoBehaviour
         Roll,
         Hit,
         Dead,
+        Skill,
     }
 
     [SerializeField] private List<SOState> m_listState = new List<SOState>();
@@ -32,6 +33,9 @@ public sealed class FSM : MonoBehaviour
     public Animator Animator { get; private set; }
     public Rigidbody Rigidbody { get; private set; }
     public Quaternion ViewRotation => m_refPlayer.ViewRotation;
+    public SkillSpawner SkillSpawner => m_refPlayer.SkillSpawner;
+    public bool HasGameplayInput => isActiveAndEnabled && m_refPlayer.isActiveAndEnabled &&
+        m_refPlayer.ObjectInfo.CurrentHP > 0f && m_Instance != null && m_Instance.HasGameplayInput;
     public bool IsGrounded => m_refGroundCollider != null && Rigidbody.linearVelocity.y <= 0.1f;
 
     public bool Init(Player _refController)
@@ -133,7 +137,11 @@ public sealed class FSM : MonoBehaviour
             Vector3 vFoward = transform.position + (transform.forward * 2.0f);
             TakeDamage(new tAttackInfo(vFoward, 10));
         }
-       
+        else if (Input.GetKeyDown(KeyCode.O))
+        {
+            ChangeState(eStateType.Dead);
+        }
+
     }
 
     public void FixedUpdateState()

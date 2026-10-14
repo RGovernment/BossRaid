@@ -28,9 +28,6 @@ public class DragonTailWhip : MonoBehaviour
     [Min(0f)]
     [SerializeField] private float transitionTime = 0.1f;
 
-    [Header("테스트")]
-    [SerializeField] private KeyCode testKey = KeyCode.T;
-
     private HalfCircleTelegraph currentTelegraph;
 
     private bool isAttacking;
@@ -52,12 +49,6 @@ public class DragonTailWhip : MonoBehaviour
             animator = GetComponent<Animator>();
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(testKey))
-            TailWhip();
-    }
-
     public void TailWhip()
     {
         if (isAttacking)
@@ -77,22 +68,14 @@ public class DragonTailWhip : MonoBehaviour
         CreateTelegraph();
 
         // 공격 모션과 장판 채우기를 동시에 시작합니다.
-        animator.CrossFadeInFixedTime(
-            animationState,
-            transitionTime
-        );
+        animator.CrossFadeInFixedTime(animationState,transitionTime);
 
-        currentTelegraph.Play(
-            preparationTime,
-            OnTelegraphFilled
-        );
+        currentTelegraph.Play(preparationTime,OnTelegraphFilled);
     }
 
     private bool HasRequiredReferences()
     {
-        if (animator != null &&
-            attackPoint != null &&
-            attackPrefab != null)
+        if (animator != null && attackPoint != null && attackPrefab != null)
         {
             return true;
         }
@@ -104,20 +87,12 @@ public class DragonTailWhip : MonoBehaviour
     {
         attackCenter = attackPoint.position;
 
-        float directionY =
-            attackPoint.eulerAngles.y +
-            telegraphDirectionOffset;
+        float directionY = attackPoint.eulerAngles.y + telegraphDirectionOffset;
 
         attackRotation = Quaternion.Euler(0f, directionY, 0f);
 
-        currentTelegraph = Instantiate(
-            attackPrefab,
-            attackCenter + Vector3.up * telegraphHeightOffset,
-            attackRotation
-        );
-
+        currentTelegraph = Instantiate(attackPrefab,attackCenter + Vector3.up * telegraphHeightOffset,attackRotation);
         float diameter = attackRadius * RadiusToDiameter;
-
         currentTelegraph.transform.localScale =
             new Vector3(diameter, 1f, diameter);
     }

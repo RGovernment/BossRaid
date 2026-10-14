@@ -1,38 +1,47 @@
 using DG.Tweening;
 using UnityEngine;
 
-[RequireComponent(typeof(LineRenderer))]
+[RequireComponent(typeof(LineRenderer), typeof(AttackDamage))]
 public class ShockwaveRing : MonoBehaviour
 {
     private const float FullCircleRadians = Mathf.PI * 2f;
+    private const float Half = 0.5f;
 
     [Header("고리")]
     [Min(3)]
     [SerializeField] private int segmentCount = 64;
-    [Header("시작 고리 반경")]
+
     [Min(0f)]
     [SerializeField] private float startRadius = 1f;
-    [Header("최대 반경")]
+
     [Min(0.01f)]
     [SerializeField] private float endRadius = 20f;
-    [Header("고리 두께")]
+
     [Min(0.01f)]
     [SerializeField] private float ringWidth = 0.3f;
+
     [Header("높이")]
     [SerializeField] private float heightOffset = 0.15f;
+
+    [Min(0.01f)]
+    [SerializeField] private float attackHeight = 0.3f;
+
     [Header("확산")]
     [Min(0.01f)]
     [SerializeField] private float expandDuration = 3f;
 
     private LineRenderer lineRenderer;
+    private AttackDamage attackDamage;
     private Vector3[] points;
     private Tween expandTween;
+    private float previousRadius;
 
     public float EndRadius => endRadius;
 
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
+        attackDamage = GetComponent<AttackDamage>();
 
         lineRenderer.useWorldSpace = false;
         lineRenderer.loop = true;
@@ -44,11 +53,27 @@ public class ShockwaveRing : MonoBehaviour
         lineRenderer.positionCount = segmentCount;
     }
 
+    public void SetBoss(DragonBoss boss)
+    {
+        attackDamage.SetBoss(boss);
+    }
+
     private void Start()
     {
-        DrawRing(startRadius);
+        attackDamage.ResetHits();
+        previousRadius = startRadius;
 
-        expandTween = DOVirtual.Float(startRadius, endRadius, expandDuration, DrawRing).SetEase(Ease.Linear).SetLink(gameObject).OnComplete(() => Destroy(gameObject));
+        UpdateRing(startRadius);
+
+        expandTween = DOVirtual.Float(startRadius, endRadius, expandDuration, UpdateRing).SetEase(Ease.Linear).SetUpdate(UpdateType.Fixed).SetLink(gameObject).OnComplete(() => Destroy(gameObject));
+    }
+
+    private void UpdateRing(float radius)
+    {
+        DrawRing(radius);
+        CheckPlayers(previousRadius, radius);
+
+        previousRadius = radius;
     }
 
     private void DrawRing(float radius)
@@ -60,6 +85,34 @@ public class ShockwaveRing : MonoBehaviour
         }
 
         lineRenderer.SetPositions(points);
+    }
+
+    private void CheckPlayers(float fromRadius, float toRadius)
+    {
+        float innerRadius = Mathf.Max(0f, Mathf.Min(fromRadius, toRadius) - ringWidth * Half);
+        float outerRadius = Mathf.Max(fromRadius, toRadius) + ringWidth * Half;
+
+        Vector3 center = transform.position + Vector3.up * heightOffset;
+        Vector3 halfExtents = new Vector3(outerRadius, attackHeight * Half, outerRadius);
+
+        Collider[] colliders = Physics.OverlapBox(center, halfExtents, Quaternion.identity, attackDamage.PlayerLayers, QueryTriggerInteraction.Ignore);
+
+        foreach (Collider playerCollider in colliders)
+        {
+            Bounds bounds = playerCollider.bounds;
+            Vector3 offset = bounds.center - center;
+            offset.y = 0f;
+            float distance = offset.magnitude;
+            float playerRadius = Mathf.Max(bounds.extents.x, bounds.extents.z);
+
+            bool outsideRing = distance - playerRadius > outerRadius;
+            bool insidePassedArea = distance + playerRadius < innerRadius;
+
+            if (outsideRing || insidePassedArea)
+                continue;
+
+            attackDamage.TryDamage(playerCollider);
+        }
     }
 
     private void OnDestroy()

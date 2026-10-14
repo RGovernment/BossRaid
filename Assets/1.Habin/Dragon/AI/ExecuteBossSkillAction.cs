@@ -31,7 +31,6 @@ public partial class ExecuteBossSkillAction : Action
         meteor = Self.Value.GetComponent<DragonMeteor>();
         shockwave = Self.Value.GetComponent<DragonShockwave>();
 
-        // 다른 공격이 실행 중이면 시작하지 않습니다.
         if ((slam != null && slam.IsAttacking) || (tailWhip != null && tailWhip.IsAttacking) || (rush != null && rush.IsAttacking) || 
            (shockwave != null && shockwave.IsAttacking) || (meteor!= null && meteor.IsAttacking))
             return Status.Failure;
@@ -41,18 +40,26 @@ public partial class ExecuteBossSkillAction : Action
         switch (executingSkill)
         {
             case BossSkillType.Slam:
-                if (slam == null || !slam.isActiveAndEnabled)
-                    return Status.Failure;
+                {
+                    if (slam == null || !slam.isActiveAndEnabled)
+                        return Status.Failure;
+                    DragonNetworkSkills networkSkills = Self.Value.GetComponent<DragonNetworkSkills>();
 
-                slam.Slam();
-                break;
+                    if (networkSkills == null || !networkSkills.PlaySlam())
+                        return Status.Failure;
+
+                    break;
+                }
 
             case BossSkillType.TailWhip:
-                if (tailWhip == null || !tailWhip.isActiveAndEnabled)
-                    return Status.Failure;
-
-                tailWhip.TailWhip();
-                break;
+                {
+                    if (tailWhip == null || !tailWhip.isActiveAndEnabled)
+                        return Status.Failure;
+                    DragonNetworkSkills networkSkills = Self.Value.GetComponent<DragonNetworkSkills>();
+                    if (networkSkills == null || !networkSkills.PlayTailWhip())
+                        return Status.Failure;
+                    break;
+                }
 
             case BossSkillType.Rush:
                 if (rush == null || !rush.isActiveAndEnabled)
@@ -71,11 +78,17 @@ public partial class ExecuteBossSkillAction : Action
                 break;
 
             case BossSkillType.Shockwave:
-                if (shockwave == null || !shockwave.isActiveAndEnabled)
-                    return Status.Failure;
+                {
+                    if (shockwave == null || !shockwave.isActiveAndEnabled)
+                        return Status.Failure;
 
-                shockwave.Shockwave();
-                break;
+                    DragonNetworkSkills networkSkills = Self.Value.GetComponent<DragonNetworkSkills>();
+
+                    if (networkSkills == null || !networkSkills.PlayShockwave())
+                        return Status.Failure;
+
+                    break;
+                }
 
             default:
                 return Status.Failure;

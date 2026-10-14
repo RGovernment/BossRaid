@@ -1,5 +1,5 @@
 using System;
-using UnityEngine;
+using static Enums_JJH;
 
 [Serializable]
 public class SkillData
@@ -10,5 +10,7 @@ public class SkillData
     public int OtherValue;
     public int Cooldown;
     public int UpgradeType;
+    public int projectileCount;
+    public SkillAnimationType AnimationType;
     public string Description;
 }

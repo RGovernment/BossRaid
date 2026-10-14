@@ -25,6 +25,7 @@ public sealed class InputManager : MonoBehaviour
     [SerializeField] private InputActionReference m_refRunActionReference;
     [SerializeField] private InputActionReference m_refDeltaActionReference;
     [SerializeField] private InputActionReference m_refSkill0ActionReference;
+    [SerializeField] private InputActionReference m_refSkill1ActionReference;
 
     private InputAction m_refMoveAction;
     private InputAction m_refDeltaAction;
@@ -32,6 +33,7 @@ public sealed class InputManager : MonoBehaviour
     private InputAction m_refRollAction;
     private InputAction m_refRunAction;
     private InputAction m_refSkill0Action;
+    private InputAction m_refSkill1Action;
     private tInputInfo m_tInputInfo;
     private bool m_bFocused = true;
 
@@ -40,6 +42,7 @@ public sealed class InputManager : MonoBehaviour
     public InputAction JumpAction => m_refJumpAction;
     public InputAction RollAction => m_refRollAction;
     public InputAction Skill0Action => m_refSkill0Action;
+    public InputAction Skill1Action => m_refSkill1Action;
 
     public bool HasGameplayInput => m_bFocused && Time.timeScale > 0f;
     public bool IsRunHeld => HasGameplayInput && m_refRunAction.IsPressed();
@@ -66,6 +69,7 @@ public sealed class InputManager : MonoBehaviour
         m_refRollAction = m_refRollActionReference.action;
         m_refRunAction = m_refRunActionReference.action;
         m_refSkill0Action = m_refSkill0ActionReference.action;
+        m_refSkill1Action = m_refSkill1ActionReference.action;
 
     }
 
@@ -121,6 +125,7 @@ public sealed class InputManager : MonoBehaviour
     private void EnableActions()
     {
         m_refSkill0Action.Enable();
+        m_refSkill1Action.Enable();
         m_refMoveAction.Enable();
         m_refDeltaAction.Enable();
         m_refJumpAction.Enable();
@@ -131,6 +136,7 @@ public sealed class InputManager : MonoBehaviour
     private void DisableActions()
     {
         m_refSkill0Action.Disable();
+        m_refSkill1Action.Disable();
         m_refMoveAction.Disable();
         m_refDeltaAction.Disable();
         m_refJumpAction.Disable();
