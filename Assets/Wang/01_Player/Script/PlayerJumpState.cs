@@ -14,11 +14,11 @@ public sealed class PlayerJumpState : PlayerState
         Finish,
     }
 
-    private static readonly int IdleJumpHash = Animator.StringToHash("Jumping");
-    private static readonly int RunningJumpHash = Animator.StringToHash("RunningJump");
-    private static readonly int JumpFinishedHash = Animator.StringToHash("JumpFinished");
-    private static readonly int GroundHash = Animator.StringToHash("Ground");
-    private static readonly int JumpVerticalHash = Animator.StringToHash("JumpVertical");
+    private readonly int IdleJumpHash = Animator.StringToHash("Jumping");
+    private readonly int RunningJumpHash = Animator.StringToHash("RunningJump");
+    private readonly int JumpFinishedHash = Animator.StringToHash("JumpFinished");
+    private readonly int GroundHash = Animator.StringToHash("Ground");
+    private readonly int JumpVerticalHash = Animator.StringToHash("JumpVertical");
 
     private readonly float m_fJumpSpeed;
     private readonly AnimationClip m_refRunningClip;
@@ -75,7 +75,10 @@ public sealed class PlayerJumpState : PlayerState
 
     public override bool CanEnter()
     {
-        if (!m_Instance.HasGameplayInput)
+        if (!m_refOwner.HasGameplayInput || m_refOwner.CurrentState == null)
+            return false;
+
+        if (m_refOwner.CurrentState.Type == eStateType.Skill)
             return false;
 
         if (m_refOwner.CurrentState.Type == eStateType.Roll)
@@ -92,8 +95,10 @@ public sealed class PlayerJumpState : PlayerState
         m_ePhase = eJumpPhase.None;
 
         eStateType eMoveState = m_Instance.IsRunHeld ? eStateType.Run : eStateType.Walk;
+
         m_refMovementState = m_refOwner.FindState<PlayerMoveState>(eMoveState);
         Vector2 vInput = m_Instance.MoveAction.ReadValue<Vector2>();
+
         m_refMovementState.StartMove(vInput.normalized);
 
         bool bRunningJump = vInput.sqrMagnitude > 0.001f;
@@ -116,8 +121,8 @@ public sealed class PlayerJumpState : PlayerState
             }
         }
 
-        if (m_ePhase == eJumpPhase.Air)
-            m_refMovementState.UpdateMovement();
+        //if (m_ePhase == eJumpPhase.Air)
+        //    m_refMovementState.UpdateMovement();
 
         m_refOwner.Animator.SetBool(GroundHash, m_ePhase != eJumpPhase.Start && bGrounded);
         m_refOwner.Animator.SetFloat(JumpVerticalHash, m_refOwner.Rigidbody.linearVelocity.y);
@@ -125,16 +130,16 @@ public sealed class PlayerJumpState : PlayerState
 
     public override void FixedUpdateState()
     {
-        if (m_ePhase == eJumpPhase.Air)
-        {
-            m_refMovementState.ApplyMovement();
-            return;
-        }
+        //if (m_ePhase == eJumpPhase.Air)
+        //{
+        //    m_refMovementState.ApplyMovement();
+        //    return;
+        //}
 
-        Vector3 vVelocity = m_refOwner.Rigidbody.linearVelocity;
-        vVelocity.x = 0f;
-        vVelocity.z = 0f;
-        m_refOwner.Rigidbody.linearVelocity = vVelocity;
+        //Vector3 vVelocity = m_refOwner.Rigidbody.linearVelocity;
+        //vVelocity.x = 0f;
+        //vVelocity.z = 0f;
+        //m_refOwner.Rigidbody.linearVelocity = vVelocity;
     }
 
     public override void Exit()

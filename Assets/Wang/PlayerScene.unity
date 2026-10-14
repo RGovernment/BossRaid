@@ -433,7 +433,7 @@ Transform:
   m_GameObject: {fileID: 376595759}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -886,6 +886,7 @@ MonoBehaviour:
   m_refRunActionReference: {fileID: 4058306500598205392, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
   m_refDeltaActionReference: {fileID: 2510881913319377289, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
   m_refSkill0ActionReference: {fileID: 2452030796613596448, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
+  m_refSkill1ActionReference: {fileID: -3765287951164806332, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
 --- !u!4 &1008757502
 Transform:
   m_ObjectHideFlags: 0
@@ -12432,6 +12433,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 689d51060c1a470199c3582df43b368b, type: 2}
   - {fileID: 11400000, guid: 4b7fd88b53f44c8e988f6640269382da, type: 2}
   - {fileID: 11400000, guid: 5181e616202a5b443880700c9e925eed, type: 2}
+  - {fileID: 11400000, guid: 81e8897d87414520b30be5dbb49631be, type: 2}
+  - {fileID: 11400000, guid: b8edfd0f3d9df494d9f1cd8bc42fc455, type: 2}
   m_eInitialState: 0
   m_iGroundLayers:
     serializedVersion: 2
@@ -12449,7 +12452,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   m_fRotateSensitivity: 3
-  m_refTest: {fileID: 0}
+  m_refSkillSpawner: {fileID: 376595761}
 --- !u!114 &2795648065523925507
 MonoBehaviour:
   m_ObjectHideFlags: 0
