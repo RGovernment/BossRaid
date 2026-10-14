@@ -3,8 +3,10 @@ using Photon.Pun;
 using System;
 using System.Buffers.Text;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.InputSystem.Utilities;
 using UnityEngine.Pool;
 using static UnityEngine.Rendering.DebugUI;
 using HIn = UnityEngine.HideInInspector;
@@ -24,15 +26,33 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     #endregion
 
     #region 필드 변수
+
+    public IReadOnlyList<SkillBase> useableSkillList;
+
     private Dictionary<int, IObjectPool<SkillBase>> effectPool;
 
     [HIn] public bool ProjectileHit;
     [SF] private int queuedSkillId;
+    [SF] private Player player;
     private SkillBase currentActiveSkill;
     private Vector3? targetPosition;
 
     public bool IsSkillActive => currentActiveSkill != null;
+
+    public event Action OnSkillEnd;
     #endregion
+    private void Awake()
+    {
+        if(player != null)
+            player = GetComponentInParent<Player>();
+
+        foreach (var item in prefabs)
+        {
+            
+        }
+
+        useableSkillList = prefabs.ToList();
+    }
 
 
     void Start()
@@ -100,6 +120,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
                 currentActiveSkill = null;
                 queuedSkillId = 0;
                 targetPosition = null;
+                OnSkillEnd?.Invoke();
                 break;
         }
     }
@@ -137,15 +158,18 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
 
         SkillBase dummy = Instantiate(baseCk, transform);
 
-        dummy.Init(id, effectPool[id]);
+        dummy.Init(id, effectPool[id], player);
 
         return dummy;
     }
 
     private void EffectStart(SkillBase obj)
     {
-        if(targetPosition != null)
+        if (obj.TryGetComponent(out IProjectile _)) 
+            obj.transform.position = PlayerWeaponTransform.position;
+        else if (targetPosition != null)
             obj.transform.position = targetPosition.Value;
+        
         obj.gameObject.SetActive(true);
         obj.rootParticle.Play(true);
         obj.transform.SetParent(null, true);
@@ -158,6 +182,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         if(obj.hitEffect != null)
             obj.hitEffect.gameObject.SetActive(false);
         obj.transform.SetParent(transform);
+        obj.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
     }
 
 }

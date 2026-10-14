@@ -23,19 +23,25 @@ public class LightningBolt : SkillBase, IProjectile
             targetPosition = hit.point;
         else
             targetPosition = ray.origin + (ray.direction * 100f);
-
-        Vector3 direction = targetPosition.normalized;
-
+        Debug.Log($"{targetPosition} : {transform.position}" );
+        Vector3 direction = (targetPosition - transform.position).normalized;
+        Debug.Log(direction);
         Move(direction, projectileSpeed);
     }
 
-    public override void DamageTrigger(Player player)
+    public override void DamageTrigger(ITakeDamgeable target, Player player)
     {
         int damage =
-            Mathf.RoundToInt(player.atkPoint
+            Mathf.RoundToInt(player.ObjectInfo.CurrentHP
             * (SkillDataLoader.Instance.SkillData[Id].Value / 100f));
 
-        player.TakeDamage(damage);
+        tAttackInfo info = new()
+        {
+            Pos = Vector3.zero,
+            Damage = damage
+        };
+
+        target.TakeDamage(info);
         hitEffect.gameObject.SetActive(true);
     }
 
