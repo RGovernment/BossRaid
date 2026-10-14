@@ -19,12 +19,14 @@ public class SkillTest : MonoBehaviour
     private float skill4Cooldown = 15;
 
     private float skill5Cooldown = 2;
+    private float skill6Cooldown = 7;
 
     private float nowCoolSk1 = 0;
     private float nowCoolSk2 = 0;
     private float nowCoolSk3 = 0;
     private float nowCoolSk4 = 0;
     private float nowCoolSk5 = 0;
+    private float nowCoolSk6 = 0;
 
     public bool isMeleeTest = true;
 
@@ -66,6 +68,14 @@ public class SkillTest : MonoBehaviour
                 if (!val) return;
 
                 nowCoolSk5 = Time.time + skill5Cooldown;
+            }
+
+            if (Keyboard.current.rKey.wasPressedThisFrame && nowCoolSk6 < Time.time)
+            {
+                bool val = TriggerTestSkill(1005);
+                if (!val) return;
+
+                nowCoolSk6 = Time.time + skill6Cooldown;
             }
         }
 

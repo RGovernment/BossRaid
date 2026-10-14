@@ -1,32 +1,23 @@
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using System;
+using TMPro;
+using Unity.AppUI.UI;
 using UnityEngine;
+using static Constant_JJH;
 using SF = UnityEngine.SerializeField;
 public class LightningBolt : SkillBase, IProjectile
 {
     [Header("직렬화 컴포넌트")]
-    [SF] private Rigidbody rb;
     [SF] private float projectileSpeed = 20;
+    [SF] private int lifeTime;
+    [SF] private Rigidbody rb;
+
 
     public void Awake()
     {
-        rb = GetComponent<Rigidbody>();
-    }
-
-    public override void OnEnable()
-    {
-        Vector3 screenCenter = new(Screen.width / 2f, Screen.height / 2f, 0);
-
-        Ray ray = Camera.main.ScreenPointToRay(screenCenter);
-
-        Vector3 targetPosition;
-
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
-            targetPosition = hit.point;
-        else
-            targetPosition = ray.origin + (ray.direction * 100f);
-        Debug.Log($"{targetPosition} : {transform.position}" );
-        Vector3 direction = (targetPosition - transform.position).normalized;
-        Debug.Log(direction);
-        Move(direction, projectileSpeed);
+        if(rb == null)
+            rb = GetComponent<Rigidbody>();
     }
 
     public override void DamageTrigger(ITakeDamgeable target, Player player)
@@ -45,8 +36,32 @@ public class LightningBolt : SkillBase, IProjectile
         hitEffect.gameObject.SetActive(true);
     }
 
+    public void Stop()
+    {
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+    }
+
     public void Move(Vector3 direction, float speed)
     {
-        rb.linearVelocity = direction * speed;
+        rb.linearVelocity = speed * direction;
+    }
+
+    public void Shoot(Vector3 rayPosition)
+    {
+        Vector3 direction = (rayPosition - transform.position).normalized;
+        Move(direction, projectileSpeed);
+        LifeTimeEnd().Forget();
+    }
+
+    public async UniTask LifeTimeEnd()
+    {
+        TimeSpan timeSpan = TimeSpan.FromSeconds(lifeTime);
+        int ms = (int)timeSpan.TotalMilliseconds;
+
+        await UniTask.Delay(ms);
+        if(gameObject != null && gameObject.activeSelf)
+            pool.Release(this);
+        Stop();
     }
 }
