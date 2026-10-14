@@ -14,7 +14,7 @@ public partial class SelectRandomTargetAction : Action
 
     [SerializeField] private string playerTag = "Player";
 
-    [Header("재탐색")]
+    [Header("재탐색 시간")]
     [Min(0.01f)]
     [SerializeField] private float searchInterval = 0.5f;
 
@@ -35,11 +35,9 @@ public partial class SelectRandomTargetAction : Action
 
         searchTimer = searchInterval;
 
-        // 노드 시작 시에는 바로 한 번 탐색합니다.
         if (TrySelectTarget())
             return Status.Success;
 
-        // 타겟이 없으면 이 노드에서 기다립니다.
         return Status.Running;
     }
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class AttackDamage : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class AttackDamage : MonoBehaviour
     }
     public void TryDamage(Collider other)
     {
+        if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
+            return;
         int collidedLayerMask = 1 << other.gameObject.layer;
         if ((layerMask.value & collidedLayerMask) == 0 || boss == null)
             return;
