@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using ExitGames.Client.Photon;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
@@ -11,7 +12,7 @@ public class SkillAnimationBridge : MonoBehaviour
     {
         if (spawner != null)
         {
-            spawner.ReceiveAnimEvent(eventName);
+            spawner.ReceiveAnimEvent(eventName).Forget();
         }
     }
 }

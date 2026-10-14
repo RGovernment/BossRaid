@@ -6,6 +6,7 @@
     "OtherValue": 0,
     "Cooldown": 4,
     "UpgradeType": 0,
+    "projectileCount": 1,
     "AnimationType": "Horizontal",
     "Description": "전방에 검을 휘둘러 [Value]%의 피해를 가한다."
   },
@@ -16,6 +17,7 @@
     "OtherValue": 0,
     "Cooldown": 10,
     "UpgradeType": 0,
+    "projectileCount": 1,
     "AnimationType": "Horizontal",
     "Description": "전방으로 검기를 내보내 [Value]%의 피해를 가한다."
   },
@@ -26,6 +28,7 @@
     "OtherValue": 0,
     "Cooldown": 20,
     "UpgradeType": 0,
+    "projectileCount": 1,
     "AnimationType": "Vertical",
     "Description": "전방을 수 없이 베어 [Value]%의 피해를 가한다."
   },
@@ -36,6 +39,7 @@
     "OtherValue": 0,
     "Cooldown": 15,
     "UpgradeType": 0,
+    "projectileCount": 1,
     "AnimationType": "GroundAttack",
     "Description": "번개를 내리쳐 [Value]%의 피해를 가한다."
   },
@@ -46,7 +50,19 @@
     "OtherValue": 0,
     "Cooldown": 2,
     "UpgradeType": 0,
+    "projectileCount": 1,
     "AnimationType": "Hand",
-    "Description": "번개를 내리쳐 [Value]%의 피해를 가한다."
+    "Description": "번개를 쏘아보내 [Value]%의 피해를 가한다."
+  },
+  {
+    "Name": "라이트닝 볼트",
+    "Id": 1005,
+    "Value": "130",
+    "OtherValue": 0,
+    "Cooldown": 7,
+    "UpgradeType": 0,
+    "projectileCount": 3,
+    "AnimationType": "Hand",
+    "Description": "3개의 번개 구체를 쏘아보내 각각 [Value]%의 피해를 가한다."
   }
 ]

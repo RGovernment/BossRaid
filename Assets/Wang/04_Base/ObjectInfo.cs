@@ -21,6 +21,7 @@ public class ObjectInfo
 {
     public float CurrentHP = 100.0f;
     public float CurrentSpeed;
+    public float AtkPoint;
 
 }
 
