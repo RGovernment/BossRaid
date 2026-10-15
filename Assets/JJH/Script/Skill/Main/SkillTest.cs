@@ -11,7 +11,6 @@ public class SkillTest : MonoBehaviour
     [SF] private SkillSpawner skillSpawner;
     [SF] private Animator animator;
     [SF] private SkillPointer pointer;
-
     private float skill1Cooldown = 3;
     
     private float skill2Cooldown = 10;
@@ -108,7 +107,7 @@ public class SkillTest : MonoBehaviour
 
     private bool TriggerTestSkill(int id)
     {
-        bool success = skillSpawner.UseSkill(id);
+        bool success = skillSpawner.UseSkill(skillSpawner.GetPlayer, id);
 
         if (!success) return false;
 
@@ -124,7 +123,7 @@ public class SkillTest : MonoBehaviour
 
     private bool TriggerTestSkill(int id, Vector3 pos)
     {
-        bool success = skillSpawner.UseSkillAOE(id, pos);
+        bool success = skillSpawner.UseSkillAOE(skillSpawner.GetPlayer, id, pos);
 
         if (!success) return false;
 

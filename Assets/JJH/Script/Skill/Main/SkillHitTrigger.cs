@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 using static Constant_JJH;
 
@@ -20,11 +21,15 @@ public class SkillHitTrigger : MonoBehaviour
         // 이후 플레이어 객체가 정해질 경우 보스만 피격되도록 변경
         if (other.TryGetComponent(out ITakeDamgeable target) && 
             other.gameObject.layer == bossLayer)
-        {
-            parentSkill.DamageTrigger(target, parentSkill.UsePlayer);
-            parentSkill.HealTrigger(parentSkill.UsePlayer);
-            parentSkill.DebuffTrigger(parentSkill.UsePlayer);
-            parentSkill.BuffTrigger(parentSkill.UsePlayer);
+        {            // 이후 Player에 콜백이 달린다면 그것으로 교체
+            if (parentSkill.UsePlayer.TryGetComponent(out PhotonView view) &&
+                view.IsMine)
+            {
+                parentSkill.DamageTrigger(target, parentSkill.UsePlayer);
+                parentSkill.HealTrigger(parentSkill.UsePlayer);
+                parentSkill.DebuffTrigger(parentSkill.UsePlayer);
+                parentSkill.BuffTrigger(parentSkill.UsePlayer);
+            }
 
             if(parentSkill.hitEffect != null)
             {

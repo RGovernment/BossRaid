@@ -35,7 +35,7 @@
   {
     "Name": "번개",
     "Id": 1003,
-    "Value": "500",
+    "Value": "550",
     "OtherValue": 0,
     "Cooldown": 15,
     "UpgradeType": 0,
@@ -55,9 +55,9 @@
     "Description": "번개를 쏘아보내 [Value]%의 피해를 가한다."
   },
   {
-    "Name": "라이트닝 볼트",
+    "Name": "라이트닝 볼텍스",
     "Id": 1005,
-    "Value": "130",
+    "Value": "150",
     "OtherValue": 0,
     "Cooldown": 7,
     "UpgradeType": 0,

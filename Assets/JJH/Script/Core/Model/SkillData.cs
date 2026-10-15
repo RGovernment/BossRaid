@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using static Enums_JJH;
 
@@ -11,6 +13,7 @@ public class SkillData
     public int Cooldown;
     public int UpgradeType;
     public int projectileCount;
+    [JsonConverter(typeof(StringEnumConverter))]
     public SkillAnimationType AnimationType;
     public string Description;
 }
