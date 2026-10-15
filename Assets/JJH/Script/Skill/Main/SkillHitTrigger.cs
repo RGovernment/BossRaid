@@ -7,10 +7,17 @@ public class SkillHitTrigger : MonoBehaviour
     private SkillBase parentSkill;
     private LayerMask bossLayer;
 
+    private bool onHit;
+
     private void Awake()
     {
         parentSkill = GetComponentInParent<SkillBase>();
         bossLayer = LayerMask.NameToLayer(BOSS_TAG);
+    }
+
+    private void OnDisable()
+    {
+        onHit = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -24,12 +31,13 @@ public class SkillHitTrigger : MonoBehaviour
         if (other.transform.root.TryGetComponent(out ITakeDamgeable target) && 
             other.gameObject.layer == bossLayer)
         {            // 이후 Player에 콜백이 달린다면 그것으로 교체
-            if (parentSkill.UsePlayer.photonView.IsMine)
+            if (parentSkill.UsePlayer.photonView.IsMine && !onHit)
             {
                 parentSkill.DamageTrigger(target, parentSkill.UsePlayer);
                 parentSkill.HealTrigger(parentSkill.UsePlayer);
                 parentSkill.DebuffTrigger(parentSkill.UsePlayer);
                 parentSkill.BuffTrigger(parentSkill.UsePlayer);
+                onHit = true;
             }
 
             if(parentSkill.hitEffect != null)

@@ -10,7 +10,7 @@ public class SkillProjectileTrigger : MonoBehaviour
     [SF] private SkillBase skillRoot;
     [SF] private ParticleSystem ps;
     private readonly List<ParticleCollisionEvent> collisionEvents = new();
-
+    private bool onHit = false;
     void Start()
     {
         ps = GetComponent<ParticleSystem>();
