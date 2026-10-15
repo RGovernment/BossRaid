@@ -48,6 +48,11 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
         attack = monsterData.Attack;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.H))
+            TakeDamage(new tAttackInfo(transform.position, 100f));
+    }
     public void TakeDamage(tAttackInfo attackInfo)
     {
         if (monsterData == null || IsDead)
@@ -141,5 +146,6 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
             bodyCollider.enabled = false;
 
         Debug.Log("보스 사망", this);
+        Debug.Log($"Die 호출 — 방장: {PhotonNetwork.IsMasterClient}, HP: {currentHp}", this);
     }
 }

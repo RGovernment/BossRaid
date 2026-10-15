@@ -95,7 +95,6 @@ public class DragonRush : MonoBehaviourPun
 
             if (targetView == null)
             {
-                Debug.LogError("러쉬 타겟에 PhotonView가 없습니다.", this);
                 return;
             }
 
@@ -115,7 +114,6 @@ public class DragonRush : MonoBehaviourPun
         if (animator != null && bossRoot != null && attackPrefab != null && rushHitBox != null)
             return true;
 
-        Debug.LogError("Animator, Boss Root, Attack Prefab, Rush Hit Box를 연결하세요.", this);
         return false;
     }
 
