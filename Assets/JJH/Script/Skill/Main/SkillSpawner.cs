@@ -65,13 +65,34 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
             player = GetComponentInParent<Player>();
         useableSkillList = prefabs.ToList();
         skillCooldownList = new();
+    }
 
-        foreach (var skill in useableSkillList)
-            // 스킬 쿨타임은 0초로 초기화해 등록
-            skillCooldownList[player]= new()
-            {
-                [skill.Id] = 0
-            };
+    private void Start()
+    {
+        effectPool = new();
+
+        foreach (var prefab in prefabs)
+        {
+            int effectId = prefab.Id;
+
+            int currentId = effectId;
+            // 오브젝트 풀링 (각 스킬 별로 별도 생성)
+            IObjectPool<SkillBase> poolInstance = new ObjectPool<SkillBase>(
+                createFunc: () => CreateSkillEffect(currentId),
+                actionOnGet: EffectStart,
+                actionOnRelease: EffectEnd,
+                actionOnDestroy: (obj) => Destroy(obj.gameObject),
+                defaultCapacity: 5,
+                maxSize: 10
+            );
+
+            effectPool[effectId] = poolInstance;
+        }
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            skillCooldownList[player] = useableSkillList.ToDictionary(x => x.Id, x => 0);
+        }
     }
 
     private void Update()
@@ -97,13 +118,12 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
             Player[] allPlayerScripts = FindObjectsByType<Player>(FindObjectsSortMode.None);
             foreach (var item in allPlayerScripts)
             {
-                if (item.TryGetComponent(out PhotonView view) && view.IsMine) continue;
+                if (item.photonView.IsMine) continue;
 
                 if (skillCooldownList.Count > 0 && 
                     skillCooldownList.ContainsKey(item)) 
                     continue;
                 IReadOnlyList<SkillBase> skills = useableSkillList;
-
 
                 skillCooldownList[item] = useableSkillList.ToDictionary(x => x.Id, x => 0);
             }
@@ -151,28 +171,6 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         }
     }
 
-    void Start()
-    {
-        effectPool = new();
-
-        foreach (var prefab in prefabs)
-        {
-            int effectId = prefab.Id;
-
-            int currentId = effectId;
-            // 오브젝트 풀링 (각 스킬 별로 별도 생성)
-            IObjectPool<SkillBase> poolInstance = new ObjectPool<SkillBase>(
-                createFunc: () => CreateSkillEffect(currentId),
-                actionOnGet: EffectStart,
-                actionOnRelease: EffectEnd,
-                actionOnDestroy: (obj) => Destroy(obj.gameObject),
-                defaultCapacity: 5,
-                maxSize: 10
-            );
-
-            effectPool[effectId] = poolInstance;
-        }
-    }
     #region 이전 버전용
     /// <summary>
     /// 스킬 사용 시 호출할 함수
@@ -364,8 +362,8 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         if (projectile != null)
         {
             Vector3 finalRayPosition;
-/*            if (photonView.IsMine)
-            {*/
+            if (player.photonView.IsMine)
+            {
                 if (Camera.main == null)
                 {
                     Debug.LogWarning("메인 카메라를 찾을 수 없습니다.");
@@ -380,8 +378,8 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
 
                 finalRayPosition = rayPosition;
 
-                //photonView.RPC("ShootProjectileOther", RpcTarget.Others, rayPosition);
-/*            }
+                player.photonView.RPC("ShootProjectileOther", RpcTarget.Others, rayPosition);
+            }
             else
             {
                 if (networkRayPosition == Vector3.zero)
@@ -389,16 +387,15 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
                 else
                     finalRayPosition = networkRayPosition;
                 
-            }*/
+            }
 
             projectile.Shoot(finalRayPosition);
 
-            //if (!photonView.IsMine) networkRayPosition = Vector3.zero;
+            if (!photonView.IsMine) networkRayPosition = Vector3.zero;
         }
 
     }
 
-    [PunRPC]
     public void ShootProjectileOther(Vector3 rayPosition)
     {
         networkRayPosition = rayPosition;
