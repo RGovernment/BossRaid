@@ -38216,6 +38216,9 @@ MonoBehaviour:
   ProjectileHit: 0
   queuedSkillId: 0
   player: {fileID: 3985597358038621170}
+  rayMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1001 &1292383379
 PrefabInstance:
   m_ObjectHideFlags: 0

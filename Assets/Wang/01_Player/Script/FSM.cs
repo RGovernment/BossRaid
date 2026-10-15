@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -243,5 +244,19 @@ public sealed class FSM : MonoBehaviour
             m_refGroundCollider = _refCollision.collider;
         else if (_refCollision.collider == m_refGroundCollider)
             ClearGroundContact();
+    }
+
+
+
+    [PunRPC]
+    private void UseSkillOther(int id)
+    {
+        m_refPlayer.SkillSpawner.UseSkillOther(id);
+    }
+
+    [PunRPC]
+    private void UseSkillAOEOther(int id, Vector3 pos)
+    {
+        m_refPlayer.SkillSpawner.UseSkillAOEOther(id, pos);
     }
 }
