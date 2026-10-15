@@ -1,3 +1,4 @@
+using Firebase;
 using Firebase.Auth;
 using System;
 using System.Threading.Tasks;
@@ -24,8 +25,8 @@ public class FirebaseAuthService : MonoBehaviour
         if(Auth.CurrentUser != null)
         {
             OnAuthChanged?.Invoke(Auth.CurrentUser);
+            Auth.SignOut();
         }
-
     }
 
 
@@ -33,7 +34,8 @@ public class FirebaseAuthService : MonoBehaviour
     {
         if(Auth == null)
         {
-            Debug.Log("아직 준비 안됨");
+            Debug.Log("파이어베이스 아직 준비 안됨");
+            
             return false;
         }
         return true;
@@ -41,14 +43,15 @@ public class FirebaseAuthService : MonoBehaviour
 
     public async void OnClickSignUp()
     {
-        if (!TryGetAuth())
-            return;
+        if (!TryGetAuth()) return;
 
         try
         {
             var result = await Auth.CreateUserWithEmailAndPasswordAsync(emailInput.text, passwordInput.text);
+            
             OnAuthChanged?.Invoke(result.User);
         }
+        
         catch (Exception ex)
         {
             Debug.LogError(ex.GetBaseException().Message);
@@ -57,43 +60,58 @@ public class FirebaseAuthService : MonoBehaviour
 
     public async void OnClickSignIn()
     {
-        if (!TryGetAuth())
-            return;
+        if (!TryGetAuth()) return;
 
         try
         {
             var result = await Auth.SignInWithEmailAndPasswordAsync(emailInput.text, passwordInput.text);
+            
             OnAuthChanged?.Invoke(result.User);
         }
+        
         catch (Exception ex)
         {
             Debug.LogError(ex.GetBaseException().Message);
-        }
-    }
 
-    public async void OnClickAnonymousSignIn()
-    {
-        if (!TryGetAuth())
-            return;
+            if (messageText != null)
+            {
+                var firebaseEx = ex.GetBaseException() as Firebase.FirebaseException;
 
-        try
-        {
-            var result = await Auth.SignInAnonymouslyAsync();
-            OnAuthChanged?.Invoke(result.User);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError(ex.GetBaseException().Message);
+                if (firebaseEx != null)
+                {
+                    AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
+
+                    switch (errorCode)
+                    {
+                        case AuthError.InvalidEmail:
+                        case AuthError.UserNotFound:
+                        case AuthError.WrongPassword:
+                            messageText.text = "Invalid email or password.";
+                            break;
+
+                        case AuthError.TooManyRequests:
+                            messageText.text = "Too many requests. Please try again later.";
+                            break;
+
+                        default:
+                            messageText.text = "Login failed. Please try again.";
+                            break;
+                    }
+                }
+                else
+                {
+                    messageText.text = "Network error. Check your connection.";
+                }
+            }
         }
     }
 
     public void OnClickSignOut()
     {
-        if (!TryGetAuth())
-            return;
+        if (!TryGetAuth()) return;
 
         Auth.SignOut();
+        
         OnAuthChanged?.Invoke(null);
     }
-
 }
