@@ -259,4 +259,10 @@ public sealed class FSM : MonoBehaviour
     {
         m_refPlayer.SkillSpawner.UseSkillAOEOther(id, pos);
     }
+
+    [PunRPC]
+    private void ShootProjectileOther(Vector3 rayPosition)
+    {
+        m_refPlayer.SkillSpawner.ShootProjectileOther(rayPosition);
+    }
 }

@@ -30,6 +30,7 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
         //임시 코드 -> SO로 수정
         m_refObjectInfo.CurrentHP = 100.0f;
         m_refObjectInfo.CurrentSpeed = 2.0f;
+        m_refObjectInfo.AtkPoint = 4;
 
         if (m_refSkillSpawner == null)
             m_refSkillSpawner = GetComponentInChildren<SkillSpawner>();
