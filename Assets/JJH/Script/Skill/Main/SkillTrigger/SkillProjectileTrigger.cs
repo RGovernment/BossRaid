@@ -23,8 +23,7 @@ public class SkillProjectileTrigger : MonoBehaviour
         if (other.TryGetComponent(out ITakeDamgeable target))
         {
             // 이후 Player에 콜백이 달린다면 그것으로 교체
-            if(skillRoot.UsePlayer.TryGetComponent(out PhotonView view) &&
-                view.IsMine)
+            if(skillRoot.UsePlayer.photonView.IsMine)
             {
                 skillRoot.DamageTrigger(target, skillRoot.UsePlayer);
                 skillRoot.HealTrigger(skillRoot.UsePlayer);
