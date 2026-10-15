@@ -71,7 +71,7 @@ public abstract class SkillBase : MonoBehaviourPunCallbacks
 
     private void OnParticleSystemStopped()
     {
-        if (hitbox.enabled) hitbox.enabled = false;
+        if (hitbox != null && hitbox.enabled) hitbox.enabled = false;
         pool.Release(this);
     }
 

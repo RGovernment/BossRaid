@@ -61,9 +61,17 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     #endregion
     private void Awake()
     {
-        if(player != null)
+        if(player == null)
             player = GetComponentInParent<Player>();
         useableSkillList = prefabs.ToList();
+        skillCooldownList = new();
+
+        foreach (var skill in useableSkillList)
+            // 스킬 쿨타임은 0초로 초기화해 등록
+            skillCooldownList[player]= new()
+            {
+                [skill.Id] = 0
+            };
     }
 
     private void Update()
@@ -86,9 +94,18 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            foreach (var item in PhotonNetwork.PlayerList)
+            Player[] allPlayerScripts = FindObjectsByType<Player>(FindObjectsSortMode.None);
+            foreach (var item in allPlayerScripts)
             {
-               
+                if (item.TryGetComponent(out PhotonView view) && view.IsMine) continue;
+
+                if (skillCooldownList.Count > 0 && 
+                    skillCooldownList.ContainsKey(item)) 
+                    continue;
+                IReadOnlyList<SkillBase> skills = useableSkillList;
+
+
+                skillCooldownList[item] = useableSkillList.ToDictionary(x => x.Id, x => 0);
             }
         }
     }
@@ -99,6 +116,31 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         // 이벤트 해제
         SceneManager.sceneLoaded -= OnSceneLoaded;
         OnJoined -= NewPlayerSkillCooldownObserve;
+    }
+
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        Player targetKey = null;
+
+        // 일치 여부 확인
+        foreach (var item in skillCooldownList.Keys)
+        {
+            if (item != null && item.TryGetComponent(out PhotonView view))
+            {
+                if (view.Owner == otherPlayer)
+                {
+                    targetKey = item;
+                    break;
+                }
+            }
+        }
+
+        // 일치하는 캐릭터 제거 (마스터만)
+        if (targetKey != null)
+            skillCooldownList.Remove(targetKey);
+        
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
