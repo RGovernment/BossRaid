@@ -10,16 +10,16 @@ using System.Runtime.InteropServices;
 using TMPro;
 using Unity.AppUI.UI;
 using UnityEngine;
-using UnityEngine.InputSystem.Utilities;
 using UnityEngine.Pool;
-using static UnityEditor.PlayerSettings;
-using static UnityEngine.Rendering.DebugUI;
+using UnityEngine.SceneManagement;
+using static Constant_JJH;
+using static Enums_JJH;
+
 using HIn = UnityEngine.HideInInspector;
 using SF = UnityEngine.SerializeField;
 
 public class SkillSpawner : MonoBehaviourPunCallbacks
 {
-
     #region 직렬화 데이터
     [Header("플레이어 관련")]
     [SF] private Transform PlayerTransform;
@@ -30,9 +30,12 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     [HIn] public bool ProjectileHit;
     [SF] private int queuedSkillId;
     [SF] private Player player;
+    [SF] private LayerMask rayMask;
     #endregion
 
     #region 필드 변수
+
+    public Dictionary<Player, Dictionary<int, int>> skillCooldownList;
 
     public IReadOnlyList<SkillBase> useableSkillList;
 
@@ -42,34 +45,31 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     private Vector3? targetPosition;
     private Vector3 networkRayPosition;
 
-    private Dictionary<Player, SkillBase[]> playerCooldownGroup;
-
     public bool IsSkillActive => currentActiveSkill != null;
 
-    public event Action OnSkillEnd; 
-    private LayerMask rayMask;
-    private int layerMask;
+    /// <summary>
+    /// 스킬 종료시 호출 되는 이벤트 콜백
+    /// </summary>
+    public event Action OnSkillEnd;
+    private event Action OnJoined;
+    
+
+    private float skillCooldown;
+    // 임시
+    public Player GetPlayer => player;
 
     #endregion
     private void Awake()
     {
-        if(player != null)
+        if(player == null)
             player = GetComponentInParent<Player>();
         useableSkillList = prefabs.ToList();
+        skillCooldownList = new();
     }
 
-
-    void Start()
+    private void Start()
     {
         effectPool = new();
-        if (PhotonNetwork.IsMasterClient)
-        {
-            foreach (var item in PhotonNetwork.PlayerList)
-            {
-
-            }
-        }
-        
 
         foreach (var prefab in prefabs)
         {
@@ -88,9 +88,131 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
 
             effectPool[effectId] = poolInstance;
         }
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            skillCooldownList[player] = useableSkillList.ToDictionary(x => x.Id, x => 0);
+        }
     }
 
+    private void Update()
+    {
+        if (PhotonNetwork.IsMasterClient && skillCooldown > 0f)
+        {
+            skillCooldown -= Time.deltaTime;
+        }
+    }
+
+    public override void OnEnable()
+    {
+        base.OnEnable();
+        // 유니티 씬 로드 이벤트 연결
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        OnJoined += NewPlayerSkillCooldownObserve;
+    }
+
+    public void NewPlayerSkillCooldownObserve()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Player[] allPlayerScripts = FindObjectsByType<Player>(FindObjectsSortMode.None);
+            foreach (var item in allPlayerScripts)
+            {
+                if (item.photonView.IsMine) continue;
+
+                if (skillCooldownList.Count > 0 && 
+                    skillCooldownList.ContainsKey(item)) 
+                    continue;
+                IReadOnlyList<SkillBase> skills = useableSkillList;
+
+                skillCooldownList[item] = useableSkillList.ToDictionary(x => x.Id, x => 0);
+            }
+        }
+    }
+
+    public override void OnDisable()
+    {
+        base.OnDisable();
+        // 이벤트 해제
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        OnJoined -= NewPlayerSkillCooldownObserve;
+    }
+
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        Player targetKey = null;
+
+        // 일치 여부 확인
+        foreach (var item in skillCooldownList.Keys)
+        {
+            if (item != null && item.TryGetComponent(out PhotonView view))
+            {
+                if (view.Owner == otherPlayer)
+                {
+                    targetKey = item;
+                    break;
+                }
+            }
+        }
+
+        // 일치하는 캐릭터 제거 (마스터만)
+        if (targetKey != null)
+            skillCooldownList.Remove(targetKey);
+        
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == SceneType.BattleScene.ToString())
+        {
+            OnJoined?.Invoke();
+        }
+    }
+
+    #region 이전 버전용
+    /// <summary>
+    /// 스킬 사용 시 호출할 함수
+    /// </summary>
+    /// /// <param name="player">요청자</param>
+    /// <param name="id">스킬 id</param>
+    /// <returns></returns>
     public bool UseSkill(int id)
+    {
+        if (currentActiveSkill != null) return false;
+
+        queuedSkillId = id;
+        photonView.RPC("UseSkillOther", RpcTarget.Others, id);
+        return true;
+    }
+
+    /// <summary>
+    /// 스킬 사용시 호출할 함수(type : 대상 지정형 범위 스킬)
+    /// </summary>
+    /// /// <param name="player">요청자</param>
+    /// <param name="id">스킬 id</param>
+    /// <param name="pos">스킬이 사용될 위치</param>
+    /// <returns></returns>
+    public bool UseSkillAOE(int id, Vector3 pos)
+    {
+        if (currentActiveSkill != null) return false;
+
+        queuedSkillId = id;
+        targetPosition = pos;
+        photonView.RPC("UseSkillAOEOther", RpcTarget.Others, id, pos);
+        return true;
+    }
+    #endregion
+
+
+    /// <summary>
+    /// 스킬 사용 시 호출할 함수
+    /// </summary>
+    /// /// <param name="player">요청자</param>
+    /// <param name="id">스킬 id</param>
+    /// <returns></returns>
+    public bool UseSkill(Player player, int id)
     {
         if (currentActiveSkill != null) return false;
 
@@ -99,22 +221,16 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         return true;
     }
 
-    [PunRPC]
-    public void UseSkillOther(int id)
-    {
-        queuedSkillId = id;
-        //player.함수(id);
-    }
+   
 
-    [PunRPC]
-    public void UseSkillAOEOther(int id, Vector3 pos)
-    {
-        queuedSkillId = id;
-        targetPosition = pos;
-        //player.함수(id);
-    }
-
-    public bool UseSkillAOE(int id, Vector3 pos)
+    /// <summary>
+    /// 스킬 사용시 호출할 함수(type : 대상 지정형 범위 스킬)
+    /// </summary>
+    /// /// <param name="player">요청자</param>
+    /// <param name="id">스킬 id</param>
+    /// <param name="pos">스킬이 사용될 위치</param>
+    /// <returns></returns>
+    public bool UseSkillAOE(Player player, int id, Vector3 pos)
     {
         if (currentActiveSkill != null) return false;
 
@@ -124,6 +240,34 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         return true;
     }
 
+    /// <summary>
+    /// 스킬 사용 시 사용한 스킬의 Id를 네트워크에 전송하는 함수
+    /// </summary>
+    /// <param name="id"></param>
+    public void UseSkillOther(int id)
+    {
+        queuedSkillId = id;
+        //player.함수(id);
+    }
+
+    /// <summary>
+    /// 스킬 사용 시 사용한 스킬의 Id와 위치를 네트워크에 전송하는 함수
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="pos"></param>
+    public void UseSkillAOEOther(int id, Vector3 pos)
+    {
+        queuedSkillId = id;
+        targetPosition = pos;
+        //player.함수(id);
+    }
+
+
+    /// <summary>
+    /// 애니메이션 클립 이벤트를 호출받는 함수
+    /// </summary>
+    /// <param name="eventName"></param>
+    /// <returns></returns>
     public async UniTask ReceiveAnimEvent(string eventName)
     {
         switch (eventName)
@@ -132,12 +276,14 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
                 if (queuedSkillId != 0 && 
                     effectPool.TryGetValue(queuedSkillId, out var pool))
                 {
+                    
                     int projectiles = SkillDataLoader.Instance.SkillData[queuedSkillId].projectileCount;
+                    // 투사체가 여러개일 경우 0.1초의 간격으로 발사
                     if (projectiles > 1)
                     {
                         for(int i = 0; i < projectiles; i++)
                         {
-                            await UniTask.Delay(100);
+                            await UniTask.Delay(PROJECTILE_SKILL_GAP_TIMER);
                             currentActiveSkill = pool.Get();
                         }
                     }
@@ -216,8 +362,8 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         if (projectile != null)
         {
             Vector3 finalRayPosition;
-/*            if (photonView.IsMine)
-            {*/
+            if (player.photonView.IsMine)
+            {
                 if (Camera.main == null)
                 {
                     Debug.LogWarning("메인 카메라를 찾을 수 없습니다.");
@@ -232,8 +378,8 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
 
                 finalRayPosition = rayPosition;
 
-                //photonView.RPC("ShootProjectileOther", RpcTarget.Others, rayPosition);
-/*            }
+                player.photonView.RPC("ShootProjectileOther", RpcTarget.Others, rayPosition);
+            }
             else
             {
                 if (networkRayPosition == Vector3.zero)
@@ -241,16 +387,15 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
                 else
                     finalRayPosition = networkRayPosition;
                 
-            }*/
+            }
 
             projectile.Shoot(finalRayPosition);
 
-            //if (!photonView.IsMine) networkRayPosition = Vector3.zero;
+            if (!photonView.IsMine) networkRayPosition = Vector3.zero;
         }
 
     }
 
-    [PunRPC]
     public void ShootProjectileOther(Vector3 rayPosition)
     {
         networkRayPosition = rayPosition;

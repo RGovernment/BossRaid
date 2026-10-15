@@ -31,7 +31,7 @@ public class TestConnector : MonoBehaviourPunCallbacks
     {
         Debug.Log($"[AutoConnect] 룸 입장 완료! 현재 방 인원: {PhotonNetwork.CurrentRoom.PlayerCount}명");
 
-        PhotonNetwork.Instantiate("Magic",Vector3.zero, Quaternion.identity);
+        PhotonNetwork.Instantiate("Player",Vector3.zero, Quaternion.identity);
     }
 
     // 방 생성/입장에 실패했을 때의 예외 처리

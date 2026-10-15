@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 using Photon.Pun;
 
 [RequireComponent(typeof(FSM), typeof(Animator), typeof(Rigidbody))]
-public sealed class Player : MonoBehaviour, ITakeDamgeable
+public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCallback
 {
     //스킬같은 우선권이 밀릴 때도 마우스 회전을 받기 위해서 Player쪽에서 관리
     [SerializeField, Min(0f)] private float m_fRotateSensitivity = 3f;
@@ -23,12 +23,14 @@ public sealed class Player : MonoBehaviour, ITakeDamgeable
     [SerializeField] private SkillSpawner m_refSkillSpawner;
     public SkillSpawner SkillSpawner => m_refSkillSpawner;
 
+    public bool IsMine => m_refPhotonView.IsMine;
     private void Awake()
     {
         m_refPhotonView = GetComponent<PhotonView>();
         //임시 코드 -> SO로 수정
         m_refObjectInfo.CurrentHP = 100.0f;
         m_refObjectInfo.CurrentSpeed = 2.0f;
+        m_refObjectInfo.AtkPoint = 4;
 
         if (m_refSkillSpawner == null)
             m_refSkillSpawner = GetComponentInChildren<SkillSpawner>();

@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -38,6 +39,7 @@ public sealed class FSM : MonoBehaviour
         m_refPlayer.ObjectInfo.CurrentHP > 0f && m_Instance != null && m_Instance.HasGameplayInput;
     public bool IsGrounded => m_refGroundCollider != null && Rigidbody.linearVelocity.y <= 0.1f;
 
+    public bool IsMine => m_refPlayer.IsMine;
     public bool Init(Player _refController)
     {
         m_refPlayer = _refController;
@@ -242,5 +244,25 @@ public sealed class FSM : MonoBehaviour
             m_refGroundCollider = _refCollision.collider;
         else if (_refCollision.collider == m_refGroundCollider)
             ClearGroundContact();
+    }
+
+
+
+    [PunRPC]
+    private void UseSkillOther(int id)
+    {
+        m_refPlayer.SkillSpawner.UseSkillOther(id);
+    }
+
+    [PunRPC]
+    private void UseSkillAOEOther(int id, Vector3 pos)
+    {
+        m_refPlayer.SkillSpawner.UseSkillAOEOther(id, pos);
+    }
+
+    [PunRPC]
+    private void ShootProjectileOther(Vector3 rayPosition)
+    {
+        m_refPlayer.SkillSpawner.ShootProjectileOther(rayPosition);
     }
 }

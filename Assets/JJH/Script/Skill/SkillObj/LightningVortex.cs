@@ -6,7 +6,7 @@ using UnityEngine;
 
 using SF = UnityEngine.SerializeField;
 
-public class LightningSphere : SkillBase, IProjectile
+public class LightningVortex : SkillBase, IProjectile
 {
     [Header("직렬화 컴포넌트")]
     [SF] private float projectileSpeed = 15;
