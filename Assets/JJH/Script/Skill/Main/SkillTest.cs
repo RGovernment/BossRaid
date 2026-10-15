@@ -107,7 +107,7 @@ public class SkillTest : MonoBehaviour
 
     private bool TriggerTestSkill(int id)
     {
-        bool success = skillSpawner.UseSkill(skillSpawner.GetPlayer, id);
+        bool success = skillSpawner.UseSkill( id);
 
         if (!success) return false;
 
@@ -123,7 +123,7 @@ public class SkillTest : MonoBehaviour
 
     private bool TriggerTestSkill(int id, Vector3 pos)
     {
-        bool success = skillSpawner.UseSkillAOE(skillSpawner.GetPlayer, id, pos);
+        bool success = skillSpawner.UseSkillAOE(id, pos);
 
         if (!success) return false;
 

@@ -35,7 +35,8 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
 
     #region 필드 변수
 
-    public Dictionary<Player, Dictionary<int, int>> skillCooldownList;
+    public Dictionary<int, Dictionary<int, int>> skillCooldownList;
+    public List<Player> allSkillUseablePlayers;
 
     public IReadOnlyList<SkillBase> useableSkillList;
 
@@ -91,7 +92,8 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            skillCooldownList[player] = useableSkillList.ToDictionary(x => x.Id, x => 0);
+            skillCooldownList[photonView.OwnerActorNr] 
+                = useableSkillList.ToDictionary(x => x.Id, x => 0);
         }
     }
 
@@ -115,17 +117,19 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            Player[] allPlayerScripts = FindObjectsByType<Player>(FindObjectsSortMode.None);
-            foreach (var item in allPlayerScripts)
+            allSkillUseablePlayers = FindObjectsByType<Player>(FindObjectsSortMode.None).ToList();
+
+            foreach (var item in allSkillUseablePlayers)
             {
                 if (item.photonView.IsMine) continue;
 
                 if (skillCooldownList.Count > 0 && 
-                    skillCooldownList.ContainsKey(item)) 
+                    skillCooldownList.ContainsKey(item.photonView.OwnerActorNr)) 
                     continue;
                 IReadOnlyList<SkillBase> skills = useableSkillList;
 
-                skillCooldownList[item] = useableSkillList.ToDictionary(x => x.Id, x => 0);
+                skillCooldownList[item.photonView.OwnerActorNr] 
+                    = useableSkillList.ToDictionary(x => x.Id, x => 0);
             }
         }
     }
@@ -142,25 +146,34 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     {
         if (!PhotonNetwork.IsMasterClient) return;
 
-        Player targetKey = null;
+        /// 플레이어 리스트 내 제거
+        Player temp = null;
+        foreach (var item in allSkillUseablePlayers)
+        {
+            if (item.photonView.OwnerActorNr == otherPlayer.ActorNumber)
+                temp = item; break;
+        }
+
+        if (temp != null) 
+            allSkillUseablePlayers.Remove(temp);
+        
+
+        int targetKey = -1;
 
         // 일치 여부 확인
         foreach (var item in skillCooldownList.Keys)
         {
-            if (item != null && item.TryGetComponent(out PhotonView view))
+            if (item  == otherPlayer.ActorNumber)
             {
-                if (view.Owner == otherPlayer)
-                {
-                    targetKey = item;
-                    break;
-                }
+                targetKey = item;
+                break;
             }
+            
         }
 
-        // 일치하는 캐릭터 제거 (마스터만)
-        if (targetKey != null)
+        // 일치하는 캐릭터 스킬 리스트 제거 (마스터만)
+        if (targetKey > -1)
             skillCooldownList.Remove(targetKey);
-        
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -170,73 +183,67 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
             OnJoined?.Invoke();
         }
     }
-
-    #region 이전 버전용
-    /// <summary>
-    /// 스킬 사용 시 호출할 함수
-    /// </summary>
-    /// /// <param name="player">요청자</param>
-    /// <param name="id">스킬 id</param>
-    /// <returns></returns>
-    public bool UseSkill(int id)
+/*
+    public bool IsUseableSkill()
     {
-        if (currentActiveSkill != null) return false;
-
-        queuedSkillId = id;
-        photonView.RPC("UseSkillOther", RpcTarget.Others, id);
-        return true;
-    }
-
-    /// <summary>
-    /// 스킬 사용시 호출할 함수(type : 대상 지정형 범위 스킬)
-    /// </summary>
-    /// /// <param name="player">요청자</param>
-    /// <param name="id">스킬 id</param>
-    /// <param name="pos">스킬이 사용될 위치</param>
-    /// <returns></returns>
-    public bool UseSkillAOE(int id, Vector3 pos)
-    {
-        if (currentActiveSkill != null) return false;
-
-        queuedSkillId = id;
-        targetPosition = pos;
         photonView.RPC("UseSkillAOEOther", RpcTarget.Others, id, pos);
-        return true;
-    }
-    #endregion
+    }*/
 
+    public void RequestCooldownFromMaster()
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+
+    }
 
     /// <summary>
     /// 스킬 사용 시 호출할 함수
     /// </summary>
-    /// /// <param name="player">요청자</param>
     /// <param name="id">스킬 id</param>
     /// <returns></returns>
-    public bool UseSkill(Player player, int id)
+    public bool UseSkill(int id, int acNr = -1)
     {
         if (currentActiveSkill != null) return false;
 
+        int uid = acNr == -1 ? player.photonView.OwnerActorNr : acNr;
+/*        foreach (var item in allSkillUseablePlayers)
+        {
+            if(PhotonNetwork.MasterClient.ActorNumber == item.)
+        }
+        if (skillCooldownList[uid][id] >= 0)
+        {
+            Debug.LogWarning("스킬이 아직 쿨타임입니다.");
+            return false;
+        }*/
+
+        if(PhotonNetwork.IsMasterClient)
+            skillCooldownList[uid][id] = SkillDataLoader.Instance.SkillData[id].Cooldown;
+
         queuedSkillId = id;
-        //photonView.RPC("UseSkillOther", RpcTarget.Others, id);
+
+        photonView.RPC("UseSkillOther", RpcTarget.Others, id, acNr);
         return true;
     }
-
-   
 
     /// <summary>
     /// 스킬 사용시 호출할 함수(type : 대상 지정형 범위 스킬)
     /// </summary>
-    /// /// <param name="player">요청자</param>
     /// <param name="id">스킬 id</param>
     /// <param name="pos">스킬이 사용될 위치</param>
     /// <returns></returns>
-    public bool UseSkillAOE(Player player, int id, Vector3 pos)
+    public bool UseSkillAOE(int id, Vector3 pos, int acNr = -1)
     {
         if (currentActiveSkill != null) return false;
 
+        int uid = acNr == -1 ? player.photonView.OwnerActorNr : acNr;
+
+
+        if (PhotonNetwork.IsMasterClient)
+            skillCooldownList[uid][id] = SkillDataLoader.Instance.SkillData[id].Cooldown;
+
         queuedSkillId = id;
         targetPosition = pos;
-        //photonView.RPC("UseSkillAOEOther", RpcTarget.Others, id, pos);
+        photonView.RPC("UseSkillAOEOther", RpcTarget.Others, id, pos, acNr);
         return true;
     }
 
@@ -244,9 +251,11 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     /// 스킬 사용 시 사용한 스킬의 Id를 네트워크에 전송하는 함수
     /// </summary>
     /// <param name="id"></param>
-    public void UseSkillOther(int id)
+    public void UseSkillOther(int id, int acNr)
     {
         queuedSkillId = id;
+        if (PhotonNetwork.IsMasterClient)
+            skillCooldownList[acNr][id] = SkillDataLoader.Instance.SkillData[id].Cooldown;
         //player.함수(id);
     }
 
@@ -255,10 +264,12 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     /// </summary>
     /// <param name="id"></param>
     /// <param name="pos"></param>
-    public void UseSkillAOEOther(int id, Vector3 pos)
+    public void UseSkillAOEOther(int id, Vector3 pos, int acNr)
     {
         queuedSkillId = id;
         targetPosition = pos;
+        if (PhotonNetwork.IsMasterClient)
+            skillCooldownList[acNr][id] = SkillDataLoader.Instance.SkillData[id].Cooldown;
         //player.함수(id);
     }
 
