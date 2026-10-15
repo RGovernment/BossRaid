@@ -3,6 +3,7 @@ using Photon.Pun;
 using System;
 using System.Threading;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using SF = UnityEngine.SerializeField;
@@ -22,7 +23,7 @@ public class SkillPointer : MonoBehaviourPun
     private Camera mainCamera;
     private bool isOutOfRange = false;
     public bool CanUseSkill => !isOutOfRange;
-
+    private CancellationTokenSource pointerToken;
     void Start()
     {
         mainCamera = Camera.main;
@@ -30,8 +31,23 @@ public class SkillPointer : MonoBehaviourPun
 
     public async UniTask<Vector3?> ActiveSkillPointer()
     {
-        var cancelToken = this.GetCancellationTokenOnDestroy();
-        return await TrackIndicatorPosition(cancelToken);
+        pointerToken = new CancellationTokenSource();
+        CancellationToken token = pointerToken.Token;
+        return await TrackIndicatorPosition(token);
+    }
+
+    public void TrackCancel()
+    {
+        if (pointerToken == null) return;
+
+        pointerToken.Cancel();
+        pointerToken.Dispose();
+        pointerToken = null;
+        if (redParticle.gameObject.activeSelf)
+            redParticle.gameObject.SetActive(false);
+        if (blueParticle.gameObject.activeSelf)
+            blueParticle.gameObject.SetActive(false);
+
     }
 
     private async UniTask<Vector3?> TrackIndicatorPosition(CancellationToken cancellationToken)
@@ -138,6 +154,11 @@ public class SkillPointer : MonoBehaviourPun
             if (blueParticle.gameObject.activeSelf)
                 blueParticle.gameObject.SetActive(false);
         }
+    }
+
+    private void OnDestroy()
+    {
+        TrackCancel();
     }
 
 }
