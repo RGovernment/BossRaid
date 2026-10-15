@@ -247,6 +247,9 @@ MonoBehaviour:
   ProjectileHit: 0
   queuedSkillId: 0
   player: {fileID: 0}
+  rayMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!4 &101132011
 Transform:
   m_ObjectHideFlags: 0
@@ -313,6 +316,10 @@ PrefabInstance:
     - target: {fileID: 5309742094766313209, guid: 748d5c7b812fbab48ba1207c9115779c, type: 3}
       propertyPath: m_Name
       value: Magic
+      objectReference: {fileID: 0}
+    - target: {fileID: 6491367066526147740, guid: 748d5c7b812fbab48ba1207c9115779c, type: 3}
+      propertyPath: rayMask.m_Bits
+      value: 439
       objectReference: {fileID: 0}
     - target: {fileID: 6491367066526147740, guid: 748d5c7b812fbab48ba1207c9115779c, type: 3}
       propertyPath: prefabs.Array.size
@@ -1109,6 +1116,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2202050398464531661, guid: 4344f026487e108479dd229de01468de, type: 3}
       propertyPath: m_refTest
+      value: 
+      objectReference: {fileID: 1773915431}
+    - target: {fileID: 2202050398464531661, guid: 4344f026487e108479dd229de01468de, type: 3}
+      propertyPath: m_refSkillSpawner
       value: 
       objectReference: {fileID: 1773915431}
     - target: {fileID: 6770568210228011492, guid: 4344f026487e108479dd229de01468de, type: 3}

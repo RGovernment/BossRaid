@@ -30,6 +30,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     [HIn] public bool ProjectileHit;
     [SF] private int queuedSkillId;
     [SF] private Player player;
+    [SF] private LayerMask rayMask;
     #endregion
 
     #region 필드 변수
@@ -51,8 +52,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     /// </summary>
     public event Action OnSkillEnd;
     private event Action OnJoined;
-    private LayerMask rayMask;
-    private int layerMask;
+    
 
     private float skillCooldown;
     // 임시
@@ -185,7 +185,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         if (currentActiveSkill != null) return false;
 
         queuedSkillId = id;
-        //photonView.RPC("UseSkillOther", RpcTarget.Others, id);
+        photonView.RPC("UseSkillOther", RpcTarget.Others, id);
         return true;
     }
 
@@ -202,7 +202,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
 
         queuedSkillId = id;
         targetPosition = pos;
-        //photonView.RPC("UseSkillAOEOther", RpcTarget.Others, id, pos);
+        photonView.RPC("UseSkillAOEOther", RpcTarget.Others, id, pos);
         return true;
     }
     #endregion
