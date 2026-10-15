@@ -19,9 +19,6 @@ public class DragonShockwave : MonoBehaviour
     [Min(0f)]
     [SerializeField] private float transitionTime = 0.1f;
 
-    [Header("테스트")]
-    [SerializeField] private KeyCode testKey = KeyCode.G;
-
     private GameObject currentWarning;
     private ShockwaveRing currentRing;
     private Coroutine attackRoutine;
@@ -32,27 +29,28 @@ public class DragonShockwave : MonoBehaviour
     private bool motionEnded;
 
     public bool IsAttacking => isAttacking;
+    public Vector3 AttackCenter => attackCenter;
 
     private void Awake()
     {
         if (animator == null)
             animator = GetComponent<Animator>();
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(testKey))
-            Shockwave();
-    }
-
     public void Shockwave()
+    {
+        if (spawnPoint == null)
+            return;
+
+        Shockwave(spawnPoint.position);
+    }
+    public void Shockwave(Vector3 center)
     {
         if (isAttacking)
             return;
 
-        if (animator == null || spawnPoint == null || warningPrefab == null || shockwavePrefab == null)
+        if (animator == null || warningPrefab == null || shockwavePrefab == null)
         {
-            Debug.LogError("Animator, Spawn Point, Warning Prefab, Shockwave Prefab을 연결하세요.", this);
+            Debug.LogError("Animator, Warning Prefab, Shockwave Prefab을 연결하세요.", this);
             return;
         }
 
@@ -60,8 +58,7 @@ public class DragonShockwave : MonoBehaviour
         hasSpawned = false;
         motionEnded = false;
 
-        // 공격 시작 위치를 저장해서 예고와 충격파 중심을 맞춥니다.
-        attackCenter = spawnPoint.position;
+        attackCenter = center;
 
         CreateWarning();
         animator.CrossFadeInFixedTime(animationState, transitionTime);
@@ -86,6 +83,7 @@ public class DragonShockwave : MonoBehaviour
         RemoveWarning();
 
         currentRing = Instantiate(shockwavePrefab, attackCenter, shockwavePrefab.transform.rotation);
+        currentRing.SetBoss(GetComponent<DragonBoss>());
         attackRoutine = StartCoroutine(WaitForEnd());
     }
 

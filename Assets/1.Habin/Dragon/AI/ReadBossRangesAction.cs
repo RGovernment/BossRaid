@@ -21,12 +21,6 @@ public partial class ReadBossRangesAction : Action
             Debug.LogError("보스에 BossRangeSettings가 없습니다.");
             return Status.Failure;
         }
-        Debug.Log(
-            $"탐색: {ranges.DetectionRange}, " +
-            $"근거리: {ranges.MeleeRange}, " +
-            $"원거리: {ranges.RangedRange}"
-        );
-
         return Status.Success;
     }
 }

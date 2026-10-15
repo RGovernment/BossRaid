@@ -10,6 +10,7 @@ public class SkillData
     public int OtherValue;
     public int Cooldown;
     public int UpgradeType;
+    public int projectileCount;
     public SkillAnimationType AnimationType;
     public string Description;
 }
