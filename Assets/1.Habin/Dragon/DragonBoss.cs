@@ -78,7 +78,7 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
         float damage = Mathf.Max(0f, requestedDamage);
         currentHp = Mathf.Max(0f, currentHp - damage);
 
-        Debug.Log($"보스 피격: {damage}, 남은 HP: {currentHp}", this);
+        Debug.LogWarning($"보스 피격: {damage}, 남은 HP: {currentHp}", this);
 
         if (IsDead)
             Die();

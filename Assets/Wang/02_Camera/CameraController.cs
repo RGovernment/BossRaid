@@ -49,12 +49,12 @@ public class CameraController : MonoBehaviour
             fDistance, m_iCollisionLayers, QueryTriggerInteraction.Ignore);
 
         //맞은 타겟 살짝 앞으로
-        for (int i = 0; i < iHitCount; i++)
-        {
-            RaycastHit tHit = m_arrCameraHits[i];
-            if (!tHit.transform.IsChildOf(m_refTarget))
-                fDistance = Mathf.Min(fDistance, Mathf.Max(0.05f, tHit.distance - 0.05f));
-        }
+        //for (int i = 0; i < iHitCount; i++)
+        //{
+        //    RaycastHit tHit = m_arrCameraHits[i];
+        //    if (!tHit.transform.IsChildOf(m_refTarget))
+        //        fDistance = Mathf.Min(fDistance, Mathf.Max(0.05f, tHit.distance - 0.05f));
+        //}
 
         transform.position = vPivot + vDirection * fDistance;
         transform.LookAt(vPivot);
