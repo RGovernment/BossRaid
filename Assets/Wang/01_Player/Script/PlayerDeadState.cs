@@ -48,7 +48,8 @@ public sealed class PlayerDeadState : PlayerState
     }
     private void FinishDeadEvent(AnimationEvent _refCallback)
     {
-        m_refOwner.gameObject.SetActive(false);
+        if (m_refOwner.IsMine)
+            m_refOwner.Dead();
     }
 
 }

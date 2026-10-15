@@ -23,10 +23,14 @@ public sealed class FSM : MonoBehaviour
     [SerializeField] private eStateType m_eInitialState = eStateType.Idle;
     [SerializeField] private LayerMask m_iGroundLayers = ~0;
 
+    [SerializeField] private GameObject m_refPlayerView;
+
     private readonly Dictionary<eStateType, AnimatorEvent> m_hashAnimEvent = new Dictionary<eStateType, AnimatorEvent>();
     private readonly Dictionary<eStateType, PlayerState> m_hashState = new Dictionary<eStateType, PlayerState>();
     private PlayerState m_refCurState;
     private Player m_refPlayer;
+    public Player Player => m_refPlayer;
+
     private Collider m_refGroundCollider;
 
     public PlayerState CurrentState => m_refCurState;
@@ -246,6 +250,10 @@ public sealed class FSM : MonoBehaviour
             ClearGroundContact();
     }
 
+    public void Dead()
+    {
+        m_refPlayerView.gameObject.SetActive(false);
+    }
 
 
     [PunRPC]
