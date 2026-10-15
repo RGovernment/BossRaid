@@ -38,6 +38,7 @@ public sealed class FSM : MonoBehaviour
         m_refPlayer.ObjectInfo.CurrentHP > 0f && m_Instance != null && m_Instance.HasGameplayInput;
     public bool IsGrounded => m_refGroundCollider != null && Rigidbody.linearVelocity.y <= 0.1f;
 
+    public bool IsMine => m_refPlayer.IsMine;
     public bool Init(Player _refController)
     {
         m_refPlayer = _refController;

@@ -33,7 +33,7 @@ namespace Wang.Test
             PhotonNetwork.NickName = "Player-" + Guid.NewGuid().ToString("N").Substring(0, 6);
             PhotonNetwork.AuthValues = new AuthenticationValues(Guid.NewGuid().ToString("N"));
             AppSettings settings = PhotonNetwork.PhotonServerSettings.AppSettings.CopyTo(new AppSettings());
-            settings.AppVersion = "wang-movement-test-v3";
+            settings.AppVersion = "wang-skills-test-v4";
             settings.FixedRegion = region;
             status = "Connecting...";
             if (!PhotonNetwork.ConnectUsingSettings(settings))
@@ -77,7 +77,7 @@ namespace Wang.Test
 
         private void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(12, 12, 420, 155), GUI.skin.box);
+            GUILayout.BeginArea(new Rect(12, 12, 480, 180), GUI.skin.box);
             GUILayout.Label("Wang / Photon Multiplayer Test");
             GUILayout.Label(status + " / " + PhotonNetwork.NetworkClientState);
             if (PhotonNetwork.InRoom)
@@ -86,6 +86,8 @@ namespace Wang.Test
                 GUILayout.Label($"You: {PhotonNetwork.NickName} | Ping: {PhotonNetwork.GetPing()} ms");
             }
             GUILayout.Label("WASD: Move | Shift: Run | Mouse: Look");
+            GUILayout.Label("1: Sword Wave | 2: Blade Dance | 3: Slash | Q: Lightning Bolt");
+            GUILayout.Label("E: Aim Lightning | E again: Cast (blue circle only)");
             GUILayout.Label("Position / rotation + Animator parameter synchronization.");
             if (PhotonNetwork.NetworkClientState == ClientState.Disconnected && GUILayout.Button("Reconnect"))
                 Connect();

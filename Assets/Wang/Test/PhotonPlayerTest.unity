@@ -232,6 +232,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &328558342
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 328558344}
+  - component: {fileID: 328558343}
+  m_Layer: 0
+  m_Name: SkillDataLoader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &328558343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328558342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a470b807ea5a1459398da7ce2f3b90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillDataLoader
+  SkillDataList: []
+--- !u!4 &328558344
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328558342}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &922000000
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,6 +360,9 @@ MonoBehaviour:
   m_refDeltaActionReference: {fileID: 2510881913319377289, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
   m_refSkill0ActionReference: {fileID: 2452030796613596448, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
   m_refSkill1ActionReference: {fileID: -3765287951164806332, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
+  m_refSkill2ActionReference: {fileID: 7053088790786002665, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
+  m_refSkill3ActionReference: {fileID: 8072368701088673742, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
+  m_refSkill4ActionReference: {fileID: 1389920437237269934, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
 --- !u!4 &1008757502
 Transform:
   m_ObjectHideFlags: 0
@@ -603,3 +651,4 @@ SceneRoots:
   - {fileID: 120828989}
   - {fileID: 1008757502}
   - {fileID: 922000001}
+  - {fileID: 328558344}

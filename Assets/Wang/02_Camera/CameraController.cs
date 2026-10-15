@@ -37,8 +37,7 @@ public class CameraController : MonoBehaviour
 
         Quaternion qYaw = m_refPlayer.ViewRotation;
         Vector3 vPivot = m_refTarget.position + Vector3.up * m_fCameraLookHeight;
-        Vector3 vOffset = qYaw * Quaternion.Euler(m_fPitch, 0f, 0f)
-            * (m_vCameraOffset - Vector3.up * m_fCameraLookHeight);
+        Vector3 vOffset = qYaw * Quaternion.Euler(m_fPitch, 0f, 0f)* (m_vCameraOffset - Vector3.up * m_fCameraLookHeight);
 
         float fDistance = vOffset.magnitude;
         if (fDistance <= 0.001f)
