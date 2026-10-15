@@ -105,7 +105,7 @@ public sealed class FSM : MonoBehaviour
         if (m_Instance.HasGameplayInput)
             return;
 
-        if (m_refCurState?.Type != eStateType.Hit)
+        if (m_refCurState?.Type != eStateType.Hit && m_refCurState?.Type != eStateType.Dead)
             Stop();
     }
 
@@ -129,6 +129,9 @@ public sealed class FSM : MonoBehaviour
 
     public void UpdateState()
     {
+        if (m_refCurState?.Type == eStateType.Dead)
+            return;
+
         if (m_Instance.HasGameplayInput == false &&
             m_refCurState?.Type != eStateType.Hit)
         {
@@ -141,11 +144,11 @@ public sealed class FSM : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.P))
         {
             Vector3 vFoward = transform.position + (transform.forward * 2.0f);
-            TakeDamage(new tAttackInfo(vFoward, 10));
+            m_refPlayer.TakeDamage(new tAttackInfo(vFoward, 10));
         }
         else if (Input.GetKeyDown(KeyCode.O))
         {
-            ChangeState(eStateType.Dead);
+            m_refPlayer.TakeDamage(new tAttackInfo(transform.position, m_refPlayer.ObjectInfo.CurrentHP));
         }
 
     }
@@ -253,6 +256,7 @@ public sealed class FSM : MonoBehaviour
     public void Dead()
     {
         m_refPlayerView.gameObject.SetActive(false);
+        enabled = false;
     }
 
 

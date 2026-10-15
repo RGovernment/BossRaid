@@ -21,6 +21,10 @@ public partial class SelectBossSkillAction : Action
     {
         if (Self == null || Self.Value == null || Target == null || Target.Value == null || SelectedSkill == null || LastSkill == null)
             return Status.Failure;
+
+        if (!Target.Value.TryGetComponent<Player>(out var targetPlayer) || !targetPlayer.IsAlive)
+            return Status.Failure;
+
         //초기화
         SelectedSkill.Value = BossSkillType.None;
 

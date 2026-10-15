@@ -1564,6 +1564,7 @@ MonoBehaviour:
   m_iGroundLayers:
     serializedVersion: 2
     m_Bits: 128
+  m_refPlayerView: {fileID: 6620797557442402673}
 --- !u!114 &3985597358038621170
 MonoBehaviour:
   m_ObjectHideFlags: 0
