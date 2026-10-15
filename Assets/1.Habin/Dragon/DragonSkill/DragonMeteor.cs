@@ -165,8 +165,6 @@ public class DragonMeteor : MonoBehaviourPun
 
         isAttacking = false;
         attackRoutine = null;
-
-        Debug.Log("운석 공격 종료", this);
     }
 
     private void CreateWarning(Vector3 impactPoint)
