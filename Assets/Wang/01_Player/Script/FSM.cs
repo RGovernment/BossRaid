@@ -249,15 +249,15 @@ public sealed class FSM : MonoBehaviour
 
 
     [PunRPC]
-    private void UseSkillOther(int id)
+    private void UseSkillOther(int id, int acNr)
     {
-        m_refPlayer.SkillSpawner.UseSkillOther(id);
+        m_refPlayer.SkillSpawner.UseSkillOther(id, acNr);
     }
 
     [PunRPC]
-    private void UseSkillAOEOther(int id, Vector3 pos)
+    private void UseSkillAOEOther(int id, Vector3 pos, int acNr)
     {
-        m_refPlayer.SkillSpawner.UseSkillAOEOther(id, pos);
+        m_refPlayer.SkillSpawner.UseSkillAOEOther(id, pos, acNr);
     }
 
     [PunRPC]
