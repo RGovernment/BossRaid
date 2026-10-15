@@ -90,6 +90,7 @@ public sealed class PlayerSkillState : PlayerState
 
     private void RequestSkill(int _iSkillId, Vector3? _vTarget = null)
     {
+        Debug.Log(_iSkillId);
         if (!m_refOwner.IsMine)
             return;
 
@@ -98,6 +99,7 @@ public sealed class PlayerSkillState : PlayerState
             !m_hashTrigger.TryGetValue(tData.AnimationType, out int iTrigger))
             return;
 
+        Debug.Log("데이터 있음");
         if (!m_refOwner.ChangeState(eStateType.Skill))
             return;
 

@@ -246,7 +246,6 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     /// 스킬 사용 시 사용한 스킬의 Id를 네트워크에 전송하는 함수
     /// </summary>
     /// <param name="id"></param>
-    [PunRPC]
     public void UseSkillOther(int id)
     {
         queuedSkillId = id;
@@ -258,7 +257,6 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     /// </summary>
     /// <param name="id"></param>
     /// <param name="pos"></param>
-    [PunRPC]
     public void UseSkillAOEOther(int id, Vector3 pos)
     {
         queuedSkillId = id;
