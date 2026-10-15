@@ -486,6 +486,9 @@ MonoBehaviour:
   m_refDeltaActionReference: {fileID: 2510881913319377289, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
   m_refSkill0ActionReference: {fileID: 2452030796613596448, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
   m_refSkill1ActionReference: {fileID: -3765287951164806332, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
+  m_refSkill2ActionReference: {fileID: 0}
+  m_refSkill3ActionReference: {fileID: 0}
+  m_refSkill4ActionReference: {fileID: 0}
 --- !u!4 &1008757502
 Transform:
   m_ObjectHideFlags: 0
@@ -23202,6 +23205,10 @@ PrefabInstance:
     - target: {fileID: 4714508785960182738, guid: 5da4f275de7cf094089c4eb455a22961, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5855902700359744762, guid: 5da4f275de7cf094089c4eb455a22961, type: 3}
+      propertyPath: sceneViewId
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
