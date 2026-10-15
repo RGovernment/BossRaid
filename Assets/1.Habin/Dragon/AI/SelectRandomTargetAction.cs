@@ -71,7 +71,7 @@ public partial class SelectRandomTargetAction : Action
         {
             //Hp가 0인 캐릭터는 타겟안됨 
             Player playerComponent = player.GetComponent<Player>();
-            if (playerComponent == null || playerComponent.ObjectInfo.CurrentHP <= 0f)
+            if (playerComponent == null || !playerComponent.IsAlive)
                 continue;
             Vector3 offset = player.transform.position - Self.Value.transform.position;
             offset.y = 0f;

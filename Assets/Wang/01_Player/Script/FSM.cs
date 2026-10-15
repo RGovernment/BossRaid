@@ -23,10 +23,14 @@ public sealed class FSM : MonoBehaviour
     [SerializeField] private eStateType m_eInitialState = eStateType.Idle;
     [SerializeField] private LayerMask m_iGroundLayers = ~0;
 
+    [SerializeField] private GameObject m_refPlayerView;
+
     private readonly Dictionary<eStateType, AnimatorEvent> m_hashAnimEvent = new Dictionary<eStateType, AnimatorEvent>();
     private readonly Dictionary<eStateType, PlayerState> m_hashState = new Dictionary<eStateType, PlayerState>();
     private PlayerState m_refCurState;
     private Player m_refPlayer;
+    public Player Player => m_refPlayer;
+
     private Collider m_refGroundCollider;
 
     public PlayerState CurrentState => m_refCurState;
@@ -101,7 +105,7 @@ public sealed class FSM : MonoBehaviour
         if (m_Instance.HasGameplayInput)
             return;
 
-        if (m_refCurState?.Type != eStateType.Hit)
+        if (m_refCurState?.Type != eStateType.Hit && m_refCurState?.Type != eStateType.Dead)
             Stop();
     }
 
@@ -125,6 +129,9 @@ public sealed class FSM : MonoBehaviour
 
     public void UpdateState()
     {
+        if (m_refCurState?.Type == eStateType.Dead)
+            return;
+
         if (m_Instance.HasGameplayInput == false &&
             m_refCurState?.Type != eStateType.Hit)
         {
@@ -137,11 +144,11 @@ public sealed class FSM : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.P))
         {
             Vector3 vFoward = transform.position + (transform.forward * 2.0f);
-            TakeDamage(new tAttackInfo(vFoward, 10));
+            m_refPlayer.TakeDamage(new tAttackInfo(vFoward, 10));
         }
         else if (Input.GetKeyDown(KeyCode.O))
         {
-            ChangeState(eStateType.Dead);
+            m_refPlayer.TakeDamage(new tAttackInfo(transform.position, m_refPlayer.ObjectInfo.CurrentHP));
         }
 
     }
@@ -246,6 +253,11 @@ public sealed class FSM : MonoBehaviour
             ClearGroundContact();
     }
 
+    public void Dead()
+    {
+        m_refPlayerView.gameObject.SetActive(false);
+        enabled = false;
+    }
 
 
     [PunRPC]

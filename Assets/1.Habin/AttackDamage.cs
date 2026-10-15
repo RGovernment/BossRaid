@@ -29,7 +29,7 @@ public class AttackDamage : MonoBehaviour
         if ((layerMask.value & collidedLayerMask) == 0 || boss == null)
             return;
         Player player = other.GetComponentInParent<Player>();
-        if (player == null || !hitPlayers.Add(player))
+        if (player == null || !player.IsAlive || !hitPlayers.Add(player))
             return;
         var tInfo = new tAttackInfo(transform.position, boss.Attack);
         player.TakeDamage(tInfo);
