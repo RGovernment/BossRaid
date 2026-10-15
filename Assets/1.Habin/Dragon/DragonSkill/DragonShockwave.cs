@@ -50,7 +50,6 @@ public class DragonShockwave : MonoBehaviour
 
         if (animator == null || warningPrefab == null || shockwavePrefab == null)
         {
-            Debug.LogError("Animator, Warning Prefab, Shockwave Prefab을 연결하세요.", this);
             return;
         }
 
@@ -97,7 +96,6 @@ public class DragonShockwave : MonoBehaviour
 
         if (!hasSpawned)
         {
-            Debug.LogWarning("충격파 타격 이벤트가 실행되지 않았습니다.", this);
             CleanupAttack();
         }
     }
@@ -110,8 +108,6 @@ public class DragonShockwave : MonoBehaviour
 
         attackRoutine = null;
         CleanupAttack();
-
-        Debug.Log("충격파 공격 종료", this);
     }
 
     private void RemoveWarning()

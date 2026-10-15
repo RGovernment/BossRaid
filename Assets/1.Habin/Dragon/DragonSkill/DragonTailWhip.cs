@@ -79,7 +79,6 @@ public class DragonTailWhip : MonoBehaviour
         {
             return true;
         }
-        Debug.LogError("Animator, Attack Point, Attack Prefab을 연결하세요.",this);
         return false;
     }
 
@@ -133,8 +132,6 @@ public class DragonTailWhip : MonoBehaviour
         hasHit = true;
         tailHitBox.GetComponent<AttackDamage>().ResetHits();
         tailHitBox.enabled = true;
-
-        Debug.Log("뒤쪽 꼬리치기 타격!", this);
 
         RemoveTelegraph();
     }

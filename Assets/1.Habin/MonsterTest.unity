@@ -1260,6 +1260,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dragon
       objectReference: {fileID: 0}
+    - target: {fileID: 1611023900509885081, guid: 13f4b1ae73b709240ac7eacf7031e5f4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1977355714591510958, guid: 13f4b1ae73b709240ac7eacf7031e5f4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.013828
