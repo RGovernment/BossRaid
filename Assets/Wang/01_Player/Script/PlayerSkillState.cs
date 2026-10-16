@@ -90,7 +90,6 @@ public sealed class PlayerSkillState : PlayerState
 
     private void RequestSkill(int _iSkillId, Vector3? _vTarget = null)
     {
-        Debug.Log(_iSkillId);
         if (!m_refOwner.IsMine)
             return;
 

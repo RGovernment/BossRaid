@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using TMPro;
 using Unity.AppUI.UI;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
@@ -37,7 +38,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     #region 필드 변수
 
     public Dictionary<int, Dictionary<int, float>> skillCooldownList;
-    public Dictionary<int, float> localCooldownList;
+    public Dictionary<int, (float cooldown, bool isDelay)> localCooldownList;
     public List<Player> allSkillUseablePlayers;
 
     public IReadOnlyList<SkillBase> useableSkillList;
@@ -47,10 +48,11 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     private SkillBase currentActiveSkill;
     private Vector3? targetPosition;
     private Vector3 networkRayPosition;
-
+    private int[] cachedSkillIds;
     public bool IsSkillActive => currentActiveSkill != null;
 
     private CancellationTokenSource cooldownLoopToken;
+    private CancellationTokenSource localCooldownLoopToken;
 
     /// <summary>
     /// 스킬 종료시 호출 되는 이벤트 콜백
@@ -67,6 +69,8 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         useableSkillList = prefabs.ToList();
         skillCooldownList = new();
         localCooldownList = new();
+        // 마을에서 전투 씬으로 변경되는게 확정되면 변경
+        NotifyMySceneLoaded();
     }
 
     private void Start()
@@ -97,7 +101,12 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
                 = useableSkillList.ToDictionary(x => x.Id, x => 0f);
         }
 
-        localCooldownList = useableSkillList.ToDictionary(x => x.Id, x => 0f);
+        localCooldownList = useableSkillList.ToDictionary(x => x.Id, x => (0f, false));
+        cachedSkillIds = useableSkillList.Select(x => x.Id).ToArray();
+        if (PhotonNetwork.IsMasterClient)
+            StartCooldownSyncLoop();
+        if(player.IsMine)
+            StartLocalCooldownSyncLoop();
     }
 
     public void StartCooldownSyncLoop()
@@ -107,8 +116,15 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         StopCooldownSyncLoop();
         cooldownLoopToken = new CancellationTokenSource();
 
-        // 0.1초 주기 루프 실행
         SyncCooldownLoopAsync(cooldownLoopToken.Token).Forget();
+    }
+
+    public void StartLocalCooldownSyncLoop()
+    {
+        StopLocalCooldownSyncLoop();
+        localCooldownLoopToken = new CancellationTokenSource();
+
+        SyncLocalCooldownLoopAsync(localCooldownLoopToken.Token).Forget();
     }
 
     public void StopCooldownSyncLoop()
@@ -119,41 +135,106 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         cooldownLoopToken = null;
     }
 
+    public void StopLocalCooldownSyncLoop()
+    {
+        if (localCooldownLoopToken == null) return;
+        localCooldownLoopToken.Cancel();
+        localCooldownLoopToken.Dispose();
+        localCooldownLoopToken = null;
+    }
+
     private async UniTaskVoid SyncCooldownLoopAsync(CancellationToken token)
     {
+        TimeSpan delayTimeSpan = TimeSpan.FromMilliseconds(COOLDOWN_RECIVE_TIMER);
+        float minusCount = COOLDOWN_RECIVE_TIMER / 1000f;
         try
         {
             while (!token.IsCancellationRequested)
             {
-                await UniTask.Delay(COOLDOWN_RECIVE_TIMER, cancellationToken: token);
+                await UniTask.Delay(delayTimeSpan, cancellationToken: token);
 
                 if (!PhotonNetwork.IsMasterClient) break;
 
-                var actorNumbers = skillCooldownList.Keys.ToList();
-
-                foreach (int actorNr in actorNumbers)
+                for (int i = allSkillUseablePlayers.Count - 1; i >= 0; i--)
                 {
+                    Player actor = allSkillUseablePlayers[i];
+                    if (actor == null || actor.photonView == null) continue;
+
+                    int actorNr = actor.photonView.OwnerActorNr;
+
+                    // 포톤 룸에서 유저 존재 여부 및 마스터 딕셔너리 키 검증
                     var photonPlayer = PhotonNetwork.CurrentRoom.GetPlayer(actorNr);
                     if (photonPlayer == null) continue;
+                    if (!skillCooldownList.ContainsKey(actorNr)) continue;
 
-                    var skillIds = skillCooldownList[actorNr].Keys.ToList();
-
-                    foreach (var skillId in skillIds)
+                    for (int j = 0; j < cachedSkillIds.Length; j++)
                     {
-                        float currentCooldown = skillCooldownList[actorNr][skillId];
+                        int skillId = cachedSkillIds[j];
 
+                        if (!skillCooldownList[actorNr].ContainsKey(skillId)) continue;
+
+                        float currentCooldown = skillCooldownList[actorNr][skillId];
+                        Debug.Log($"마스터꺼({actorNr}) : {currentCooldown}");
                         if (currentCooldown > 0f)
                         {
-                            skillCooldownList[actorNr][skillId] -= 0.1f;
+                            skillCooldownList[actorNr][skillId] -= minusCount;
 
                             if (skillCooldownList[actorNr][skillId] < 0f)
                                 skillCooldownList[actorNr][skillId] = 0f;
-                            
-                            photonView.RPC("SyncCooldownToClient", 
-                                photonPlayer, skillId, skillCooldownList[actorNr][skillId]);
                         }
                     }
                 }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            Debug.Log("쿨타임 동기화 루프가 정상 취소되었습니다.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"루프 에러: {ex.Message}");
+        }
+    }
+    private async UniTaskVoid SyncLocalCooldownLoopAsync(CancellationToken token)
+    {
+        TimeSpan delayTimeSpan = TimeSpan.FromMilliseconds(COOLDOWN_RECIVE_TIMER);
+
+        float minusCount = COOLDOWN_RECIVE_TIMER / 1000f;
+        try
+        {
+            while (!token.IsCancellationRequested)
+            {
+                await UniTask.Delay(delayTimeSpan, cancellationToken: token);
+
+                foreach (var skill in useableSkillList)
+                {
+                    int skillId = skill.Id;
+                    float currentCooldown = localCooldownList[skillId].cooldown;
+                    Debug.Log($"공용({player.photonView.OwnerActorNr}) : {currentCooldown}");
+                    if (currentCooldown > 0f)
+                    {
+                        float nowTime = currentCooldown - minusCount;
+
+                        if (nowTime < 0f)
+                        {
+                            if (PhotonNetwork.IsMasterClient)
+                            {
+                                localCooldownList[skillId] = (nowTime, false);
+                            }
+                            else if(!localCooldownList[skillId].isDelay)
+                            {
+                                localCooldownList[skillId] = (COOLDOWN_DELAY_DEADLINE, true);
+
+                                photonView.RPC("MasterCooldownCheck",
+                                    RpcTarget.MasterClient, skillId,
+                                    player.photonView.OwnerActorNr);
+                            }
+                        }
+                        else
+                            localCooldownList[skillId] = (nowTime, false);
+                    }
+                }
+                
             }
         }
         catch (OperationCanceledException)
@@ -171,10 +252,20 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         base.OnEnable();
         // 유니티 씬 로드 이벤트 연결
         SceneManager.sceneLoaded += OnSceneLoaded;
-        OnJoined += NewPlayerSkillCooldownObserve;
+        OnJoined += NotifyMySceneLoaded;
     }
 
-    public void NewPlayerSkillCooldownObserve()
+    public void NotifyMySceneLoaded()
+    {
+        Hashtable props = new ()
+        {
+            { "Loaded", true }
+        };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+        Debug.Log("???");
+    }
+
+    public void PlayerSkillCooldownLoad()
     {
         if (PhotonNetwork.IsMasterClient)
         {
@@ -192,12 +283,29 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
                 skillCooldownList[item.photonView.OwnerActorNr] 
                     = useableSkillList.ToDictionary(x => x.Id, x => 0f);
             }
+
+            Debug.Log(allSkillUseablePlayers.Count);
+            Debug.Log(skillCooldownList.Count);
         }
     }
 
-    public void SyncCooldownToClient(int id, float cooldown)
+    public void LocalCooldownSet(int id, float cooldown)
     {
-        localCooldownList[id] = cooldown;
+        localCooldownList[id] = (cooldown, false);
+    }
+
+    public void MasterCooldownCheck(int id, int acNr)
+    {
+        if(skillCooldownList.TryGetValue(acNr, out Dictionary<int, float> data)
+            && data.TryGetValue(id, out float cooldown))
+            photonView.RPC("IsSkillUseable", 
+                PhotonNetwork.CurrentRoom.GetPlayer(acNr),id, cooldown > 0f);
+    }
+
+    public void IsSkillUseable(int id, bool useable)
+    {
+        if (useable)
+            localCooldownList[id] = (0, false);
     }
 
     public override void OnDisable()
@@ -205,7 +313,30 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         base.OnDisable();
         // 이벤트 해제
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        OnJoined -= NewPlayerSkillCooldownObserve;
+        OnJoined -= NotifyMySceneLoaded;
+    }
+
+    public void PropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps)
+    {
+        if (changedProps.ContainsKey("Loaded"))
+        {
+            Debug.Log("작동");
+            if (PhotonNetwork.IsMasterClient && CheckAllPlayersLoaded())
+                PlayerSkillCooldownLoad();
+        }
+    }
+
+    private bool CheckAllPlayersLoaded()
+    {
+        foreach (var p in PhotonNetwork.PlayerList)
+        {
+            if (!p.CustomProperties.ContainsKey("Loaded") || 
+                !(bool)p.CustomProperties["Loaded"])
+            
+                return false;
+        }
+
+        return true;
     }
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
@@ -244,28 +375,9 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == SceneType.BattleScene.ToString())
+        if (scene.name == SceneType.PhotonPlayerTest.ToString())
         {
             OnJoined?.Invoke();
-        }
-    }
-
-    public void RequestUseSkill(int id)
-    {
-        if (localCooldownList.TryGetValue(id, out float cool) && cool > 0f) return;
-        if (currentActiveSkill != null) return;
-
-        int myActorNr = player.photonView.OwnerActorNr;
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            // 마스터라면 직접 검증 후 실행
-            UseSkill(myActorNr, id);
-        }
-        else
-        {
-            // 클라이언트라면 마스터에게 요청 RPC 전송
-            photonView.RPC("RequestUseSkill", RpcTarget.MasterClient, id, myActorNr);
         }
     }
 
@@ -277,16 +389,17 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     public bool UseSkill(int id, int acNr = -1)
     {
         if (currentActiveSkill != null) return false;
-/*        if (!skillCooldownList.ContainsKey(acNr)) return false;
-        if (skillCooldownList[acNr][id] > 0f) return false;*/
-        int uid = acNr == -1 ? player.photonView.OwnerActorNr : acNr;
-
-        if(PhotonNetwork.IsMasterClient)
-            skillCooldownList[uid][id] = SkillDataLoader.Instance.SkillData[id].Cooldown;
+        
+        if (localCooldownList.TryGetValue(id, out (float cooldown, bool isDelay) cool) 
+            && cool.cooldown > 0f) {
+            Debug.Log(cool.cooldown);
+            return false;
+        }
 
         queuedSkillId = id;
-
+        float cooldown = SkillDataLoader.Instance.SkillData[id].Cooldown;
         photonView.RPC("UseSkillOther", RpcTarget.Others, id, acNr);
+        photonView.RPC("LocalCooldownSet", PhotonNetwork.CurrentRoom.GetPlayer(acNr), id, cooldown);
         return true;
     }
 
@@ -299,16 +412,18 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     public bool UseSkillAOE(int id, Vector3 pos, int acNr = -1)
     {
         if (currentActiveSkill != null) return false;
-
-        int uid = acNr == -1 ? player.photonView.OwnerActorNr : acNr;
-
-
-        if (PhotonNetwork.IsMasterClient)
-            skillCooldownList[uid][id] = SkillDataLoader.Instance.SkillData[id].Cooldown;
+        if (localCooldownList.TryGetValue(id, out (float cooldown, bool isDelay) cool) 
+            && cool.cooldown > 0f)
+        {
+            Debug.Log(cool.cooldown);
+            return false;
+        }
 
         queuedSkillId = id;
         targetPosition = pos;
-        photonView.RPC("UseSkillAOEOther", RpcTarget.Others, id, pos, acNr);
+        float cooldown = SkillDataLoader.Instance.SkillData[id].Cooldown;
+        photonView.RPC("UseSkillAOEOther", RpcTarget.Others, id, pos, acNr); 
+        photonView.RPC("LocalCooldownSet", PhotonNetwork.CurrentRoom.GetPlayer(acNr), id, cooldown);
         return true;
     }
 
@@ -490,6 +605,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     private void OnDestroy()
     {
         StopCooldownSyncLoop();
+        StopLocalCooldownSyncLoop();
     }
 
 }

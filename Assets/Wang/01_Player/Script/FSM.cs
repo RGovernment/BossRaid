@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections.Generic;
 using Unity.AppUI.UI;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -292,8 +293,20 @@ public sealed class FSM : MonoBehaviour
     }
 
     [PunRPC]
-    private void SyncCooldownToClient(int skillId, float cooldown)
+    private void LocalCooldownSet(int skillId, float cooldown)
     {
-        m_refPlayer.SkillSpawner.SyncCooldownToClient(skillId, cooldown);
+        m_refPlayer.SkillSpawner.LocalCooldownSet(skillId, cooldown);
+    }
+
+    [PunRPC]
+    private void MasterCooldownCheck(int skillId, int acNr)
+    {
+        m_refPlayer.SkillSpawner.MasterCooldownCheck(skillId, acNr);
+    }
+
+    [PunRPC]
+    private void IsSkillUseable(int skillId, bool useable)
+    {
+        m_refPlayer.SkillSpawner.IsSkillUseable(skillId, useable);
     }
 }
