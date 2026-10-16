@@ -118,7 +118,7 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
 
     public void TakeDamage(tAttackInfo _tInfo)
     {
-        if (!IsAlive || _tInfo.Damage <= 0f)
+        if (!IsAlive || _tInfo.Damage <= 0f || m_refFSM.CurrentState?.Type == eStateType.Roll)
             return;
 
         //마클이 아니면 마클한테 허락을 구하기
@@ -156,6 +156,7 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
 
     private void ApplyDamage(float _fRemainingHp, Vector3 _vPos)
     {
+        
         float damage = m_refObjectInfo.CurrentHP - _fRemainingHp;
         m_refObjectInfo.CurrentHP = _fRemainingHp;
 
