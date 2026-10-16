@@ -12,6 +12,8 @@ namespace Wang.Test
         [SerializeField] private string roomName = "Wang-Player-Sync-Test";
         [SerializeField] private string region = "kr";
         [SerializeField] private Camera waitingCamera;
+        [SerializeField] private Vector3 spawnOrigin = new Vector3(0f, 0.2f, 0f);
+        [SerializeField] private bool showDebugGui = true;
         private string status = "Connecting...";
         private bool hasSpawned;
 
@@ -64,8 +66,28 @@ namespace Wang.Test
                 return;
 
             int slot = (PhotonNetwork.LocalPlayer.ActorNumber - 1) % 4;
-            Vector3 spawn = new Vector3((slot % 2) * 3f - 1.5f, 0.2f, (slot / 2) * 3f);
-            if (PhotonNetwork.Instantiate(PrefabPath, spawn, Quaternion.identity) == null)
+            Vector3 spawn = spawnOrigin + new Vector3((slot % 2) * 3f - 1.5f, 0f, (slot / 2) * 3f);
+            GameObject playerObject = null;
+            foreach (Player player in FindObjectsByType<Player>(FindObjectsSortMode.None))
+            {
+                if (player.photonView.IsMine)
+                {
+                    playerObject = player.gameObject;
+                    break;
+                }
+            }
+
+            if (playerObject == null)
+                playerObject = PhotonNetwork.Instantiate(PrefabPath, spawn, Quaternion.identity);
+            else
+            {
+                Rigidbody body = playerObject.GetComponent<Rigidbody>();
+                body.position = spawn;
+                body.linearVelocity = Vector3.zero;
+                body.angularVelocity = Vector3.zero;
+            }
+
+            if (playerObject == null)
             {
                 status = "Player spawn failed. See Console.";
                 return;
@@ -99,6 +121,9 @@ namespace Wang.Test
 
         private void OnGUI()
         {
+            if (!showDebugGui)
+                return;
+
             GUILayout.BeginArea(new Rect(12, 12, 480, 180), GUI.skin.box);
             GUILayout.Label("Wang / Photon Multiplayer Test");
             GUILayout.Label(status + " / " + PhotonNetwork.NetworkClientState);
