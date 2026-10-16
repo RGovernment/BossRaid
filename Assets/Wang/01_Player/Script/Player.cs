@@ -167,9 +167,4 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
         else if (!PhotonNetwork.InRoom || IsMine)
             m_refFSM.TakeDamage(new tAttackInfo(_vPos, damage));
     }
-
-    public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps)
-    {
-        m_refSkillSpawner.PropertiesUpdate(targetPlayer, changedProps);
-    }
 }
