@@ -39,7 +39,7 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
         if (m_refSkillSpawner == null)
             m_refSkillSpawner = GetComponentInChildren<SkillSpawner>();
         Init();
-        GameManager.GetOrCreate().OnEnterPlayer(this);
+        GameManager.m_Instance.OnEnterPlayer(this);
     }
 
     private void Init()
@@ -113,6 +113,19 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
         if (GameManager.m_Instance != null)
             GameManager.m_Instance.OnExitPlayer(this);
         m_refFSM.Dispose();
+    }
+
+    public void RefreshPlayer(Vector3 _vSpawnPos)
+    {
+        m_refObjectInfo.CurrentHP = 100f;
+        m_refSkillSpawner.SkillUseUnLock();
+        m_refFSM.RefreshPlayer(_vSpawnPos);
+
+        if (IsMine && m_refLocalCamera != null)
+        {
+            m_refLocalCamera.SetActive(true);
+            m_refLocalCamera.GetComponent<CameraController>().RestorePlayerTarget(this);
+        }
     }
 
     public void ReceiveAnimEvent(AnimationEvent _refEvent)

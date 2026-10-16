@@ -69,23 +69,28 @@ public class CameraController : MonoBehaviour
 
     private void RefreshFollowTarget()
     {
-        if (m_refCurPlayer == null|| !PhotonNetwork.InRoom)
+        if (m_refPlayer == null)
             return;
 
-        if (m_refPlayer.IsAlive)
-            m_refCurPlayer = m_refPlayer;
-        else
+        m_refCurPlayer = m_refPlayer;
+        if (PhotonNetwork.InRoom && !m_refPlayer.IsAlive)
         {
-            m_refCurPlayer = m_refPlayer;
             foreach (Player player in GameManager.m_Instance.Players)
             {
                 if (player != null && player != m_refPlayer && player.IsAlive && player.photonView.OwnerActorNr > 0)
                 {
-                    m_refPlayer = player;
+                    m_refCurPlayer = player;
                     break;
                 }
             }
         }
-        m_refTarget = m_refPlayer.transform;
+        m_refTarget = m_refCurPlayer.transform;
+    }
+
+    public void RestorePlayerTarget(Player _refPlayer)
+    {
+        m_refPlayer = _refPlayer;
+        m_refCurPlayer = _refPlayer;
+        m_refTarget = _refPlayer.transform;
     }
 }

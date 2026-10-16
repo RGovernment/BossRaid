@@ -12,6 +12,7 @@ namespace Wang.Test
         [SerializeField] private string roomName = "Wang-Player-Sync-Test";
         [SerializeField] private string region = "kr";
         [SerializeField] private Camera waitingCamera;
+        [SerializeField] private Transform spawnPoint;
         [SerializeField] private Vector3 spawnOrigin = new Vector3(0f, 0.2f, 0f);
         [SerializeField] private bool showDebugGui = true;
         private string status = "Connecting...";
@@ -20,6 +21,7 @@ namespace Wang.Test
         private void Start()
         {
             Application.runInBackground = true;
+            PhotonNetwork.AutomaticallySyncScene = true;
             if (PhotonNetwork.InRoom)
             {
                 SpawnPlayer();
@@ -38,7 +40,7 @@ namespace Wang.Test
                 return;
             }
 
-            PhotonNetwork.AutomaticallySyncScene = false;
+            PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.NickName = "Player-" + Guid.NewGuid().ToString("N").Substring(0, 6);
             PhotonNetwork.AuthValues = new AuthenticationValues(Guid.NewGuid().ToString("N"));
             AppSettings settings = PhotonNetwork.PhotonServerSettings.AppSettings.CopyTo(new AppSettings());
@@ -65,10 +67,12 @@ namespace Wang.Test
             if (!PhotonNetwork.InRoom || hasSpawned)
                 return;
 
-            int slot = (PhotonNetwork.LocalPlayer.ActorNumber - 1) % 4;
-            Vector3 spawn = spawnOrigin + new Vector3((slot % 2) * 3f - 1.5f, 0f, (slot / 2) * 3f);
+            Vector3 origin = spawnPoint != null ? spawnPoint.position : spawnOrigin;
+            if (GameSceneManager.m_Instance.TryGetSpawnOrigin(out Vector3 sceneOrigin))
+                origin = sceneOrigin;
+            Vector3 spawn = GameSceneManager.GetPlayerSpawnPosition(origin, PhotonNetwork.LocalPlayer.ActorNumber);
             GameObject playerObject = null;
-            foreach (Player player in GameManager.GetOrCreate().Players)
+            foreach (Player player in GameManager.m_Instance.Players)
             {
                 if (player != null && player.gameObject.activeInHierarchy && player.photonView.IsMine)
                 {
@@ -80,12 +84,7 @@ namespace Wang.Test
             if (playerObject == null)
                 playerObject = PhotonNetwork.Instantiate(PrefabPath, spawn, Quaternion.identity);
             else
-            {
-                Rigidbody body = playerObject.GetComponent<Rigidbody>();
-                body.position = spawn;
-                body.linearVelocity = Vector3.zero;
-                body.angularVelocity = Vector3.zero;
-            }
+                playerObject.GetComponent<FSM>().ResetRigidbody(spawn);
 
             if (playerObject == null)
             {
@@ -94,7 +93,8 @@ namespace Wang.Test
             }
 
             hasSpawned = true;
-            waitingCamera.gameObject.SetActive(false);
+            if (waitingCamera != null)
+                waitingCamera.gameObject.SetActive(false);
             status = "Connected";
             Debug.Log($"[Wang Photon Test] Joined {PhotonNetwork.CurrentRoom.Name}, actor {PhotonNetwork.LocalPlayer.ActorNumber}.");
         }

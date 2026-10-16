@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fe267f000c30ea4686f5233afb81d0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestPortal
-  targetScene: PhotonPlayerTest
+  m_refSceneData: {fileID: 11400000, guid: 09d10e5af6304d0388c5f9af39d91dac, type: 2}
 --- !u!65 &3011090438106202371
 BoxCollider:
   m_ObjectHideFlags: 0

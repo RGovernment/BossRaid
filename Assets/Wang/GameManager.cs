@@ -1,20 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[DefaultExecutionOrder(-200)]
 public class GameManager : MonoBehaviour
 {
     public static GameManager m_Instance { get; private set; }
     public IReadOnlyList<Player> Players => m_listPlayer;
 
     private readonly List<Player> m_listPlayer = new();
-
-    public static GameManager GetOrCreate()
-    {
-        if (m_Instance == null)
-            new GameObject("GameManager").AddComponent<GameManager>();
-
-        return m_Instance;
-    }
 
  
     private void Awake()
@@ -41,6 +34,15 @@ public class GameManager : MonoBehaviour
     public void OnExitPlayer(Player _refPlayer)
     {
         m_listPlayer.Remove(_refPlayer);
+    }
+
+    public void RefreshPlayer(Vector3 _vSpawnPos)
+    {
+        foreach (Player player in m_listPlayer)
+        {
+            if (player != null)
+                player.RefreshPlayer(GameSceneManager.GetPlayerSpawnPosition(_vSpawnPos, player.photonView.OwnerActorNr));
+        }
     }
     
     public int GetAlivePlayerCount()
