@@ -48,6 +48,11 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
         attack = monsterData.Attack;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.H))
+            TakeDamage(new tAttackInfo(transform.position, 100f));
+    }
     public void TakeDamage(tAttackInfo attackInfo)
     {
         if (monsterData == null || IsDead)
@@ -78,7 +83,7 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
         float damage = Mathf.Max(0f, requestedDamage);
         currentHp = Mathf.Max(0f, currentHp - damage);
 
-        Debug.Log($"보스 피격: {damage}, 남은 HP: {currentHp}", this);
+        Debug.LogWarning($"보스 피격: {damage}, 남은 HP: {currentHp}", this);
 
         if (IsDead)
             Die();
@@ -141,5 +146,6 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
             bodyCollider.enabled = false;
 
         Debug.Log("보스 사망", this);
+        Debug.Log($"Die 호출 — 방장: {PhotonNetwork.IsMasterClient}, HP: {currentHp}", this);
     }
 }

@@ -24,6 +24,8 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
     public SkillSpawner SkillSpawner => m_refSkillSpawner;
 
     public bool IsMine => m_refPhotonView.IsMine;
+    public bool IsAlive => isActiveAndEnabled && m_refObjectInfo.CurrentHP > 0f &&
+        m_refFSM?.CurrentState?.Type != eStateType.Dead;
     private void Awake()
     {
         m_refPhotonView = GetComponent<PhotonView>();
@@ -79,13 +81,14 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
         if (m_refPhotonView != null && PhotonNetwork.InRoom && !m_refPhotonView.IsMine)
             return;
 
-        if (m_Instance.HasGameplayInput)
+        if (IsAlive && m_Instance.HasGameplayInput)
         {
             float fRotate = m_Instance.InputInfo.Delta.x * m_fRotateSensitivity;
             m_fRotateY = Mathf.Repeat(m_fRotateY + fRotate, 360f);
         }
 
-        m_refFSM.UpdateState();
+        if (m_refFSM.isActiveAndEnabled)
+            m_refFSM.UpdateState();
     }
 
     private void FixedUpdate()
@@ -93,7 +96,8 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
         if (m_refPhotonView != null && PhotonNetwork.InRoom && !m_refPhotonView.IsMine)
             return;
 
-        m_refFSM.FixedUpdateState();
+        if (m_refFSM.isActiveAndEnabled)
+            m_refFSM.FixedUpdateState();
     }
 
     private void OnDisable()
@@ -114,16 +118,51 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
 
     public void TakeDamage(tAttackInfo _tInfo)
     {
-        if (m_refObjectInfo.CurrentHP <= 0f || m_refFSM.CurrentState?.Type == eStateType.Dead)
+        if (!IsAlive || _tInfo.Damage <= 0f)
             return;
 
-        m_refObjectInfo.CurrentHP -= _tInfo.Damage;
-        if (m_refObjectInfo.CurrentHP <= 0f)
+        //마클이 아니면 마클한테 허락을 구하기
+        if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
         {
-            if (!m_refFSM.ChangeState(eStateType.Dead))
-                return;
+            if (IsMine)
+                photonView.RPC(nameof(RequestDamage), RpcTarget.MasterClient, _tInfo.Pos, _tInfo.Damage);
+            return;
         }
-        else
-            m_refFSM.TakeDamage(_tInfo);
+
+        float remainingHp = Mathf.Max(0f, m_refObjectInfo.CurrentHP - _tInfo.Damage);
+        ApplyDamage(remainingHp, _tInfo.Pos);
+
+        if (PhotonNetwork.InRoom)
+            photonView.RPC(nameof(ReceiveDamage), RpcTarget.Others, remainingHp, _tInfo.Pos);
+    }
+
+    [PunRPC]
+    private void RequestDamage(Vector3 vPos, float _fDamage, PhotonMessageInfo info)
+    {
+        if (!PhotonNetwork.IsMasterClient || info.Sender != photonView.Owner)
+            return;
+
+        TakeDamage(new tAttackInfo(vPos, _fDamage));
+    }
+
+    [PunRPC]
+    private void ReceiveDamage(float remainingHp, Vector3 _vPos, PhotonMessageInfo info)
+    {
+        if (info.Sender != PhotonNetwork.MasterClient)
+            return;
+
+        ApplyDamage(remainingHp, _vPos);
+    }
+
+    private void ApplyDamage(float _fRemainingHp, Vector3 _vPos)
+    {
+        float damage = m_refObjectInfo.CurrentHP - _fRemainingHp;
+        m_refObjectInfo.CurrentHP = _fRemainingHp;
+
+        m_refSkillSpawner.SkillUseUnLock();
+        if (m_refObjectInfo.CurrentHP <= 0f)
+            m_refFSM.ChangeState(eStateType.Dead);
+        else if (!PhotonNetwork.InRoom || IsMine)
+            m_refFSM.TakeDamage(new tAttackInfo(_vPos, damage));
     }
 }

@@ -71,13 +71,11 @@ public class DragonSlam : MonoBehaviour
 
         slamHitBox.GetComponent<AttackDamage>().ResetHits();
         slamHitBox.enabled = true;
-        Debug.Log("내려찍기 타격!");
         RemoveTelegraph();
     }
 
     public void SlamEnd()
     {
-        Debug.Log("내려찍기 종료");
         slamHitBox.enabled = false;
         hasHit = false;
         isAttacking = false;
