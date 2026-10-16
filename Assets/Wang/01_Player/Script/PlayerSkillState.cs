@@ -36,6 +36,7 @@ public sealed class PlayerSkillState : PlayerState
         InputManager.m_Instance.Skill2Action.started += RequestSkill2;
         InputManager.m_Instance.Skill3Action.started += RequestSkill3;
         InputManager.m_Instance.Skill4Action.started += RequestSkill4;
+        InputManager.m_Instance.Skill5Action.started += RequestSkill5;
     }
 
     public override void Dispose()
@@ -49,6 +50,7 @@ public sealed class PlayerSkillState : PlayerState
             InputManager.m_Instance.Skill2Action.started -= RequestSkill2;
             InputManager.m_Instance.Skill3Action.started -= RequestSkill3;
             InputManager.m_Instance.Skill4Action.started -= RequestSkill4;
+            InputManager.m_Instance.Skill5Action.started -= RequestSkill5;
         }
 
         base.Dispose();
@@ -71,6 +73,9 @@ public sealed class PlayerSkillState : PlayerState
 
     private void RequestSkill4(InputAction.CallbackContext _tContext)
         => RequestSkill(1004);
+
+    private void RequestSkill5(InputAction.CallbackContext _tContext)
+        => RequestSkill(1005);
 
     private async UniTask TargetGroundSkill()
     {

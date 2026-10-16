@@ -1005,7 +1005,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 834162374}
-  - component: {fileID: 834162373}
+  - component: {fileID: 834162375}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1013,19 +1013,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &834162373
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 834162372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 910e5bb20d8fd8949bd80c0f9cf524ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PhotonUnityNetworking.Demos::Photon.Pun.Demo.PunBasics.GameManager
-  playerPrefab: {fileID: 0}
 --- !u!4 &834162374
 Transform:
   m_ObjectHideFlags: 0
@@ -1041,6 +1028,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &834162375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 834162372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fd7051bb338f914fb14fc42cfcf9da8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
 --- !u!1 &922000000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1318,6 +1317,7 @@ MonoBehaviour:
   m_refSkill2ActionReference: {fileID: 7053088790786002665, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
   m_refSkill3ActionReference: {fileID: 8072368701088673742, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
   m_refSkill4ActionReference: {fileID: 1389920437237269934, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
+  m_refSkill5ActionReference: {fileID: -3722444833185621229, guid: 77697cb41ba8d164cbd0c2673528ec05, type: 3}
 --- !u!4 &1008757502
 Transform:
   m_ObjectHideFlags: 0
