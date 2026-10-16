@@ -9,9 +9,9 @@ public class Lightning : SkillBase
     public override void OnEnable()
     {
         base.OnEnable();
-        if (photonView == null) return;
+        if (UsePlayer.photonView == null) return;
 
-        if (photonView.IsMine)
+        if (UsePlayer.photonView.IsMine)
             animator.enabled = true;
         
         else

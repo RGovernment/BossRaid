@@ -9,4 +9,6 @@ public static class Constant_JJH
 
     public const int PROJECTILE_SKILL_GAP_TIMER = 150;
     public const int COOLDOWN_RECIVE_TIMER = 100;
+
+    public const float COOLDOWN_DELAY_DEADLINE = 0.01f;
 }

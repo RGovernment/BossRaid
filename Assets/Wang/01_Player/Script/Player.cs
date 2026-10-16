@@ -3,9 +3,10 @@ using static FSM;
 using static InputManager;
 using UnityEngine.Serialization;
 using Photon.Pun;
+using ExitGames.Client.Photon;
 
 [RequireComponent(typeof(FSM), typeof(Animator), typeof(Rigidbody))]
-public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCallback
+public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhotonViewCallback
 {
     //스킬같은 우선권이 밀릴 때도 마우스 회전을 받기 위해서 Player쪽에서 관리
     [SerializeField, Min(0f)] private float m_fRotateSensitivity = 3f;
@@ -169,5 +170,10 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
             m_refFSM.ChangeState(eStateType.Dead);
         else if (!PhotonNetwork.InRoom || IsMine)
             m_refFSM.TakeDamage(new tAttackInfo(_vPos, damage));
+    }
+
+    public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps)
+    {
+        m_refSkillSpawner.PropertiesUpdate(targetPlayer, changedProps);
     }
 }
