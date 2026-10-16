@@ -29,6 +29,7 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
     private void Awake()
     {
         m_refPhotonView = GetComponent<PhotonView>();
+        DontDestroyOnLoad(gameObject);
         //임시 코드 -> SO로 수정
         m_refObjectInfo.CurrentHP = 100.0f;
         m_refObjectInfo.CurrentSpeed = 2.0f;

@@ -11,7 +11,7 @@ using PhotonPlayer = Photon.Realtime.Player;
 
 public class PhotonLobbyManager : MonoBehaviourPunCallbacks
 {
-    private const string BattleScenePath = "Assets/Wang/Test/PhotonPlayerTest.unity";
+    private const string VillageScenePath = "Assets/Scenes/Mainvillage.unity";
 
     [SerializeField] private TMP_Text statusText;
     [SerializeField] private TMP_Text roomInfoText;
@@ -126,10 +126,10 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
             }
         }
 
-        int sceneIndex = SceneUtility.GetBuildIndexByScenePath(BattleScenePath);
+        int sceneIndex = SceneUtility.GetBuildIndexByScenePath(VillageScenePath);
         if (sceneIndex < 0)
         {
-            SetStatus("Add the battle scene to Build Profiles.");
+            SetStatus("Add Mainvillage to Build Profiles.");
             return;
         }
 
