@@ -1493,7 +1493,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 2
+  m_CollisionDetection: 1
 --- !u!136 &5228934778175979849
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -38220,6 +38220,7 @@ MonoBehaviour:
   rayMask:
     serializedVersion: 2
     m_Bits: 0
+  allSkillUseablePlayers: []
 --- !u!1001 &1292383379
 PrefabInstance:
   m_ObjectHideFlags: 0
