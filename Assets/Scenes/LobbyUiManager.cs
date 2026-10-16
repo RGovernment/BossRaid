@@ -81,7 +81,24 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
 
         if (string.IsNullOrEmpty(inputName)) return;
 
-        string uid = FirebaseBootstrap.Auth.CurrentUser.UserId;
+        var auth = FirebaseBootstrap.Auth;
+
+        if (auth == null)
+        {
+            Debug.LogWarning("Firebase가 아직 준비되지 않았습니다.");
+            return;
+        }
+
+        var user = auth.CurrentUser;
+
+        if (user == null)
+        {
+            Debug.LogWarning("로그인이 필요합니다.");
+            return;
+        }
+
+        string uid = user.UserId;
+        //string uid = FirebaseBootstrap.Auth.CurrentUser.UserId;
 
         // 파이어베이스 DB에 유저 UID 방을 파고 닉네임 저장
         await FirebaseDatabase.DefaultInstance

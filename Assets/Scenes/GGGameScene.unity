@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkPlayerSpawner
   playerPrefabs:
-  - {fileID: 8019319621053808905, guid: 1b426239d7a189143afa874c6072afbb, type: 3}
+  - {fileID: 445185023578420057, guid: 5da4f275de7cf094089c4eb455a22961, type: 3}
   - {fileID: 8385079275456910874, guid: 74b2cacdf9b900443b2e57fc261926e9, type: 3}
   spawnPoints:
   - {fileID: 851711366}

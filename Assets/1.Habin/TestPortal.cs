@@ -48,6 +48,7 @@ public class TestPortal : MonoBehaviour
         // 플레이어 최상위의 콜라이더만 감지합니다.
         PhotonView playerView = other.GetComponent<PhotonView>();
 
+
         return other.CompareTag("Player") && playerView != null && playerView.Owner != null;
     }
 
