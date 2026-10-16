@@ -46097,7 +46097,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3449446141641639979, guid: e8db5a8cadecc5c47a02c32af5f08eeb, type: 3}
       propertyPath: targetScene
-      value: '"Mainvillage"'
+      value: Mainvillage
       objectReference: {fileID: 0}
     - target: {fileID: 6322014765577698499, guid: e8db5a8cadecc5c47a02c32af5f08eeb, type: 3}
       propertyPath: m_LocalPosition.x
