@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 
+// 특정 지점에 닿으면(트리거 콜라이더) Ready 상태로 전환됨. 벗어나면 Ready 상태가 해제되고 준비 인원에서도 빠짐.
+// 시험용으로 만든 순수 AI 스크립트라 주석 더럽게 많으니 주의.
+// 필요 없으면 삭제해도 되는 스크립트.
+
 public class ReadyZone : MonoBehaviourPunCallbacks
 {
     [Header("시작(출발) 버튼 UI 연결")]
@@ -14,7 +18,7 @@ public class ReadyZone : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        // 🌟 초기 세팅: 스타트 버튼은 오직 '방장(MasterClient)' 화면에서만 제어할 수 있게 초기화
+        // 초기 세팅: 스타트 버튼은 오직 '방장(MasterClient)' 화면에서만 제어할 수 있게 초기화
         if (startButton != null)
         {
             startButton.gameObject.SetActive(false); // 시작할 때는 꺼둠
@@ -25,7 +29,7 @@ public class ReadyZone : MonoBehaviourPunCallbacks
     // 플레이어가 레디존(트리거 콜라이더)에 들어왔을 때 실행
     private void OnTriggerEnter(Collider other)
     {
-        // 🌟 핵심 철학: 연산은 오직 마스터 클라이언트(방장) 컴퓨터에서만 수행합니다.
+        // 핵심 철학: 연산은 오직 마스터 클라이언트(방장) 컴퓨터에서만 수행합니다.
         if (!PhotonNetwork.IsMasterClient) return;
 
         // 들어온 오브젝트가 네트워크 플레이어 캐릭터인지 검사 (Tag가 Player이거나 PhotonView가 있는 경우)
@@ -85,7 +89,7 @@ public class ReadyZone : MonoBehaviourPunCallbacks
         {
             Debug.Log($"[레디존] 방장이 출발을 눌렀습니다. {battleSceneName} 씬으로 방 인원 전원 강제 이동합니다.");
 
-            // 🌟 포톤 자동 씬 동기화 전환: 방장이 이 함수로 씬을 넘기면, 
+            // 포톤 자동 씬 동기화 전환: 방장이 이 함수로 씬을 넘기면, 
             // 같은 방에 연결되어 있는 모든 클라이언트가 수동 조작 없이 자동으로 같이 로딩됩니다.
             PhotonNetwork.LoadLevel(battleSceneName);
         }
