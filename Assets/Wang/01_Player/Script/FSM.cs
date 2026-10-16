@@ -1,5 +1,6 @@
 using Photon.Pun;
 using System.Collections.Generic;
+using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -218,15 +219,27 @@ public sealed class FSM : MonoBehaviour
 
     private void OnCollisionEnter(Collision _refCollision)
     {
+        int collidedLayerMask = 1 << _refCollision.gameObject.layer;
+        if ((m_iGroundLayers.value & collidedLayerMask) == 0)
+            return;
+
         UpdateGroundContact(_refCollision);
     }
     private void OnCollisionStay(Collision _refCollision)
     {
+        int collidedLayerMask = 1 << _refCollision.gameObject.layer;
+        if ((m_iGroundLayers.value & collidedLayerMask) == 0)
+            return;
+
         UpdateGroundContact(_refCollision);
     }
 
     private void OnCollisionExit(Collision _refCollision)
     {
+        int iCollidedLayerMask = 1 << _refCollision.gameObject.layer;
+        if ((m_iGroundLayers.value & iCollidedLayerMask) == 0)
+            return;
+
         if (_refCollision.collider == m_refGroundCollider)
             ClearGroundContact();
     }
@@ -276,5 +289,11 @@ public sealed class FSM : MonoBehaviour
     private void ShootProjectileOther(Vector3 rayPosition)
     {
         m_refPlayer.SkillSpawner.ShootProjectileOther(rayPosition);
+    }
+
+    [PunRPC]
+    private void SyncCooldownToClient(int skillId, float cooldown)
+    {
+        m_refPlayer.SkillSpawner.SyncCooldownToClient(skillId, cooldown);
     }
 }

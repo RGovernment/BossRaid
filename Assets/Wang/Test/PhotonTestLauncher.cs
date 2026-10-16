@@ -13,10 +13,17 @@ namespace Wang.Test
         [SerializeField] private string region = "kr";
         [SerializeField] private Camera waitingCamera;
         private string status = "Connecting...";
+        private bool hasSpawned;
 
         private void Start()
         {
             Application.runInBackground = true;
+            if (PhotonNetwork.InRoom)
+            {
+                SpawnPlayer();
+                return;
+            }
+
             Connect();
         }
 
@@ -48,9 +55,23 @@ namespace Wang.Test
 
         public override void OnJoinedRoom()
         {
+            SpawnPlayer();
+        }
+
+        private void SpawnPlayer()
+        {
+            if (!PhotonNetwork.InRoom || hasSpawned)
+                return;
+
             int slot = (PhotonNetwork.LocalPlayer.ActorNumber - 1) % 4;
             Vector3 spawn = new Vector3((slot % 2) * 3f - 1.5f, 0.2f, (slot / 2) * 3f);
-            PhotonNetwork.Instantiate(PrefabPath, spawn, Quaternion.identity);
+            if (PhotonNetwork.Instantiate(PrefabPath, spawn, Quaternion.identity) == null)
+            {
+                status = "Player spawn failed. See Console.";
+                return;
+            }
+
+            hasSpawned = true;
             waitingCamera.gameObject.SetActive(false);
             status = "Connected";
             Debug.Log($"[Wang Photon Test] Joined {PhotonNetwork.CurrentRoom.Name}, actor {PhotonNetwork.LocalPlayer.ActorNumber}.");
@@ -70,6 +91,7 @@ namespace Wang.Test
 
         public override void OnDisconnected(DisconnectCause cause)
         {
+            hasSpawned = false;
             status = "Disconnected: " + cause;
             if (waitingCamera != null)
                 waitingCamera.gameObject.SetActive(true);

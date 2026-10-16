@@ -118,9 +118,10 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
 
     public void TakeDamage(tAttackInfo _tInfo)
     {
-        if (!IsAlive || _tInfo.Damage <= 0f || float.IsNaN(_tInfo.Damage) || float.IsInfinity(_tInfo.Damage))
+        if (!IsAlive || _tInfo.Damage <= 0f || m_refFSM.CurrentState?.Type == eStateType.Roll)
             return;
 
+        //마클이 아니면 마클한테 허락을 구하기
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
         {
             if (IsMine)
@@ -136,36 +137,33 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
     }
 
     [PunRPC]
-    private void RequestDamage(Vector3 position, float damage, PhotonMessageInfo info)
+    private void RequestDamage(Vector3 vPos, float _fDamage, PhotonMessageInfo info)
     {
         if (!PhotonNetwork.IsMasterClient || info.Sender != photonView.Owner)
             return;
 
-        TakeDamage(new tAttackInfo(position, damage));
+        TakeDamage(new tAttackInfo(vPos, _fDamage));
     }
 
     [PunRPC]
-    private void ReceiveDamage(float remainingHp, Vector3 position, PhotonMessageInfo info)
+    private void ReceiveDamage(float remainingHp, Vector3 _vPos, PhotonMessageInfo info)
     {
         if (info.Sender != PhotonNetwork.MasterClient)
             return;
 
-        ApplyDamage(remainingHp, position);
+        ApplyDamage(remainingHp, _vPos);
     }
 
-    private void ApplyDamage(float remainingHp, Vector3 position)
+    private void ApplyDamage(float _fRemainingHp, Vector3 _vPos)
     {
-        float damage = m_refObjectInfo.CurrentHP - remainingHp;
-        m_refObjectInfo.CurrentHP = remainingHp;
+        
+        float damage = m_refObjectInfo.CurrentHP - _fRemainingHp;
+        m_refObjectInfo.CurrentHP = _fRemainingHp;
 
+        m_refSkillSpawner.SkillUseUnLock();
         if (m_refObjectInfo.CurrentHP <= 0f)
-        {
             m_refFSM.ChangeState(eStateType.Dead);
-        }
         else if (!PhotonNetwork.InRoom || IsMine)
-        {
-            // The owner runs knockback; its Animator and Transform views synchronize the reaction.
-            m_refFSM.TakeDamage(new tAttackInfo(position, damage));
-        }
+            m_refFSM.TakeDamage(new tAttackInfo(_vPos, damage));
     }
 }
