@@ -45,6 +45,12 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
         SetStatus("Disconnect");
     }
 
+    public override void OnEnable()
+    {
+        base.OnEnable();
+        RefreshButtons();
+    }
+
     public void OnClickConnect()
     {
         if (PhotonNetwork.IsConnected)
@@ -84,13 +90,13 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
     {
         RoomOptions options = new RoomOptions();
         options.MaxPlayers = 4;
-        PhotonNetwork.CreateRoom("ComeOn", options);
+        PhotonNetwork.CreateRoom("ComeOn_", options);
     }
     public void OnClickJoinRoom()
     {
         if (PhotonNetwork.InRoom && !PhotonNetwork.InLobby)
             return;
-        PhotonNetwork.JoinRoom("ComeOn");
+        PhotonNetwork.JoinRoom("ComeOn_");
     }
 
     public void OnClickReady()
@@ -367,4 +373,10 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
             item.Setup(info, JoinRoomByName);
         }
     }
+    public void LeaveCurrentRoom()
+    {
+        if(PhotonNetwork.IsMasterClient)
+            PhotonNetwork.LoadLevel("LobyScene");
+    }
+
 }

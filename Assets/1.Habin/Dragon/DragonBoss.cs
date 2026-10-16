@@ -147,5 +147,9 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
 
         Debug.Log("보스 사망", this);
         Debug.Log($"Die 호출 — 방장: {PhotonNetwork.IsMasterClient}, HP: {currentHp}", this);
+
+
+        if (PhotonNetwork.IsMasterClient)
+            PhotonNetwork.LoadLevel("LobyScene");
     }
 }
