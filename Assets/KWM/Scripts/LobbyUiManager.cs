@@ -129,6 +129,13 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinLobby();
     }
 
+    public override void OnJoinedLobby()
+    {
+        base.OnJoinedLobby();
+
+        Debug.Log("[Lobby] 로비 재진입 완료. 방 목록을 성공적으로 갱신했습니다.");
+    }
+
     public void OnClickCreateRoom()
     {
 
@@ -149,7 +156,7 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("[Lobby] 방 생성성공! 대기 공간(CampScene)으로 이동합니다.");
         
-        PhotonNetwork.LoadLevel("GameScene");
+        PhotonNetwork.LoadLevel("GGGameScene"); // 전환되는 씬 이름을 적는 곳 입니다. 바꾸고 싶다면 여기를 수정해 주세요.
     }
 
 
