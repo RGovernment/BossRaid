@@ -318,6 +318,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
 
     public void PropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps)
     {
+        Debug.Log("작동");
         if (changedProps.ContainsKey("Loaded"))
         {
             Debug.Log("작동");
