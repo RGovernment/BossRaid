@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
@@ -6,12 +7,20 @@ public class TestPortal : MonoBehaviour
 {
     [SerializeField] private string targetScene;
 
+    private int currentplayer;
     private int insideCount;
     private bool isLoading;
 
     private void Awake()
     {
         GetComponent<BoxCollider>().isTrigger = true;
+    }
+
+    private void Start()
+    {
+        int refCount = GameManager.m_Instance.GetAlivePlayerCount();
+
+        int a = 10;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -26,7 +35,7 @@ public class TestPortal : MonoBehaviour
 
         Debug.Log($"포탈 인원: {insideCount}/{PhotonNetwork.CurrentRoom.PlayerCount}");
 
-        if (insideCount == PhotonNetwork.CurrentRoom.PlayerCount)
+        if (insideCount == GameManager.m_Instance.GetAlivePlayerCount())
             MoveScene();
     }
 
@@ -63,4 +72,7 @@ public class TestPortal : MonoBehaviour
         PhotonNetwork.CurrentRoom.IsOpen = false;
         PhotonNetwork.LoadLevel(targetScene);
     }
+
+
+    
 }

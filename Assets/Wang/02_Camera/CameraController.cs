@@ -77,9 +77,9 @@ public class CameraController : MonoBehaviour
         else
         {
             m_refCurPlayer = m_refPlayer;
-            foreach (Player player in FindObjectsByType<Player>(FindObjectsSortMode.None))
+            foreach (Player player in GameManager.m_Instance.Players)
             {
-                if (player != m_refPlayer && player.IsAlive && player.photonView.OwnerActorNr > 0)
+                if (player != null && player != m_refPlayer && player.IsAlive && player.photonView.OwnerActorNr > 0)
                 {
                     m_refPlayer = player;
                     break;

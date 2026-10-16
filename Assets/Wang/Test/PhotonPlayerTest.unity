@@ -18140,6 +18140,8 @@ MonoBehaviour:
   roomName: Wang-Player-Sync-Test
   region: kr
   waitingCamera: {fileID: 1745773634}
+  spawnOrigin: {x: 0, y: 0.2, z: 0}
+  showDebugGui: 1
 --- !u!1 &938220375
 GameObject:
   m_ObjectHideFlags: 0
@@ -42674,7 +42676,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3449446141641639979, guid: e8db5a8cadecc5c47a02c32af5f08eeb, type: 3}
       propertyPath: targetScene
-      value: '"Mainvillage"'
+      value: Mainvillage
       objectReference: {fileID: 0}
     - target: {fileID: 6322014765577698499, guid: e8db5a8cadecc5c47a02c32af5f08eeb, type: 3}
       propertyPath: m_LocalPosition.x

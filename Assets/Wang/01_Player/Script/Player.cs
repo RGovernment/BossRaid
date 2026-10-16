@@ -38,6 +38,7 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
         if (m_refSkillSpawner == null)
             m_refSkillSpawner = GetComponentInChildren<SkillSpawner>();
         Init();
+        GameManager.GetOrCreate().OnEnterPlayer(this);
     }
 
     private void Init()
@@ -108,6 +109,8 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
 
     private void OnDestroy()
     {
+        if (GameManager.m_Instance != null)
+            GameManager.m_Instance.OnExitPlayer(this);
         m_refFSM.Dispose();
     }
 

@@ -68,9 +68,9 @@ namespace Wang.Test
             int slot = (PhotonNetwork.LocalPlayer.ActorNumber - 1) % 4;
             Vector3 spawn = spawnOrigin + new Vector3((slot % 2) * 3f - 1.5f, 0f, (slot / 2) * 3f);
             GameObject playerObject = null;
-            foreach (Player player in FindObjectsByType<Player>(FindObjectsSortMode.None))
+            foreach (Player player in GameManager.GetOrCreate().Players)
             {
-                if (player.photonView.IsMine)
+                if (player != null && player.gameObject.activeInHierarchy && player.photonView.IsMine)
                 {
                     playerObject = player.gameObject;
                     break;
