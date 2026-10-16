@@ -107,7 +107,7 @@ public class SkillTest : MonoBehaviour
 
     private bool TriggerTestSkill(int id)
     {
-        bool success = skillSpawner.UseSkill( id);
+        bool success = skillSpawner.UseSkill(id);
 
         if (!success) return false;
 

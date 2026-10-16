@@ -1,5 +1,6 @@
 using Photon.Pun;
 using System.Collections.Generic;
+using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -288,5 +289,11 @@ public sealed class FSM : MonoBehaviour
     private void ShootProjectileOther(Vector3 rayPosition)
     {
         m_refPlayer.SkillSpawner.ShootProjectileOther(rayPosition);
+    }
+
+    [PunRPC]
+    private void SyncCooldownToClient(int skillId, float cooldown)
+    {
+        m_refPlayer.SkillSpawner.SyncCooldownToClient(skillId, cooldown);
     }
 }
