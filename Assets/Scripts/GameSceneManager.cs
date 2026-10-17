@@ -2,17 +2,11 @@ using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public sealed class GameSceneManager : MonoBehaviourPunCallbacks
 {
-    private const string SceneKey = "gameScene";
-    private const string SpawnKey = "gameSceneSpawn";
-    private const string RequestKey = "gameSceneRequest";
-
     public static GameSceneManager m_Instance { get; private set; }
-    private SOSceneData m_refPendingScene;
-    private int m_iRequest;
+    [SerializeField] private List<SOSceneData> m_listSceneData = new();
     private bool m_bLoading;
 
     private void Awake()
@@ -31,12 +25,12 @@ public sealed class GameSceneManager : MonoBehaviourPunCallbacks
 
     public bool MoveScene(SOSceneData _refSceneData, IEnumerable<Player> _playersInside)
     {
-        int insideCount = 0;
+        int iInsideCount = 0;
         foreach (Player player in _playersInside)
             if (player != null && player.IsAlive)
-                insideCount++;
+                iInsideCount++;
 
-        if (insideCount == 0 || insideCount != GameManager.m_Instance.GetAlivePlayerCount())
+        if (iInsideCount == 0 || iInsideCount != GameManager.m_Instance.GetAlivePlayerCount())
             return false;
 
         return MoveScene(_refSceneData);
@@ -44,39 +38,17 @@ public sealed class GameSceneManager : MonoBehaviourPunCallbacks
 
     public bool MoveScene(SOSceneData _refSceneData)
     {
-        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bLoading || m_refPendingScene != null)
+        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bLoading)
             return false;
 
         if (_refSceneData == null)
             return false;
 
-        m_refPendingScene = _refSceneData;
-        m_iRequest = PhotonNetwork.CurrentRoom.CustomProperties[RequestKey] is int previous ? previous + 1 : 1;
-        if (PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable
-        {
-            [SceneKey] = _refSceneData.m_strNextSceneName,
-            [SpawnKey] = _refSceneData.m_vSpawnPos,
-            [RequestKey] = m_iRequest
-        }))
-            return true;
-
-        m_refPendingScene = null;
-        return false;
-    }
-
-    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
-    {
-        if (m_refPendingScene == null || !PhotonNetwork.IsMasterClient ||
-            !(propertiesThatChanged[RequestKey] is int request) || request != m_iRequest)
-            return;
-
-        // LoadLevel pauses message dispatch, so wait until the server has shared the spawn position.
-        string sceneName = m_refPendingScene.m_strNextSceneName;
-        m_refPendingScene = null;
         m_bLoading = true;
         PhotonNetwork.CurrentRoom.IsOpen = false;
         PhotonNetwork.AutomaticallySyncScene = true;
-        PhotonNetwork.LoadLevel(sceneName);
+        PhotonNetwork.LoadLevel(_refSceneData.m_strNextSceneName);
+        return true;
     }
 
     public bool TryGetSpawnOrigin(out Vector3 _vSpawnPos)
@@ -85,19 +57,16 @@ public sealed class GameSceneManager : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.InRoom)
             return false;
 
-        Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
-        if (!(properties[SceneKey] is string sceneName) || sceneName != SceneManager.GetActiveScene().name ||
-            !(properties[SpawnKey] is Vector3 spawn))
-            return false;
-
-        _vSpawnPos = spawn;
-        return true;
-    }
-
-    public static Vector3 GetPlayerSpawnPosition(Vector3 _vOrigin, int _iActorNumber)
-    {
-        int slot = Mathf.Max(0, _iActorNumber - 1) % 4;
-        return _vOrigin + new Vector3((slot % 2) * 3f - 1.5f, 0f, (slot / 2) * 3f);
+        string sceneName = SceneManager.GetActiveScene().name;
+        foreach (SOSceneData sceneData in m_listSceneData)
+        {
+            if (sceneData != null && sceneData.m_strNextSceneName == sceneName)
+            {
+                _vSpawnPos = sceneData.m_vSpawnPos;
+                return true;
+            }
+        }
+        return false;
     }
 
     private void OnSceneLoaded(Scene _scene, LoadSceneMode _mode)
@@ -109,7 +78,6 @@ public sealed class GameSceneManager : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-        m_refPendingScene = null;
         m_bLoading = false;
     }
 

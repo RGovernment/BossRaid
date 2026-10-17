@@ -38185,6 +38185,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d19f9f6fdcc5463181fa63ebcc8961c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSceneManager
+  m_listSceneData:
+  - {fileID: 11400000, guid: 7c4da95ae76b43e7a34e787ead258e00, type: 2}
+  - {fileID: 11400000, guid: 09d10e5af6304d0388c5f9af39d91dac, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

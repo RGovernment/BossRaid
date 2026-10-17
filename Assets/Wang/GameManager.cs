@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
         foreach (Player player in m_listPlayer)
         {
             if (player != null)
-                player.RefreshPlayer(GameSceneManager.GetPlayerSpawnPosition(_vSpawnPos, player.photonView.OwnerActorNr));
+                player.RefreshPlayer(_vSpawnPos);
         }
     }
     

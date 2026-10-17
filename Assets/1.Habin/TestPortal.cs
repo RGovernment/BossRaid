@@ -7,33 +7,29 @@ public class TestPortal : MonoBehaviour
 {
     [SerializeField] private SOSceneData m_refSceneData;
 
-    private readonly HashSet<Player> m_playersInside = new();
-    private bool isLoading;
+    private readonly HashSet<Player> m_hashPlayersInside = new();
+    private bool m_bIsLoading;
 
-    private void Awake()
-    {
-        GetComponent<BoxCollider>().isTrigger = true;
-    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || isLoading)
+        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bIsLoading)
             return;
 
         Player player = GetPlayer(other);
         if (player == null || !player.IsAlive)
             return;
 
-        m_playersInside.Add(player);
-        isLoading = GameSceneManager.m_Instance.MoveScene(m_refSceneData, m_playersInside);
+        m_hashPlayersInside.Add(player);
+        m_bIsLoading = GameSceneManager.m_Instance.MoveScene(m_refSceneData, m_hashPlayersInside);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || isLoading)
+        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bIsLoading)
             return;
 
-        m_playersInside.Remove(GetPlayer(other));
+        m_hashPlayersInside.Remove(GetPlayer(other));
     }
 
     private Player GetPlayer(Collider other)
