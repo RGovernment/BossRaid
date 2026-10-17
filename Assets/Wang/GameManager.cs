@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 [DefaultExecutionOrder(-200)]
@@ -7,6 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager m_Instance { get; private set; }
     public IReadOnlyList<Player> Players => m_listPlayer;
 
+    [SerializeField] private SOSceneData m_refVillageSceneData;
     private readonly List<Player> m_listPlayer = new();
 
  
@@ -29,11 +31,22 @@ public class GameManager : MonoBehaviour
             return;
 
         m_listPlayer.Add(_refPlayer);
+        _refPlayer.OnDeadEvent += OnPlayerDead;
     }
 
     public void OnExitPlayer(Player _refPlayer)
     {
+        if (_refPlayer != null)
+            _refPlayer.OnDeadEvent -= OnPlayerDead;
         m_listPlayer.Remove(_refPlayer);
+    }
+
+    private void OnPlayerDead()
+    {
+        if (!PhotonNetwork.IsMasterClient || GetAlivePlayerCount() != 0)
+            return;
+
+        GameSceneManager.m_Instance.MoveScene(m_refVillageSceneData);
     }
 
     public void RefreshPlayer(Vector3 _vSpawnPos)
@@ -65,6 +78,9 @@ public class GameManager : MonoBehaviour
         if (m_Instance != this)
             return;
 
+        foreach (Player player in m_listPlayer)
+            if (player != null)
+                player.OnDeadEvent -= OnPlayerDead;
         m_listPlayer.Clear();
         m_Instance = null;
     }

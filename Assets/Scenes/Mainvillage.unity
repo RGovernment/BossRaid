@@ -25675,6 +25675,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fd7051bb338f914fb14fc42cfcf9da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  m_refVillageSceneData: {fileID: 11400000, guid: 7c4da95ae76b43e7a34e787ead258e00, type: 2}
 --- !u!114 &834162376
 MonoBehaviour:
   m_ObjectHideFlags: 0

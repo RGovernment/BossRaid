@@ -24,6 +24,8 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
     [SerializeField] private SkillSpawner m_refSkillSpawner;
     public SkillSpawner SkillSpawner => m_refSkillSpawner;
 
+    public event System.Action OnDeadEvent;
+
     public bool IsMine => m_refPhotonView.IsMine;
     public bool IsAlive => isActiveAndEnabled && m_refObjectInfo.CurrentHP > 0f &&
         m_refFSM?.CurrentState?.Type != eStateType.Dead;
@@ -148,10 +150,11 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
         }
 
         float remainingHp = Mathf.Max(0f, m_refObjectInfo.CurrentHP - _tInfo.Damage);
-        ApplyDamage(remainingHp, _tInfo.Pos);
-
+        // Send damage before a death event can start loading the next scene.
         if (PhotonNetwork.InRoom)
             photonView.RPC(nameof(ReceiveDamage), RpcTarget.Others, remainingHp, _tInfo.Pos);
+
+        ApplyDamage(remainingHp, _tInfo.Pos);
     }
 
     [PunRPC]
@@ -175,12 +178,17 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
     private void ApplyDamage(float _fRemainingHp, Vector3 _vPos)
     {
         
+        bool bWasAlive = m_refObjectInfo.CurrentHP > 0f;
         float damage = m_refObjectInfo.CurrentHP - _fRemainingHp;
         m_refObjectInfo.CurrentHP = _fRemainingHp;
 
         m_refSkillSpawner.SkillUseUnLock();
         if (m_refObjectInfo.CurrentHP <= 0f)
+        {
             m_refFSM.ChangeState(eStateType.Dead);
+            if (bWasAlive)
+                OnDeadEvent?.Invoke();
+        }
         else if (!PhotonNetwork.InRoom || IsMine)
             m_refFSM.TakeDamage(new tAttackInfo(_vPos, damage));
     }

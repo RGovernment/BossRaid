@@ -72,8 +72,8 @@ public sealed class GameSceneManager : MonoBehaviourPunCallbacks
     private void OnSceneLoaded(Scene _scene, LoadSceneMode _mode)
     {
         m_bLoading = false;
-        if (TryGetSpawnOrigin(out Vector3 spawn))
-            GameManager.m_Instance.RefreshPlayer(spawn);
+        if (TryGetSpawnOrigin(out Vector3 vSpawn))
+            GameManager.m_Instance.RefreshPlayer(vSpawn);
     }
 
     public override void OnLeftRoom()
