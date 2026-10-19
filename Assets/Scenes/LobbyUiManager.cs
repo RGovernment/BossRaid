@@ -6,7 +6,10 @@ using Photon.Realtime;
 using TMPro;
 using Unity.AppUI.UI;
 using UnityEngine;
-
+using System.Text;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+using PhotonPlayer = Photon.Realtime.Player;
+using UIButton = UnityEngine.UI.Button;
 
 public class LobbyUiManager : MonoBehaviourPunCallbacks
 {
@@ -19,6 +22,35 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
     [Header("Nickname Setup")]
     [SerializeField] private TMP_InputField nicknameInputField;
 
+    [Header("방 생성")]
+    [SerializeField] private GameObject createRoomPanel;
+    [SerializeField] private TMP_InputField roomNameInputField;
+    [Header("방 대기 UI")]
+    [SerializeField] private GameObject roomPanel;
+    [SerializeField] private TMP_Text roomTitleText;
+    [SerializeField] private TMP_Text playerListText;
+    [SerializeField] private UIButton readyButton;
+    [SerializeField] private UIButton startButton;
+
+    [Header("시작 시 이동할 씬")]
+    [SerializeField] private string gameSceneName = "Mainvillage";
+
+    private const string ReadyKey = "ready";
+    private bool startingGame;
+
+
+    private bool creatingRoom;
+
+    private void Start()
+    {
+        PhotonNetwork.AutomaticallySyncScene = true;
+
+        if (roomPanel != null)
+            roomPanel.SetActive(false);
+
+        if (createRoomPanel != null)
+            createRoomPanel.SetActive(false);
+    }
 
     // 이벤트 구독 목적 : 클래스가 파이어베이스를 수시로 호출하는 것을 방지하기 위해.
     public override void OnEnable()
@@ -153,27 +185,69 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
         Debug.Log("[Lobby] 로비 재진입 완료. 방 목록을 성공적으로 갱신했습니다.");
     }
 
+    //수정
     public void OnClickCreateRoom()
     {
+        if (creatingRoom || PhotonNetwork.InRoom)
+            return;
 
-        RoomOptions options = new RoomOptions();
-        
-        options.MaxPlayers = 4;
-        options.IsOpen = true;
-        options.IsVisible = true;
+        if (!PhotonNetwork.IsConnectedAndReady)
+        {
+            Debug.LogWarning("포톤 서버에 접속한 후 방을 생성하세요.");
+            return;
+        }
 
-        string roomName = $"Room_{Random.Range(1000, 9999)}";
+        if (roomNameInputField == null)
+        {
+            Debug.LogError("Room Name Input Field를 연결하세요.", this);
+            return;
+        }
 
-        Debug.Log($"[Lobby] 포톤 서버에 방 생성을 요청합니다. 방 이름: {roomName}");
+        string roomName = roomNameInputField.text.Trim();
 
-        PhotonNetwork.CreateRoom(roomName, options);
+        if (string.IsNullOrWhiteSpace(roomName))
+        {
+            Debug.LogWarning("방 이름을 입력하세요.");
+            return;
+        }
+
+        RoomOptions options = new RoomOptions
+        {
+            MaxPlayers = 4,
+            IsOpen = true,
+            IsVisible = true
+        };
+
+        creatingRoom = true;
+
+        if (!PhotonNetwork.CreateRoom(roomName, options))
+        {
+            creatingRoom = false;
+            Debug.LogWarning("방 생성 요청을 전송하지 못했습니다.");
+        }
     }
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        creatingRoom = false;
 
+        Debug.LogWarning($"방 생성 실패: {message} ({returnCode})");
+    }
+    //수정
     public override void OnJoinedRoom()
     {
-        Debug.Log("[Lobby] 방 생성성공! 대기 공간(CampScene)으로 이동합니다.");
-        
-        PhotonNetwork.LoadLevel("GGGameScene"); // 전환되는 씬 이름을 적는 곳 입니다. 바꾸고 싶다면 여기를 수정해 주세요.
+        creatingRoom = false;
+        startingGame = false;
+
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable
+    {
+        { ReadyKey, false }
+    });
+
+        createRoomPanel.SetActive(false);
+        lobbyPanel.SetActive(false);
+        roomPanel.SetActive(true);
+
+        RefreshRoomUI();
     }
 
 
@@ -287,5 +361,127 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
             lobbyPanel.SetActive(false); // 클래스 선택창 끄기
         }
 
+    }
+
+    //방 만들기 패널
+    public void OnClickOpenCreateRoomPanel()
+    {
+        if (PhotonNetwork.InRoom || creatingRoom)
+            return;
+
+        createRoomPanel.SetActive(true);
+        roomNameInputField.ActivateInputField();
+    }
+
+    public void OnClickCancelCreateRoom()
+    {
+        createRoomPanel.SetActive(false);
+    }
+
+    public void OnClickReady()
+    {
+        if (!PhotonNetwork.InRoom || startingGame)
+            return;
+
+        bool nextReady = !IsReady(PhotonNetwork.LocalPlayer);
+
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable
+    {
+        { ReadyKey, nextReady }
+    });
+    }
+
+    public void OnClickStart()
+    {
+        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || startingGame)
+            return;
+
+        if (!AreAllPlayersReady())
+            return;
+
+        if (!Application.CanStreamedLevelBeLoaded(gameSceneName))
+        {
+            Debug.LogError($"Build Profiles에 씬을 추가하세요: {gameSceneName}", this);
+            return;
+        }
+
+        startingGame = true;
+        RefreshRoomUI();
+
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+
+        PhotonNetwork.LoadLevel(gameSceneName);
+    }
+    private bool IsReady(PhotonPlayer player)
+    {
+        return player.CustomProperties.TryGetValue(ReadyKey, out object value) && value is bool ready && ready;
+    }
+
+    private bool AreAllPlayersReady()
+    {
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom.PlayerCount == 0)
+            return false;
+
+        foreach (PhotonPlayer player in PhotonNetwork.PlayerList)
+        {
+            if (!IsReady(player))
+                return false;
+        }
+
+        return true;
+    }
+
+    private void RefreshRoomUI()
+    {
+        if (!PhotonNetwork.InRoom)
+            return;
+
+        Room room = PhotonNetwork.CurrentRoom;
+
+        if (roomTitleText != null)
+            roomTitleText.text = $"{room.Name} ({room.PlayerCount}/{room.MaxPlayers})";
+
+        if (playerListText != null)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            foreach (PhotonPlayer player in PhotonNetwork.PlayerList)
+            {
+                string masterMark = player.IsMasterClient ? " [방장]" : "";
+                string readyMark = IsReady(player) ? " ✓" : "";
+
+                builder.AppendLine($"{player.NickName}{masterMark}{readyMark}");
+            }
+
+            playerListText.text = builder.ToString();
+        }
+
+        if (readyButton != null)
+            readyButton.interactable = !startingGame;
+
+        if (startButton != null)
+        {
+            startButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
+            startButton.interactable = !startingGame && AreAllPlayersReady();
+        }
+    }
+    public override void OnPlayerEnteredRoom(PhotonPlayer newPlayer)
+    {
+        RefreshRoomUI();
+    }
+
+    public override void OnPlayerLeftRoom(PhotonPlayer otherPlayer)
+    {
+        RefreshRoomUI();
+    }
+    public override void OnPlayerPropertiesUpdate(PhotonPlayer targetPlayer, Hashtable changedProps)
+    {
+        if (changedProps.ContainsKey(ReadyKey))
+            RefreshRoomUI();
+    }
+    public override void OnMasterClientSwitched(PhotonPlayer newMasterClient)
+    {
+        RefreshRoomUI();
     }
 }
