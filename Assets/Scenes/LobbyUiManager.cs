@@ -28,7 +28,7 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
     [Header("방 대기 UI")]
     [SerializeField] private GameObject roomPanel;
     [SerializeField] private TMP_Text roomTitleText;
-    [SerializeField] private TMP_Text playerListText;
+    [SerializeField] private TMP_Text[] playerListTexts;
     [SerializeField] private UIButton readyButton;
     [SerializeField] private UIButton startButton;
 
@@ -442,21 +442,26 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
         if (roomTitleText != null)
             roomTitleText.text = $"{room.Name} ({room.PlayerCount}/{room.MaxPlayers})";
 
-        if (playerListText != null)
+        PhotonPlayer[] players = PhotonNetwork.PlayerList;
+
+        for (int i = 0; i < playerListTexts.Length; i++)
         {
-            StringBuilder builder = new StringBuilder();
+            if (playerListTexts[i] == null)
+                continue;
 
-            foreach (PhotonPlayer player in PhotonNetwork.PlayerList)
+            if (i >= players.Length)
             {
-                string masterMark = player.IsMasterClient ? " [방장]" : "";
-                string readyMark = IsReady(player) ? " ✓" : "";
-
-                builder.AppendLine($"{player.NickName}{masterMark}{readyMark}");
+                playerListTexts[i].text = "빈 자리";
+                continue;
             }
 
-            playerListText.text = builder.ToString();
-        }
+            PhotonPlayer player = players[i];
 
+            string masterMark = player.IsMasterClient ? " [방장]" : "";
+            string readyMark = IsReady(player) ? " ✓" : "";
+
+            playerListTexts[i].text = $"{player.NickName}{masterMark}{readyMark}";
+        }
         if (readyButton != null)
             readyButton.interactable = !startingGame;
 
