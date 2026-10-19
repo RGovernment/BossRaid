@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ public class TestPortal : MonoBehaviour
 
     private readonly HashSet<Player> m_hashPlayersInside = new();
     private bool m_bIsLoading;
-
+    public event Action<Player> OnPlayerInPortal;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -21,6 +22,7 @@ public class TestPortal : MonoBehaviour
             return;
 
         m_hashPlayersInside.Add(player);
+        OnPlayerInPortal?.Invoke(player);
         m_bIsLoading = GameSceneManager.m_Instance.MoveScene(m_refSceneData, m_hashPlayersInside);
     }
 

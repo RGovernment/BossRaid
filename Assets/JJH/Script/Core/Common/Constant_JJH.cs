@@ -12,6 +12,7 @@ public static class Constant_JJH
     public const string COLLIDER_Off = "ColliderOff";
     public const string SKILL_OFF = "SkillOff";
 
+    public const int MILLISECOND_BASE = 1000;
     public const int PROJECTILE_SKILL_GAP_TIMER = 150;
     public const int COOLDOWN_RECIVE_TIMER = 100;
 
