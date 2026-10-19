@@ -38213,7 +38213,8 @@ MonoBehaviour:
   - {fileID: 6337506343531890366, guid: eca9466c0f915f4478f0907bc29116fa, type: 3}
   - {fileID: 7739968402300561426, guid: 7ef039bfb3ff56144b0dccfa5df0d073, type: 3}
   - {fileID: 6470620243002109106, guid: 4058f0ea81461664887f9383c1b6ecc3, type: 3}
-  - {fileID: 930000201, guid: b084aafa154f4e9dbc0ffc5ab79055df, type: 3}
+  - {fileID: 7824541553539761767, guid: faab9dce52b5b20438794b42555ccd5e, type: 3}
+  - {fileID: 8285667749849238674, guid: 01e6cb7773e86bf48bf88733acb37164, type: 3}
   ProjectileHit: 0
   queuedSkillId: 0
   player: {fileID: 3985597358038621170}

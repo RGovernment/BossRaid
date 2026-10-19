@@ -283,11 +283,13 @@ public sealed class FSM : MonoBehaviour
 
     public void RefreshPlayer(Vector3 _vSpawnPos)
     {
+        //ChangeState(eStateType.Idle);
         Stop();
         ResetRigidbody(_vSpawnPos);
         ClearGroundContact();
         m_refPlayerView.SetActive(true);
         enabled = true;
+
         Animator.Rebind();
         Animator.Update(0f);
         if (IsMine)
