@@ -104,8 +104,8 @@ public sealed class PlayerSkillState : PlayerState
 
         m_iCurrentSkill = _iSkillId;
         bool bQueued = _vTarget.HasValue
-            ? m_refSpawner.UseSkillAOE(m_iCurrentSkill, _vTarget.Value)
-            : m_refSpawner.UseSkill(m_iCurrentSkill);
+            ? m_refSpawner.UseSkillAOE(m_iCurrentSkill, _vTarget.Value, m_refOwner.Player.photonView.OwnerActorNr)
+            : m_refSpawner.UseSkill(m_iCurrentSkill, m_refOwner.Player.photonView.OwnerActorNr);
         if (!bQueued)
         {
             EndSkill();

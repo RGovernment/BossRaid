@@ -148,7 +148,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     private async UniTaskVoid SyncCooldownLoopAsync(CancellationToken token)
     {
         TimeSpan delayTimeSpan = TimeSpan.FromMilliseconds(COOLDOWN_RECIVE_TIMER);
-        float minusCount = COOLDOWN_RECIVE_TIMER / 1000f;
+        float minusCount = COOLDOWN_RECIVE_TIMER / COOLDOWN_MILL_DIV;
         try
         {
             while (!token.IsCancellationRequested)
@@ -176,7 +176,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
                         if (!skillCooldownList[actorNr].ContainsKey(skillId)) continue;
 
                         float currentCooldown = skillCooldownList[actorNr][skillId];
-                        Debug.Log($"마스터({actorNr}) : {skillId} / {currentCooldown}");
+
                         if (currentCooldown > 0f)
                         {
                             skillCooldownList[actorNr][skillId] -= minusCount;
@@ -201,7 +201,7 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     {
         TimeSpan delayTimeSpan = TimeSpan.FromMilliseconds(COOLDOWN_RECIVE_TIMER);
 
-        float minusCount = COOLDOWN_RECIVE_TIMER / 1000f;
+        float minusCount = COOLDOWN_RECIVE_TIMER / COOLDOWN_MILL_DIV;
         try
         {
             while (!token.IsCancellationRequested)
@@ -292,7 +292,6 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
             if (item.photonView.IsMine && item.SkillSpawner
                 .skillCooldownList.TryGetValue(acNr, out Dictionary<int, float> value))
             {
-                Debug.Log($"{acNr} : {value}[{id}] = {cooldown}");
                 value[id] = cooldown;
                 break;
             }
@@ -320,6 +319,9 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     {
         if (useable)
             localCooldownList[id] = (0, false);
+        else
+            localCooldownList[id] = (localCooldownList[id].cooldown, false);
+
     }
 
     public override void OnDisable()
@@ -377,7 +379,6 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         
         if (localCooldownList.TryGetValue(id, out (float cooldown, bool isDelay) cool) 
             && cool.cooldown > 0f) {
-            Debug.Log(cool.cooldown);
             return false;
         }
 
@@ -450,9 +451,10 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
     /// <returns></returns>
     public async UniTask ReceiveAnimEvent(string eventName)
     {
+        string data = SkillFuncType.SkillOn.ToString();
         switch (eventName)
         {
-            case "SkillOn":
+            case SKILL_ON:
                 if (queuedSkillId != 0 && 
                     effectPool.TryGetValue(queuedSkillId, out var pool))
                 {
@@ -472,16 +474,16 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
                 }
                 break;
 
-            case "ColliderOn":
+            case COLLIDER_ON :
                 if (currentActiveSkill != null && queuedSkillId != 0)
                     currentActiveSkill.SkillColliderOn();
                 break;
 
-            case "ColliderOff":
+            case COLLIDER_Off:
                 if (currentActiveSkill != null)
                     currentActiveSkill.SkillColliderOff();
                 break;
-            case "SkillOff":
+            case SKILL_OFF:
                 currentActiveSkill = null;
                 queuedSkillId = 0;
                 targetPosition = null;
@@ -529,6 +531,11 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         
         return dummy;
     }
+
+    /// <summary>
+    /// 오브젝트 풀링 Active
+    /// </summary>
+    /// <param name="obj"></param>
 
     private void EffectStart(SkillBase obj)
     {
@@ -578,19 +585,39 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
 
     }
 
+    /// <summary>
+    /// 위치 정보가 필요한 경우의 RPC 데이터 전송용 함수
+    /// </summary>
+    /// <param name="rayPosition"></param>
+
     public void ShootProjectileOther(Vector3 rayPosition)
     {
         networkRayPosition = rayPosition;
     }
 
+    /// <summary>
+    /// 오브젝트 풀링 Deactive
+    /// </summary>
+    /// <param name="obj"></param>
+
     private void EffectEnd(SkillBase obj)
     {
         obj.rootParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
         obj.gameObject.SetActive(false);
+
+        // 피격 이펙트 강제 종료
         if(obj.hitEffect != null)
             obj.hitEffect.gameObject.SetActive(false);
+
+        // 위치 초기화
         obj.transform.SetParent(transform);
-        obj.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+
+        Quaternion rotate = Quaternion.identity;
+        if (obj.TryGetComponent(out Slash _))
+            rotate = Quaternion.Euler(SLASH_BASE_ROTATE_X, SLASH_BASE_ROTATE_Y, SLASH_BASE_ROTATE_Z);
+
+        obj.transform.SetLocalPositionAndRotation(Vector3.zero, rotate);
     }
 
     private void OnDestroy()
