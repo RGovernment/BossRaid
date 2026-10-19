@@ -25,6 +25,7 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
     public SkillSpawner SkillSpawner => m_refSkillSpawner;
 
     public event System.Action OnDeadEvent;
+    public event System.Action OnTakeDamage;
 
     public bool IsMine => m_refPhotonView.IsMine;
     public bool IsAlive => isActiveAndEnabled && m_refObjectInfo.CurrentHP > 0f &&

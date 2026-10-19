@@ -72,9 +72,20 @@ public class GameManager : MonoBehaviour
                 ++iCount;
         }
 
-
         return iCount;
     }
+
+    public Player GetLocalPlayer()
+    {
+        foreach(Player refPlayer in m_listPlayer)
+        {
+            if (refPlayer.IsMine)
+                return refPlayer;
+        }
+
+        return null;
+    }
+
 
     private void OnDestroy()
     {
