@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2e93fe8f3354ba68a98b1b48a137a81, type: 3}
   m_Name: ToBattleScene
   m_EditorClassIdentifier: Assembly-CSharp::SOSceneData
-  m_strNextSceneName: PhotonPlayerTest
+  m_strNextSceneName: BattleScene
   m_vSpawnPos: {x: 21.87, y: 0.24, z: 35.6}
