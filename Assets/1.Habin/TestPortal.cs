@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,7 +32,10 @@ public class TestPortal : MonoBehaviour
         if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bIsLoading)
             return;
 
-        m_hashPlayersInside.Remove(GetPlayer(other));
+        Player player = GetPlayer(other);
+
+        m_hashPlayersInside.Remove(player);
+        OnPlayerInPortal?.Invoke(player);
     }
 
     private Player GetPlayer(Collider other)
