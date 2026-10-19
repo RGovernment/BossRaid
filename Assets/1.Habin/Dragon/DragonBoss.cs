@@ -27,9 +27,11 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
     [SerializeField] private float attack;
 
     private bool deathHandled;
+    public event System.Action OnHpChanged;
 
     public float Attack => attack;
     public float CurrentHp => currentHp;
+    public float MaxHp => monsterData != null ? monsterData.MaxHp : 0f;
     public bool IsDead => currentHp <= 0f;
 
     private void Awake()
@@ -56,7 +58,8 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.H))
-            TakeDamage(new tAttackInfo(transform.position, 100f));
+            TakeDamage(new tAttackInfo(transform.position, 10f));
+        Debug.Log($"보스 {CurrentHp}/{MaxHp}");
     }
     public void TakeDamage(tAttackInfo attackInfo)
     {
@@ -84,12 +87,14 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
     {
         if (monsterData == null || IsDead)
             return;
-
         float damage = Mathf.Max(0f, requestedDamage);
+        float previousHp = currentHp;
+
         currentHp = Mathf.Max(0f, currentHp - damage);
 
+        if (currentHp != previousHp)
+            OnHpChanged?.Invoke();
         Debug.LogWarning($"보스 피격: {damage}, 남은 HP: {currentHp}", this);
-
         if (IsDead)
             Die();
     }
@@ -102,7 +107,13 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
         }
         else
         {
-            currentHp = (float)stream.ReceiveNext();
+            float receivedHp = (float)stream.ReceiveNext();
+
+            if (currentHp != receivedHp)
+            {
+                currentHp = receivedHp;
+                OnHpChanged?.Invoke();
+            }
 
             if (IsDead)
                 Die();
