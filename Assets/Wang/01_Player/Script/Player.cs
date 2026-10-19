@@ -3,9 +3,10 @@ using static FSM;
 using static InputManager;
 using UnityEngine.Serialization;
 using Photon.Pun;
+using ExitGames.Client.Photon;
 
 [RequireComponent(typeof(FSM), typeof(Animator), typeof(Rigidbody))]
-public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCallback
+public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhotonViewCallback
 {
     //스킬같은 우선권이 밀릴 때도 마우스 회전을 받기 위해서 Player쪽에서 관리
     [SerializeField, Min(0f)] private float m_fRotateSensitivity = 3f;
@@ -23,12 +24,23 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
     [SerializeField] private SkillSpawner m_refSkillSpawner;
     public SkillSpawner SkillSpawner => m_refSkillSpawner;
 
+    public event System.Action OnDeadEvent;
+    public event System.Action OnTakeDamage;
+
     public bool IsMine => m_refPhotonView.IsMine;
     public bool IsAlive => isActiveAndEnabled && m_refObjectInfo.CurrentHP > 0f &&
         m_refFSM?.CurrentState?.Type != eStateType.Dead;
     private void Awake()
     {
         m_refPhotonView = GetComponent<PhotonView>();
+        if (PhotonNetwork.InRoom && !m_refPhotonView.IsMine)
+        {
+            Rigidbody refBody = GetComponent<Rigidbody>();
+            refBody.useGravity = false;
+            refBody.interpolation = RigidbodyInterpolation.None;
+            refBody.isKinematic = true;
+        }
+
         DontDestroyOnLoad(gameObject);
         //임시 코드 -> SO로 수정
         m_refObjectInfo.CurrentHP = 100.0f;
@@ -38,6 +50,7 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
         if (m_refSkillSpawner == null)
             m_refSkillSpawner = GetComponentInChildren<SkillSpawner>();
         Init();
+        GameManager.m_Instance.OnEnterPlayer(this);
     }
 
     private void Init()
@@ -65,16 +78,6 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
                 m_refLocalCamera.SetActive(true);
             return;
         }
-
-        //enabled = false;
-        //m_refFSM.enabled = false;
-        //// Disabling Update alone leaves the remote character's input callbacks subscribed.
-        //m_refFSM.Dispose();
-        //Rigidbody refBody = GetComponent<Rigidbody>();
-        //refBody.linearVelocity = Vector3.zero;
-        //refBody.angularVelocity = Vector3.zero;
-        //refBody.isKinematic = true;
-        //refBody.useGravity = false;
     }
 
     private void Update()
@@ -108,7 +111,22 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
 
     private void OnDestroy()
     {
+        if (GameManager.m_Instance != null)
+            GameManager.m_Instance.OnExitPlayer(this);
         m_refFSM.Dispose();
+    }
+
+    public void RefreshPlayer(Vector3 _vSpawnPos)
+    {
+        m_refObjectInfo.CurrentHP = 100f;
+        m_refSkillSpawner.SkillUseUnLock();
+        m_refFSM.RefreshPlayer(_vSpawnPos);
+
+        if (IsMine && m_refLocalCamera != null)
+        {
+            m_refLocalCamera.SetActive(true);
+            m_refLocalCamera.GetComponent<CameraController>().RestorePlayerTarget(this);
+        }
     }
 
     public void ReceiveAnimEvent(AnimationEvent _refEvent)
@@ -131,10 +149,11 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
         }
 
         float remainingHp = Mathf.Max(0f, m_refObjectInfo.CurrentHP - _tInfo.Damage);
-        ApplyDamage(remainingHp, _tInfo.Pos);
-
+        // Send damage before a death event can start loading the next scene.
         if (PhotonNetwork.InRoom)
             photonView.RPC(nameof(ReceiveDamage), RpcTarget.Others, remainingHp, _tInfo.Pos);
+
+        ApplyDamage(remainingHp, _tInfo.Pos);
     }
 
     [PunRPC]
@@ -158,12 +177,17 @@ public sealed class Player : MonoBehaviourPun , ITakeDamgeable , IPhotonViewCall
     private void ApplyDamage(float _fRemainingHp, Vector3 _vPos)
     {
         
+        bool bWasAlive = m_refObjectInfo.CurrentHP > 0f;
         float damage = m_refObjectInfo.CurrentHP - _fRemainingHp;
         m_refObjectInfo.CurrentHP = _fRemainingHp;
 
         m_refSkillSpawner.SkillUseUnLock();
         if (m_refObjectInfo.CurrentHP <= 0f)
+        {
             m_refFSM.ChangeState(eStateType.Dead);
+            if (bWasAlive)
+                OnDeadEvent?.Invoke();
+        }
         else if (!PhotonNetwork.InRoom || IsMine)
             m_refFSM.TakeDamage(new tAttackInfo(_vPos, damage));
     }

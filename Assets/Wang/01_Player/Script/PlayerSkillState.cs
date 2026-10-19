@@ -36,6 +36,7 @@ public sealed class PlayerSkillState : PlayerState
         InputManager.m_Instance.Skill2Action.started += RequestSkill2;
         InputManager.m_Instance.Skill3Action.started += RequestSkill3;
         InputManager.m_Instance.Skill4Action.started += RequestSkill4;
+        InputManager.m_Instance.Skill5Action.started += RequestSkill5;
     }
 
     public override void Dispose()
@@ -49,6 +50,7 @@ public sealed class PlayerSkillState : PlayerState
             InputManager.m_Instance.Skill2Action.started -= RequestSkill2;
             InputManager.m_Instance.Skill3Action.started -= RequestSkill3;
             InputManager.m_Instance.Skill4Action.started -= RequestSkill4;
+            InputManager.m_Instance.Skill5Action.started -= RequestSkill5;
         }
 
         base.Dispose();
@@ -72,6 +74,9 @@ public sealed class PlayerSkillState : PlayerState
     private void RequestSkill4(InputAction.CallbackContext _tContext)
         => RequestSkill(1004);
 
+    private void RequestSkill5(InputAction.CallbackContext _tContext)
+        => RequestSkill(1005);
+
     private async UniTask TargetGroundSkill()
     {
         m_bTargeting = true;
@@ -90,7 +95,6 @@ public sealed class PlayerSkillState : PlayerState
 
     private void RequestSkill(int _iSkillId, Vector3? _vTarget = null)
     {
-        Debug.Log(_iSkillId);
         if (!m_refOwner.IsMine)
             return;
 
@@ -105,8 +109,8 @@ public sealed class PlayerSkillState : PlayerState
 
         m_iCurrentSkill = _iSkillId;
         bool bQueued = _vTarget.HasValue
-            ? m_refSpawner.UseSkillAOE(m_iCurrentSkill, _vTarget.Value)
-            : m_refSpawner.UseSkill(m_iCurrentSkill);
+            ? m_refSpawner.UseSkillAOE(m_iCurrentSkill, _vTarget.Value, m_refOwner.Player.photonView.OwnerActorNr)
+            : m_refSpawner.UseSkill(m_iCurrentSkill, m_refOwner.Player.photonView.OwnerActorNr);
         if (!bQueued)
         {
             EndSkill();

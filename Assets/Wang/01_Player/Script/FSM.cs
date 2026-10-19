@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections.Generic;
 using Unity.AppUI.UI;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -193,10 +194,13 @@ public sealed class FSM : MonoBehaviour
         m_refCurState.Exit();
         m_refCurState = null;
 
-        Vector3 vVelocity = Rigidbody.linearVelocity;
-        vVelocity.x = 0f;
-        vVelocity.z = 0f;
-        Rigidbody.linearVelocity = vVelocity;
+        if (!Rigidbody.isKinematic)
+        {
+            Vector3 vVelocity = Rigidbody.linearVelocity;
+            vVelocity.x = 0f;
+            vVelocity.z = 0f;
+            Rigidbody.linearVelocity = vVelocity;
+        }
     }
 
     public T FindState<T>(eStateType _eType) where T : PlayerState
@@ -272,6 +276,32 @@ public sealed class FSM : MonoBehaviour
         enabled = false;
     }
 
+    public void ResetRigidbody(Vector3 _vSpawnPos)
+    {
+        Rigidbody.position = _vSpawnPos;
+        transform.position = _vSpawnPos;
+        if (!Rigidbody.isKinematic)
+        {
+            Rigidbody.linearVelocity = Vector3.zero;
+            Rigidbody.angularVelocity = Vector3.zero;
+        }
+    }
+
+    public void RefreshPlayer(Vector3 _vSpawnPos)
+    {
+        //ChangeState(eStateType.Idle);
+        Stop();
+        ResetRigidbody(_vSpawnPos);
+        ClearGroundContact();
+        m_refPlayerView.SetActive(true);
+        enabled = true;
+
+        Animator.Rebind();
+        Animator.Update(0f);
+        if (IsMine)
+            StartState();
+    }
+
 
     [PunRPC]
     private void UseSkillOther(int id, int acNr)
@@ -292,8 +322,26 @@ public sealed class FSM : MonoBehaviour
     }
 
     [PunRPC]
-    private void SyncCooldownToClient(int skillId, float cooldown)
+    private void MasterCooldownSet(int acNr, int skillId, float cooldown)
     {
-        m_refPlayer.SkillSpawner.SyncCooldownToClient(skillId, cooldown);
+        m_refPlayer.SkillSpawner.MasterCooldownSet(acNr, skillId, cooldown);
+    }
+
+    [PunRPC]
+    private void MasterCooldownCheck(int skillId, int acNr)
+    {
+        m_refPlayer.SkillSpawner.MasterCooldownCheck(skillId, acNr);
+    }
+
+    [PunRPC]
+    private void IsSkillUseable(int skillId, bool useable)
+    {
+        m_refPlayer.SkillSpawner.IsSkillUseable(skillId, useable);
+    }
+
+    [PunRPC]
+    private void PlayerLoadSet()
+    {
+        m_refPlayer.SkillSpawner.PlayerLoadSet();
     }
 }

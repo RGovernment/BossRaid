@@ -1,67 +1,43 @@
 using Photon.Pun;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
 public class TestPortal : MonoBehaviour
 {
-    [SerializeField] private string targetScene;
+    [SerializeField] private SOSceneData m_refSceneData;
 
-    private int insideCount;
-    private bool isLoading;
+    private readonly HashSet<Player> m_hashPlayersInside = new();
+    private bool m_bIsLoading;
 
-    private void Awake()
-    {
-        GetComponent<BoxCollider>().isTrigger = true;
-    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || isLoading)
+        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bIsLoading)
             return;
 
-        if (!IsPlayerCollider(other))
+        Player player = GetPlayer(other);
+        if (player == null || !player.IsAlive)
             return;
 
-        insideCount++;
-
-        Debug.Log($"포탈 인원: {insideCount}/{PhotonNetwork.CurrentRoom.PlayerCount}");
-
-        if (insideCount == PhotonNetwork.CurrentRoom.PlayerCount)
-            MoveScene();
+        m_hashPlayersInside.Add(player);
+        m_bIsLoading = GameSceneManager.m_Instance.MoveScene(m_refSceneData, m_hashPlayersInside);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || isLoading)
+        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bIsLoading)
             return;
 
-        if (!IsPlayerCollider(other))
-            return;
-
-        insideCount = Mathf.Max(0, insideCount - 1);
-
-        Debug.Log($"포탈 인원: {insideCount}/{PhotonNetwork.CurrentRoom.PlayerCount}");
+        m_hashPlayersInside.Remove(GetPlayer(other));
     }
 
-    private bool IsPlayerCollider(Collider other)
+    private Player GetPlayer(Collider other)
     {
-        // 플레이어 최상위의 콜라이더만 감지합니다.
-        PhotonView playerView = other.GetComponent<PhotonView>();
+        if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
+            return other.GetComponent<Player>();
 
-
-        return other.CompareTag("Player") && playerView != null && playerView.Owner != null;
+        return null;
     }
 
-    private void MoveScene()
-    {
-        if (string.IsNullOrWhiteSpace(targetScene) || !Application.CanStreamedLevelBeLoaded(targetScene))
-        {
-            Debug.LogError("이동할 씬 이름과 Scene List 등록을 확인하세요.", this);
-            return;
-        }
-
-        isLoading = true;
-        PhotonNetwork.CurrentRoom.IsOpen = false;
-        PhotonNetwork.LoadLevel(targetScene);
-    }
 }
