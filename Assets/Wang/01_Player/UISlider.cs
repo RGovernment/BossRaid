@@ -14,7 +14,6 @@ public class UISlider : MonoBehaviour
     private Slider m_refSlider;
     private float m_fLerpDuration;
 
-    private CancellationToken m_ctsLerp;
     private void Awake()
     {
         m_refSlider = GetComponent<Slider>();
