@@ -34,6 +34,9 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
 
     [Header("시작 시 이동할 씬")]
     [SerializeField] private string gameSceneName = "Mainvillage";
+    [SerializeField] private UnityEngine.UI.Image[] readyChecks;
+    [SerializeField] private Sprite readyOnSprite;
+    [SerializeField] private Sprite readyOffSprite;
 
     private const string ReadyKey = "ready";
     private bool startingGame;
@@ -81,6 +84,7 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
             }
 
 
+            ClearRoomList();
             loginPanel.SetActive(true);
             nicknamePanel.SetActive(false);
             lobbyPanel.SetActive(false);
@@ -152,7 +156,7 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        Debug.Log("포톤 마스터 서버 접속 성공");
+        Debug.Log($"[LobbyTrace] Master region={PhotonNetwork.CloudRegion}, version={PhotonNetwork.GameVersion}, state={PhotonNetwork.NetworkClientState}");
         
         PhotonNetwork.JoinLobby();
 
@@ -181,6 +185,8 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         base.OnJoinedLobby();
+        Debug.Log($"[LobbyTrace] Joined lobby={PhotonNetwork.CurrentLobby.Name}, type={PhotonNetwork.CurrentLobby.Type}");
+        ClearRoomList();
 
         Debug.Log("[Lobby] 로비 재진입 완료. 방 목록을 성공적으로 갱신했습니다.");
     }
@@ -218,6 +224,7 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
             IsVisible = true
         };
 
+        Debug.Log($"[LobbyTrace] Create room={roomName}, region={PhotonNetwork.CloudRegion}, version={PhotonNetwork.GameVersion}");
         creatingRoom = true;
 
         if (!PhotonNetwork.CreateRoom(roomName, options))
@@ -235,6 +242,7 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
     //수정
     public override void OnJoinedRoom()
     {
+        Debug.Log($"[LobbyTrace] Joined room={PhotonNetwork.CurrentRoom.Name}, visible={PhotonNetwork.CurrentRoom.IsVisible}, players={PhotonNetwork.CurrentRoom.PlayerCount}");
         creatingRoom = false;
         startingGame = false;
 
@@ -255,42 +263,57 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
     [SerializeField] private Transform contentParent;
     [SerializeField] private GameObject roomNameTagPrefab;
 
-    public override void OnRoomListUpdate(System.Collections.Generic.List<Photon.Realtime.RoomInfo> roomList)
+    private readonly System.Collections.Generic.SortedDictionary<string, RoomInfo> cachedRooms =
+        new System.Collections.Generic.SortedDictionary<string, RoomInfo>(System.StringComparer.Ordinal);
+
+    public override void OnRoomListUpdate(System.Collections.Generic.List<RoomInfo> roomList)
     {
-        // 포톤Pun2가 중복된 정보를 누적시키는 문제가 있어 필요 없는 데이터를 파괴하는데 꼭 필요함.
+        Debug.Log($"[LobbyTrace] Room list update count={roomList.Count}, region={PhotonNetwork.CloudRegion}");
+        // Photon sends changes, rather than a complete room list.
+        foreach (var room in roomList)
+        {
+            Debug.Log($"[LobbyTrace] Room={room.Name}, removed={room.RemovedFromList}, visible={room.IsVisible}, players={room.PlayerCount}/{room.MaxPlayers}");
+            if (room.RemovedFromList || !room.IsVisible || room.PlayerCount <= 0)
+                cachedRooms.Remove(room.Name);
+            else
+                cachedRooms[room.Name] = room;
+        }
+
+        RebuildRoomList();
+    }
+
+    private void ClearRoomList()
+    {
+        cachedRooms.Clear();
+        RebuildRoomList();
+    }
+
+    private void RebuildRoomList()
+    {
+        if (contentParent == null || roomNameTagPrefab == null)
+        {
+            Debug.LogWarning("Connect Content Parent and Room Name Tag Prefab.", this);
+            return;
+        }
+
         foreach (Transform child in contentParent)
         {
+            child.gameObject.SetActive(false);
             Destroy(child.gameObject);
         }
 
-        // 포톤 서버가 보내준 최신 데이터를 기반으로 룸 네임 태그 항목 생성.
-        foreach (var room in roomList)
+        int roomNumber = 1;
+        foreach (var room in cachedRooms.Values)
         {
-            if (room.RemovedFromList || room.PlayerCount <= 0) continue;
-
-            GameObject item = Instantiate(roomNameTagPrefab, contentParent);
-
-            // 자꾸 네임태그 UI Z축이 4천 넘게 뜨는 현상 방지 코드.
-            RectTransform rect = item.GetComponent<RectTransform>();
-            
-            if (rect != null)
-            {
-                rect.localPosition = Vector3.zero;
-                rect.localRotation = Quaternion.identity;
-                rect.localScale = Vector3.one;
-            }
-
-            RoomNameTag tagScript = item.GetComponent<RoomNameTag>();
-            
-            if (tagScript != null)
-            {
-                tagScript.SetRoomInfo(room);
-            }
+            var item = Instantiate(roomNameTagPrefab, contentParent, false);
+            item.transform.localRotation = Quaternion.identity;
+            item.transform.localScale = Vector3.one;
+            var tag = item.GetComponent<RoomNameTag>();
+            if (tag != null)
+                tag.SetRoomInfo(room, roomNumber++);
+            Debug.Log($"[LobbyTrace] Row created={room.Name}, active={item.activeInHierarchy}, parent={contentParent.name}");
         }
-
-        Debug.Log($"[Lobby] 포톤 실시간 방 목록 동기화 완료! (현재 활성화된 방 개수: {contentParent.childCount}개)");
     }
-
 
     [Header("클래스 선택 (임시 보관함)")]
 
@@ -446,21 +469,23 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
 
         for (int i = 0; i < playerListTexts.Length; i++)
         {
-            if (playerListTexts[i] == null)
-                continue;
+            bool occupied = i < players.Length;
 
-            if (i >= players.Length)
+            // 이름만 표시
+            if (playerListTexts[i] != null)
+                playerListTexts[i].text =
+                    occupied ? players[i].NickName : "";
+
+            // Photon에서 받은 준비 상태로 표시
+            if (readyChecks != null &&
+                i < readyChecks.Length &&
+                readyChecks[i] != null)
             {
-                playerListTexts[i].text = "빈 자리";
-                continue;
+                bool ready = occupied && IsReady(players[i]);
+
+                readyChecks[i].sprite =
+                    ready ? readyOnSprite : readyOffSprite;
             }
-
-            PhotonPlayer player = players[i];
-
-            string masterMark = player.IsMasterClient ? " [방장]" : "";
-            string readyMark = IsReady(player) ? " ✓" : "";
-
-            playerListTexts[i].text = $"{player.NickName}{masterMark}{readyMark}";
         }
         if (readyButton != null)
             readyButton.interactable = !startingGame;
@@ -488,5 +513,25 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
     public override void OnMasterClientSwitched(PhotonPlayer newMasterClient)
     {
         RefreshRoomUI();
+    }
+    // 대기방의 뒤로가기 버튼
+    public void OnClickLeaveRoom()
+    {
+        if (!PhotonNetwork.InRoom || startingGame)
+            return;
+
+        PhotonNetwork.LeaveRoom();
+    }
+    // 서버에서 방 퇴장이 완료됐을 때
+    public override void OnLeftRoom()
+    {
+        creatingRoom = false;
+        startingGame = false;
+
+        roomPanel.SetActive(false);
+        createRoomPanel.SetActive(false);
+        lobbyPanel.SetActive(true);
+
+        ClearRoomList();
     }
 }

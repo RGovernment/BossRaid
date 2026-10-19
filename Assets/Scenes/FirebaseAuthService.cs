@@ -15,6 +15,18 @@ public class FirebaseAuthService : MonoBehaviour
 
     private FirebaseAuth Auth => FirebaseBootstrap.Auth;
 
+    private void Awake()
+    {
+        ClearErrorMessage();
+    }
+
+    private void ClearErrorMessage()
+    {
+        if (messageText == null) return;
+        messageText.text = string.Empty;
+        messageText.gameObject.SetActive(false);
+    }
+
     private async void Start()
     {
         while(Auth == null)
@@ -43,6 +55,7 @@ public class FirebaseAuthService : MonoBehaviour
 
     public async void OnClickSignUp()
     {
+        ClearErrorMessage();
         if (!TryGetAuth()) return;
 
         try
@@ -60,6 +73,7 @@ public class FirebaseAuthService : MonoBehaviour
 
     public async void OnClickSignIn()
     {
+        ClearErrorMessage();
         if (!TryGetAuth()) return;
 
         try
@@ -75,6 +89,7 @@ public class FirebaseAuthService : MonoBehaviour
 
             if (messageText != null)
             {
+                messageText.gameObject.SetActive(true);
                 var firebaseEx = ex.GetBaseException() as Firebase.FirebaseException;
 
                 if (firebaseEx != null)
@@ -108,6 +123,7 @@ public class FirebaseAuthService : MonoBehaviour
 
     public void OnClickSignOut()
     {
+        ClearErrorMessage();
         if (!TryGetAuth()) return;
 
         Auth.SignOut();

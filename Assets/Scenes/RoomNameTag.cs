@@ -8,6 +8,7 @@ public class RoomNameTag : MonoBehaviour
 {
     [Header("UI 컴포넌트 연결")]
 
+    [SerializeField] private TMP_Text roomNumberText;
     [SerializeField] private TMP_Text roomNameText;
     [SerializeField] private TMP_Text playerCountText;
     [SerializeField] private Button joinButton;
@@ -16,9 +17,10 @@ public class RoomNameTag : MonoBehaviour
     private string targetRoomName;
 
 
-    public void SetRoomInfo(RoomInfo info)
+    public void SetRoomInfo(RoomInfo info, int roomNumber = 1)
     {
         targetRoomName = info.Name;
+        if (roomNumberText != null) roomNumberText.text = roomNumber.ToString();
 
         roomNameText.text = info.Name;
 
@@ -34,20 +36,20 @@ public class RoomNameTag : MonoBehaviour
         {
             joinButton.interactable = false;
             
-            buttonText.text = "Closed";
+            if (buttonText != null) buttonText.text = "Closed";
         }
         else
         {
             joinButton.interactable = true;
             
-            buttonText.text = "Join";
+            if (buttonText != null) buttonText.text = "Join";
         }
     }
 
 
     public void OnClickJoinRoom()
     {
-        if (string.IsNullOrEmpty(targetRoomName)) return;
+        if (string.IsNullOrEmpty(targetRoomName) || !joinButton.interactable || !PhotonNetwork.InLobby) return;
 
         Debug.Log($"[RoomNameTag] {targetRoomName} 번방으로 입장을 요청합니다.");
 
