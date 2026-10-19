@@ -1,0 +1,43 @@
+using Photon.Pun;
+using System.Collections.Generic;
+using UnityEngine;
+
+[RequireComponent(typeof(BoxCollider))]
+public class TestPortal : MonoBehaviour
+{
+    [SerializeField] private SOSceneData m_refSceneData;
+
+    private readonly HashSet<Player> m_hashPlayersInside = new();
+    private bool m_bIsLoading;
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bIsLoading)
+            return;
+
+        Player player = GetPlayer(other);
+        if (player == null || !player.IsAlive)
+            return;
+
+        m_hashPlayersInside.Add(player);
+        m_bIsLoading = GameSceneManager.m_Instance.MoveScene(m_refSceneData, m_hashPlayersInside);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bIsLoading)
+            return;
+
+        m_hashPlayersInside.Remove(GetPlayer(other));
+    }
+
+    private Player GetPlayer(Collider other)
+    {
+        if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
+            return other.GetComponent<Player>();
+
+        return null;
+    }
+
+}

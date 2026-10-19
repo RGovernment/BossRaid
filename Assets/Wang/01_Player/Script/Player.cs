@@ -24,12 +24,15 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
     [SerializeField] private SkillSpawner m_refSkillSpawner;
     public SkillSpawner SkillSpawner => m_refSkillSpawner;
 
+    public event System.Action OnDeadEvent;
+
     public bool IsMine => m_refPhotonView.IsMine;
     public bool IsAlive => isActiveAndEnabled && m_refObjectInfo.CurrentHP > 0f &&
         m_refFSM?.CurrentState?.Type != eStateType.Dead;
     private void Awake()
     {
         m_refPhotonView = GetComponent<PhotonView>();
+        DontDestroyOnLoad(gameObject);
         //임시 코드 -> SO로 수정
         m_refObjectInfo.CurrentHP = 100.0f;
         m_refObjectInfo.CurrentSpeed = 2.0f;
@@ -38,6 +41,7 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
         if (m_refSkillSpawner == null)
             m_refSkillSpawner = GetComponentInChildren<SkillSpawner>();
         Init();
+        GameManager.m_Instance.OnEnterPlayer(this);
     }
 
     private void Init()
@@ -108,7 +112,22 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
 
     private void OnDestroy()
     {
+        if (GameManager.m_Instance != null)
+            GameManager.m_Instance.OnExitPlayer(this);
         m_refFSM.Dispose();
+    }
+
+    public void RefreshPlayer(Vector3 _vSpawnPos)
+    {
+        m_refObjectInfo.CurrentHP = 100f;
+        m_refSkillSpawner.SkillUseUnLock();
+        m_refFSM.RefreshPlayer(_vSpawnPos);
+
+        if (IsMine && m_refLocalCamera != null)
+        {
+            m_refLocalCamera.SetActive(true);
+            m_refLocalCamera.GetComponent<CameraController>().RestorePlayerTarget(this);
+        }
     }
 
     public void ReceiveAnimEvent(AnimationEvent _refEvent)
@@ -131,10 +150,11 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
         }
 
         float remainingHp = Mathf.Max(0f, m_refObjectInfo.CurrentHP - _tInfo.Damage);
-        ApplyDamage(remainingHp, _tInfo.Pos);
-
+        // Send damage before a death event can start loading the next scene.
         if (PhotonNetwork.InRoom)
             photonView.RPC(nameof(ReceiveDamage), RpcTarget.Others, remainingHp, _tInfo.Pos);
+
+        ApplyDamage(remainingHp, _tInfo.Pos);
     }
 
     [PunRPC]
@@ -158,12 +178,17 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
     private void ApplyDamage(float _fRemainingHp, Vector3 _vPos)
     {
         
+        bool bWasAlive = m_refObjectInfo.CurrentHP > 0f;
         float damage = m_refObjectInfo.CurrentHP - _fRemainingHp;
         m_refObjectInfo.CurrentHP = _fRemainingHp;
 
         m_refSkillSpawner.SkillUseUnLock();
         if (m_refObjectInfo.CurrentHP <= 0f)
+        {
             m_refFSM.ChangeState(eStateType.Dead);
+            if (bWasAlive)
+                OnDeadEvent?.Invoke();
+        }
         else if (!PhotonNetwork.InRoom || IsMine)
             m_refFSM.TakeDamage(new tAttackInfo(_vPos, damage));
     }

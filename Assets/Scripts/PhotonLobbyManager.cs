@@ -11,7 +11,7 @@ using PhotonPlayer = Photon.Realtime.Player;
 
 public class PhotonLobbyManager : MonoBehaviourPunCallbacks
 {
-    private const string BattleScenePath = "Assets/Wang/Test/PhotonPlayerTest.unity";
+    private const string VillageScenePath = "Assets/Scenes/Mainvillage.unity";
 
     [SerializeField] private TMP_Text statusText;
     [SerializeField] private TMP_Text roomInfoText;
@@ -43,6 +43,12 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;
         RefreshButtons();
         SetStatus("Disconnect");
+    }
+
+    public override void OnEnable()
+    {
+        base.OnEnable();
+        RefreshButtons();
     }
 
     public void OnClickConnect()
@@ -84,13 +90,13 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
     {
         RoomOptions options = new RoomOptions();
         options.MaxPlayers = 4;
-        PhotonNetwork.CreateRoom("ComeOn", options);
+        PhotonNetwork.CreateRoom("ComeOn_", options);
     }
     public void OnClickJoinRoom()
     {
         if (PhotonNetwork.InRoom && !PhotonNetwork.InLobby)
             return;
-        PhotonNetwork.JoinRoom("ComeOn");
+        PhotonNetwork.JoinRoom("ComeOn_");
     }
 
     public void OnClickReady()
@@ -120,10 +126,10 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
             }
         }
 
-        int sceneIndex = SceneUtility.GetBuildIndexByScenePath(BattleScenePath);
+        int sceneIndex = SceneUtility.GetBuildIndexByScenePath(VillageScenePath);
         if (sceneIndex < 0)
         {
-            SetStatus("Add the battle scene to Build Profiles.");
+            SetStatus("Add Mainvillage to Build Profiles.");
             return;
         }
 
@@ -367,4 +373,10 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
             item.Setup(info, JoinRoomByName);
         }
     }
+    public void LeaveCurrentRoom()
+    {
+        if(PhotonNetwork.IsMasterClient)
+            PhotonNetwork.LoadLevel("LobyScene");
+    }
+
 }

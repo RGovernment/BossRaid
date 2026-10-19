@@ -7,6 +7,8 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
 {
     [Header("설정")]
     [SerializeField] private MonsterData monsterData;
+    [Header("클리어 포탈")]
+    [SerializeField] private GameObject clearPortal;
 
     [Header("참조")]
     [SerializeField] private Animator animator;
@@ -37,6 +39,9 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
 
         if (behaviorAgent == null)
             behaviorAgent = GetComponent<BehaviorGraphAgent>();
+
+        if (clearPortal != null)
+            clearPortal.SetActive(false);
 
         if (monsterData == null)
         {
@@ -147,5 +152,9 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
 
         Debug.Log("보스 사망", this);
         Debug.Log($"Die 호출 — 방장: {PhotonNetwork.IsMasterClient}, HP: {currentHp}", this);
+
+
+        if (clearPortal != null)
+            clearPortal.SetActive(true);
     }
 }

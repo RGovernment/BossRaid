@@ -273,6 +273,27 @@ public sealed class FSM : MonoBehaviour
         enabled = false;
     }
 
+    public void ResetRigidbody(Vector3 _vSpawnPos)
+    {
+        Rigidbody.position = _vSpawnPos;
+        transform.position = _vSpawnPos;
+        Rigidbody.linearVelocity = Vector3.zero;
+        Rigidbody.angularVelocity = Vector3.zero;
+    }
+
+    public void RefreshPlayer(Vector3 _vSpawnPos)
+    {
+        Stop();
+        ResetRigidbody(_vSpawnPos);
+        ClearGroundContact();
+        m_refPlayerView.SetActive(true);
+        enabled = true;
+        Animator.Rebind();
+        Animator.Update(0f);
+        if (IsMine)
+            StartState();
+    }
+
 
     [PunRPC]
     private void UseSkillOther(int id, int acNr)
