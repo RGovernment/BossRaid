@@ -2866,7 +2866,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8390504837137765375
 Transform:
   m_ObjectHideFlags: 0
@@ -6813,6 +6813,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DragonBoss
   monsterData: {fileID: 11400000, guid: e93113bb517b0254bbdd8b4a968ee9b6, type: 2}
+  clearPortal: {fileID: 0}
   animator: {fileID: 0}
   behaviorAgent: {fileID: 1494872993956399426}
   bodyCollider: {fileID: 4404927363085965510}
