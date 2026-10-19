@@ -32,6 +32,14 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
     private void Awake()
     {
         m_refPhotonView = GetComponent<PhotonView>();
+        if (PhotonNetwork.InRoom && !m_refPhotonView.IsMine)
+        {
+            Rigidbody refBody = GetComponent<Rigidbody>();
+            refBody.useGravity = false;
+            refBody.interpolation = RigidbodyInterpolation.None;
+            refBody.isKinematic = true;
+        }
+
         DontDestroyOnLoad(gameObject);
         //임시 코드 -> SO로 수정
         m_refObjectInfo.CurrentHP = 100.0f;
@@ -69,16 +77,6 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
                 m_refLocalCamera.SetActive(true);
             return;
         }
-
-        //enabled = false;
-        //m_refFSM.enabled = false;
-        //// Disabling Update alone leaves the remote character's input callbacks subscribed.
-        //m_refFSM.Dispose();
-        //Rigidbody refBody = GetComponent<Rigidbody>();
-        //refBody.linearVelocity = Vector3.zero;
-        //refBody.angularVelocity = Vector3.zero;
-        //refBody.isKinematic = true;
-        //refBody.useGravity = false;
     }
 
     private void Update()
