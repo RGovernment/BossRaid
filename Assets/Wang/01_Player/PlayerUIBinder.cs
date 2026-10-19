@@ -17,5 +17,19 @@ public class PlayerUIBinder : MonoBehaviour
             return m_refPlayer != null;
         }, cancellationToken: this.GetCancellationTokenOnDestroy()).SuppressCancellationThrow())
             return;
+
+        m_refPlayer.OnTakeDamage += OnChangeValue;
+        OnChangeValue(m_refPlayer.ObjectInfo.CurrentHP, m_refPlayer.ObjectInfo.MaxHP);
+    }
+
+    private void OnDestroy()
+    {
+        if (m_refPlayer != null)
+            m_refPlayer.OnTakeDamage -= OnChangeValue;
+    }
+
+    private void OnChangeValue(float _fCurrentHP, float _fMaxHP)
+    {
+        m_refPlayerHPSlider.OnChangeValue(_fCurrentHP, _fMaxHP);
     }
 }

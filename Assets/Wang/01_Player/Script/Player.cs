@@ -25,7 +25,7 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
     public SkillSpawner SkillSpawner => m_refSkillSpawner;
 
     public event System.Action OnDeadEvent;
-    public event System.Action OnTakeDamage;
+    public event System.Action<float, float> OnTakeDamage;
 
     public bool IsMine => m_refPhotonView.IsMine;
     public bool IsAlive => isActiveAndEnabled && m_refObjectInfo.CurrentHP > 0f &&
@@ -43,7 +43,7 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
 
         DontDestroyOnLoad(gameObject);
         //임시 코드 -> SO로 수정
-        m_refObjectInfo.CurrentHP = 100.0f;
+        m_refObjectInfo.CurrentHP = m_refObjectInfo.MaxHP;
         m_refObjectInfo.CurrentSpeed = 2.0f;
         m_refObjectInfo.AtkPoint = 4;
 
@@ -118,7 +118,8 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
 
     public void RefreshPlayer(Vector3 _vSpawnPos)
     {
-        m_refObjectInfo.CurrentHP = 100f;
+        m_refObjectInfo.CurrentHP = m_refObjectInfo.MaxHP;
+        OnTakeDamage?.Invoke(m_refObjectInfo.CurrentHP, m_refObjectInfo.MaxHP);
         m_refSkillSpawner.SkillUseUnLock();
         m_refFSM.RefreshPlayer(_vSpawnPos);
 
@@ -149,7 +150,7 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
         }
 
         float remainingHp = Mathf.Max(0f, m_refObjectInfo.CurrentHP - _tInfo.Damage);
-        // Send damage before a death event can start loading the next scene.
+        // Send _fDamage before a death event can start loading the next scene.
         if (PhotonNetwork.InRoom)
             photonView.RPC(nameof(ReceiveDamage), RpcTarget.Others, remainingHp, _tInfo.Pos);
 
@@ -178,8 +179,9 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
     {
         
         bool bWasAlive = m_refObjectInfo.CurrentHP > 0f;
-        float damage = m_refObjectInfo.CurrentHP - _fRemainingHp;
+        float _fDamage = m_refObjectInfo.CurrentHP - _fRemainingHp;
         m_refObjectInfo.CurrentHP = _fRemainingHp;
+        OnTakeDamage?.Invoke(m_refObjectInfo.CurrentHP, m_refObjectInfo.MaxHP);
 
         m_refSkillSpawner.SkillUseUnLock();
         if (m_refObjectInfo.CurrentHP <= 0f)
@@ -189,6 +191,7 @@ public sealed class Player : MonoBehaviourPunCallbacks , ITakeDamgeable , IPhoto
                 OnDeadEvent?.Invoke();
         }
         else if (!PhotonNetwork.InRoom || IsMine)
-            m_refFSM.TakeDamage(new tAttackInfo(_vPos, damage));
+            m_refFSM.TakeDamage(new tAttackInfo(_vPos, _fDamage));
+
     }
 }
