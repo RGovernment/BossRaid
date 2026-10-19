@@ -314,9 +314,9 @@ public sealed class FSM : MonoBehaviour
     }
 
     [PunRPC]
-    private void LocalCooldownSet(int skillId, float cooldown)
+    private void MasterCooldownSet(int acNr, int skillId, float cooldown)
     {
-        m_refPlayer.SkillSpawner.LocalCooldownSet(skillId, cooldown);
+        m_refPlayer.SkillSpawner.MasterCooldownSet(acNr, skillId, cooldown);
     }
 
     [PunRPC]
@@ -329,5 +329,11 @@ public sealed class FSM : MonoBehaviour
     private void IsSkillUseable(int skillId, bool useable)
     {
         m_refPlayer.SkillSpawner.IsSkillUseable(skillId, useable);
+    }
+
+    [PunRPC]
+    private void PlayerLoadSet()
+    {
+        m_refPlayer.SkillSpawner.PlayerLoadSet();
     }
 }
