@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Undefined
   - Boss
+  - Ground
+  - Altar
   layers:
   - Default
   - TransparentFX
@@ -17,7 +19,7 @@ TagManager:
   - Ground
   - Boss
   - Effect
-  - 
+  - Altar
   - 
   - 
   - 

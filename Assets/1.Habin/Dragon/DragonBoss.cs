@@ -33,6 +33,7 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
     public float CurrentHp => currentHp;
     public float MaxHp => monsterData != null ? monsterData.MaxHp : 0f;
     public bool IsDead => currentHp <= 0f;
+    public bool IsInvincible { get; private set; }
 
     private void Awake()
     {
@@ -63,7 +64,7 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
     }
     public void TakeDamage(tAttackInfo attackInfo)
     {
-        if (monsterData == null || IsDead)
+        if (monsterData == null || IsDead || IsInvincible)
             return;
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
         {
@@ -85,7 +86,7 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
 
     private void ApplyDamage(float requestedDamage)
     {
-        if (monsterData == null || IsDead)
+        if (monsterData == null || IsDead || IsInvincible)
             return;
         float damage = Mathf.Max(0f, requestedDamage);
         float previousHp = currentHp;
@@ -167,5 +168,15 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
 
         if (clearPortal != null)
             clearPortal.SetActive(true);
+    }
+    public void SetInvincible(bool value)
+    {
+        IsInvincible = value;
+    }
+    public void MultiplyAttack(float multiplier)
+    {
+        attack *= Mathf.Max(1f, multiplier);
+
+        Debug.Log($"보스 공격력 증가: {attack}", this);
     }
 }
