@@ -38,6 +38,7 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
     [SerializeField] private Sprite readyOnSprite;
     [SerializeField] private Sprite readyOffSprite;
 
+    [SerializeField] private SOSceneData m_refData;
     private const string ReadyKey = "ready";
     private bool startingGame;
 
@@ -434,7 +435,8 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.IsOpen = false;
         PhotonNetwork.CurrentRoom.IsVisible = false;
 
-        PhotonNetwork.LoadLevel(gameSceneName);
+        GameSceneManager.m_Instance.MoveScene(m_refData);
+        //PhotonNetwork.LoadLevel(gameSceneName);
     }
     private bool IsReady(PhotonPlayer player)
     {

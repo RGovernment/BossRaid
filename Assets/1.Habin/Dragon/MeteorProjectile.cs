@@ -84,5 +84,5 @@ public class MeteorProjectile : MonoBehaviour
         source.Play();
 
         Destroy(soundObject, impactSound.length);
-    }
+    } 
 }
