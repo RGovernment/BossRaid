@@ -10,7 +10,6 @@ public class EnergyBeam : MonoBehaviour
     [Header("두께")]
     [Min(0f)]
     [SerializeField] private float beamWidth = 0.15f;
-
     private LineRenderer lineRenderer;
 
     private void Awake()

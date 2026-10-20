@@ -20,6 +20,9 @@ public class DragonSlam : MonoBehaviour
     [SerializeField] private float telegraphHeightOffset = 0.03f;
     [Header("애니메이션 설정")]
     [SerializeField] private string slamAnimationState ="Base Layer.Attack 2";
+    [Header("사운드")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip slamSound;
 
     private CircleTelegraph currentTelegraph;
     private bool isAttacking;
@@ -29,6 +32,9 @@ public class DragonSlam : MonoBehaviour
     {
         if (animator == null)
             animator = GetComponent<Animator>();
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
     }
 
     public void Slam()
@@ -68,6 +74,9 @@ public class DragonSlam : MonoBehaviour
             return;
 
         hasHit = true;
+
+        if (audioSource != null && slamSound != null)
+            audioSource.PlayOneShot(slamSound);
 
         slamHitBox.GetComponent<AttackDamage>().ResetHits();
         slamHitBox.enabled = true;

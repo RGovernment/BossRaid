@@ -9,7 +9,7 @@ public class DragonTailWhip : MonoBehaviour
     [SerializeField] private Transform attackPoint;
     [SerializeField] private HalfCircleTelegraph attackPrefab;
     [SerializeField] private CapsuleCollider tailHitBox;
-    
+
     [Header("공격 범위")]
     [Min(0.01f)]
     [SerializeField] private float attackRadius = 7f;
@@ -24,6 +24,9 @@ public class DragonTailWhip : MonoBehaviour
     [Header("애니메이션")]
     [SerializeField]
     private string animationState = "Base Layer.Tail Whip R";
+    [Header("사운드")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip tailWhipSound;
 
     [Min(0f)]
     [SerializeField] private float transitionTime = 0.1f;
@@ -47,6 +50,9 @@ public class DragonTailWhip : MonoBehaviour
     {
         if (animator == null)
             animator = GetComponent<Animator>();
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
     }
 
     public void TailWhip()
@@ -68,9 +74,9 @@ public class DragonTailWhip : MonoBehaviour
         CreateTelegraph();
 
         // 공격 모션과 장판 채우기를 동시에 시작합니다.
-        animator.CrossFadeInFixedTime(animationState,transitionTime);
+        animator.CrossFadeInFixedTime(animationState, transitionTime);
 
-        currentTelegraph.Play(preparationTime,OnTelegraphFilled);
+        currentTelegraph.Play(preparationTime, OnTelegraphFilled);
     }
 
     private bool HasRequiredReferences()
@@ -90,7 +96,7 @@ public class DragonTailWhip : MonoBehaviour
 
         attackRotation = Quaternion.Euler(0f, directionY, 0f);
 
-        currentTelegraph = Instantiate(attackPrefab,attackCenter + Vector3.up * telegraphHeightOffset,attackRotation);
+        currentTelegraph = Instantiate(attackPrefab, attackCenter + Vector3.up * telegraphHeightOffset, attackRotation);
         float diameter = attackRadius * RadiusToDiameter;
         currentTelegraph.transform.localScale =
             new Vector3(diameter, 1f, diameter);
@@ -116,13 +122,13 @@ public class DragonTailWhip : MonoBehaviour
     private void TryStartSwing()
     {
         if (!isAttacking || !isReady || !isFilled || isSwinging)
-        {
             return;
-        }
 
         isSwinging = true;
-
         animator.speed = originalAnimatorSpeed;
+
+        if (audioSource != null && tailWhipSound != null)
+            audioSource.PlayOneShot(tailWhipSound);
     }
     public void TailWhipHit()
     {

@@ -9709,6 +9709,18 @@ PrefabInstance:
       value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 2652473121399164845, guid: 5ed789a4c12271543ad0d37856887d68, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652473121399164845, guid: 5ed789a4c12271543ad0d37856887d68, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652473121399164845, guid: 5ed789a4c12271543ad0d37856887d68, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652473121399164845, guid: 5ed789a4c12271543ad0d37856887d68, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.3
       objectReference: {fileID: 0}
@@ -9718,7 +9730,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2652473121399164845, guid: 5ed789a4c12271543ad0d37856887d68, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 28.14
+      value: 28.82
       objectReference: {fileID: 0}
     - target: {fileID: 2652473121399164845, guid: 5ed789a4c12271543ad0d37856887d68, type: 3}
       propertyPath: m_LocalRotation.w
@@ -61822,6 +61834,14 @@ PrefabInstance:
     - target: {fileID: 105826, guid: 56e3c741d680c6948adde1a3f33e3e47, type: 3}
       propertyPath: m_Name
       value: SM_Bld_Castle_Wall_01_Lite 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 105826, guid: 56e3c741d680c6948adde1a3f33e3e47, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 105826, guid: 56e3c741d680c6948adde1a3f33e3e47, type: 3}
+      propertyPath: m_TagString
+      value: Ground
       objectReference: {fileID: 0}
     - target: {fileID: 457790, guid: 56e3c741d680c6948adde1a3f33e3e47, type: 3}
       propertyPath: m_RootOrder

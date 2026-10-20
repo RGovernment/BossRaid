@@ -35,13 +35,12 @@ public class DragonRush : MonoBehaviourPun
     [SerializeField] private string preparationState = "Base Layer.Idle";
     [SerializeField] private string rushState = "Base Layer.Run";
     [SerializeField] private string endState = "Base Layer.Idle";
+    [Header("사운드")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip rushSound;
 
     [Min(0f)]
     [SerializeField] private float transitionTime = 0.1f;
-
-    [Header("테스트")]
-    [SerializeField] private KeyCode testKey = KeyCode.R;
-
     private GameObject currentTelegraph;
     private Coroutine rushRoutine;
     private Tween moveTween;
@@ -58,13 +57,12 @@ public class DragonRush : MonoBehaviourPun
     {
         if (animator == null)
             animator = GetComponent<Animator>();
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
     {
-        if (HasAuthority && Input.GetKeyDown(testKey))
-            Rush();
-
         if (!HasAuthority && isPreparing && target != null)
         {
             rushDestination = target.position;
@@ -166,6 +164,9 @@ public class DragonRush : MonoBehaviourPun
 
         PlayAnimation(rushState);
 
+        if (audioSource != null && rushSound != null)
+            audioSource.PlayOneShot(rushSound);
+
         rushHitBox.GetComponent<AttackDamage>().ResetHits();
         rushHitBox.enabled = true;
 
@@ -249,6 +250,9 @@ public class DragonRush : MonoBehaviourPun
 
         UpdateTelegraph(startPosition, destination);
         PlayAnimation(rushState);
+
+        if (audioSource != null && rushSound != null)
+            audioSource.PlayOneShot(rushSound);
     }
 
     [PunRPC]

@@ -55,13 +55,14 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
         currentHp = monsterData.MaxHp;
         attack = monsterData.Attack;
     }
-
+#if UNITY_EDITOR
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.H))
             TakeDamage(new tAttackInfo(transform.position, 10f));
         Debug.Log($"보스 {CurrentHp}/{MaxHp}");
     }
+#endif
     public void TakeDamage(tAttackInfo attackInfo)
     {
         if (monsterData == null || IsDead || IsInvincible)
