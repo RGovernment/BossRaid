@@ -1,7 +1,5 @@
-using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using System.Threading;
-using Unity.Hierarchy;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,39 +8,25 @@ using UnityEngine.UI;
 
 public class UISlider : MonoBehaviour
 {
-    //여기서 넣어줘야하나
     private Slider m_refSlider;
-    private float m_fLerpDuration;
+    [SerializeField] private TextMeshProUGUI m_refCurHPText;
+    //[SerializeField] private TextMeshProUGUI m_refMaxHPText;
+    
+    [SerializeField, Min(0f)] private float m_fLerpDuration = 0.2f;
 
     private void Awake()
     {
         m_refSlider = GetComponent<Slider>();
     }
    
-    private void OnChangeValue(float _fCurRatio)
+    public void OnChangeValue(float _fCurrentHP, float _fMaxHP)
     {
-        float fMaxValue = m_refSlider.maxValue;
-        LerpSliderAsync(_fCurRatio, fMaxValue, this.GetCancellationTokenOnDestroy()).Forget();
-    }
+        float fRatio = _fMaxHP > 0f ? Mathf.Clamp01(_fCurrentHP / _fMaxHP) : 0f;
+        float fTargetValue = Mathf.Lerp(m_refSlider.minValue, m_refSlider.maxValue, fRatio);
+        m_refSlider.DOKill();
+        m_refSlider.DOValue(fTargetValue, m_fLerpDuration).SetEase(Ease.Linear).SetLink(gameObject);
 
-    private async UniTaskVoid LerpSliderAsync(float _fStartFill, float _fEndFill, CancellationToken _ct)
-    {
-        float fElapsed = 0f;
-
-        while (fElapsed < m_fLerpDuration)
-        {
-            fElapsed += Time.deltaTime;
-
-            // 0에서 1 사이의 진행 비율 계산 (Clamped)
-            float fProgress = Mathf.Clamp01(fElapsed / m_fLerpDuration);
-
-            // 시작 fillAmount에서 목표 fillAmount까지 보간
-            m_refSlider.value = Mathf.Lerp(_fStartFill, _fEndFill, fProgress);
-
-            await UniTask.Yield(_ct);
-        }
-
-        m_refSlider.value = _fEndFill;
+        m_refCurHPText.text = _fCurrentHP.ToString();
     }
 
 }
