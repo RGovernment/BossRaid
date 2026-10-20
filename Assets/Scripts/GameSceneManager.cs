@@ -48,6 +48,8 @@ public sealed class GameSceneManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.IsOpen = false;
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.LoadLevel(_refSceneData.m_strNextSceneName);
+
+        SoundManager.m_Instance.PlayBgm(_refSceneData.m_refBGMAudio);
         return true;
     }
 
@@ -71,6 +73,7 @@ public sealed class GameSceneManager : MonoBehaviourPunCallbacks
 
     private void OnSceneLoaded(Scene _scene, LoadSceneMode _mode)
     {
+       
         m_bLoading = false;
         if (TryGetSpawnOrigin(out Vector3 vSpawn))
             GameManager.m_Instance.RefreshPlayer(vSpawn);

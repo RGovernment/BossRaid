@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -18,8 +17,7 @@ public enum eAudioChannelType
 /*///////////////////////////////////////////
                   SoundManager
 목적 : BGM 1채널 + SFX AudioSource 풀 재생.
-       탄 4000발 상황 대비 - 같은 SO 최소 간격 / 저우선순위 프레임당 개수 제한 / 우선순위 기반 소스 뺏기로
-       중요한 소리(폭발, 보스)가 연사음에 끊기지 않게 한다
+       풀이 가득 차면 우선순위가 같거나 낮은 기존 소리를 정지하고 교체한다.
  *///////////////////////////////////////////
 [DisallowMultipleComponent]
 public sealed class SoundManager : MonoBehaviour
@@ -42,7 +40,6 @@ public sealed class SoundManager : MonoBehaviour
     private const string SFX_VOLUME_PARAM = "SFXVolume";
     private const string UI_VOLUME_PARAM = "UIVolume";
     private const float MIN_DB = -80.0f;
-    private const int LOW_PRIORITY_THRESHOLD = 128;   // 이보다 덜 중요한(값이 큰) 소리만 프레임당 개수 제한
 
     [Header("Mixer")]
     [SerializeField] private AudioMixer m_refMixer;
@@ -53,13 +50,9 @@ public sealed class SoundManager : MonoBehaviour
     [Header("SFX Pool")]
     [SerializeField] private int m_iSfxPoolCount = 10;                 // 풀링할 개수
     [SerializeField] private AudioSource m_refSfxPrefab;              // 3D 감쇠 설정(rolloff 등)을 프리팹에서 조정. 없으면 기본 AudioSource
-    [SerializeField] private int m_iMaxLowPriorityPerFrame = 4;
 
     private AudioSource[] m_arrSfxSource;
     private int[] m_arrPriority;                                       // 소스별 현재 재생 중인 소리의 우선순위 (뺏기 판단)
-    private readonly Dictionary<SOAudio, float> m_hashLastPlayTime = new();
-    private int m_iLowPriorityFrame = -1;
-    private int m_iLowPriorityCount;
 
     public static SoundManager m_Instance { get; private set; }
 
@@ -124,19 +117,12 @@ public sealed class SoundManager : MonoBehaviour
         if (refClip == null)
             return default;
 
-        if (IsThrottled(_refAudio) == true)
-            return default;
-
         int iIdx = FindSourceIdx(_refAudio.Priority);
         if (iIdx < 0)
-            return default;   // 전부 나보다 중요한 소리나 루프가 재생 중 - 이번 소리는 버림
-
-        // unscaledTime: 레벨업 카드 선택 중 timeScale 0이어도 UI 소리 간격이 정상 계산되도록
-        m_hashLastPlayTime[_refAudio] = Time.unscaledTime;
-        if (_refAudio.Priority > LOW_PRIORITY_THRESHOLD)
-            ++m_iLowPriorityCount;
+            return default;   // 전부 나보다 중요한 소리가 재생 중 - 이번 소리는 버림
 
         AudioSource refSrc = m_arrSfxSource[iIdx];
+        refSrc.Stop();
         m_arrPriority[iIdx] = _refAudio.Priority;
 
         refSrc.clip = refClip;
@@ -192,25 +178,7 @@ public sealed class SoundManager : MonoBehaviour
         }
     }
 
-    private bool IsThrottled(SOAudio _refAudio)
-    {
-        if (_refAudio.MinInterval > 0.0f
-            && m_hashLastPlayTime.TryGetValue(_refAudio, out float fLastTime) == true
-            && Time.unscaledTime - fLastTime < _refAudio.MinInterval)
-            return true;
-
-        if (_refAudio.Priority <= LOW_PRIORITY_THRESHOLD)
-            return false;   // 중요한 소리는 프레임 한도에 안 걸림 - 피격음 4개가 먼저 와도 폭발음은 재생
-
-        if (m_iLowPriorityFrame != Time.frameCount)
-        {
-            m_iLowPriorityFrame = Time.frameCount;
-            m_iLowPriorityCount = 0;
-        }
-        return m_iLowPriorityCount >= m_iMaxLowPriorityPerFrame;
-    }
-
-    // 1) 쉬는 소스 2) 없으면 나와 같거나 덜 중요한 비루프 소스 중 가장 덜 중요한 것 3) 그것도 없으면 -1
+    // 1) 쉬는 소스 2) 없으면 나와 같거나 덜 중요한 소스 중 가장 덜 중요한 것 3) 그것도 없으면 -1
     private int FindSourceIdx(int _iPriority)
     {
         int iStealIdx = -1;
@@ -221,9 +189,6 @@ public sealed class SoundManager : MonoBehaviour
             AudioSource refSrc = m_arrSfxSource[i];
             if (refSrc.isPlaying == false)
                 return i;
-
-            if (refSrc.loop == true)
-                continue;   // 레이저 루프 등은 핸들로만 멈춘다
 
             if (m_arrPriority[i] >= iWorstPriority)
             {

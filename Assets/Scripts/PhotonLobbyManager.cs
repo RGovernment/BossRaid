@@ -22,6 +22,7 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject roomListContent;
     [SerializeField] private GameObject roomButtonPrefab;
 
+    [SerializeField] private SOSceneData m_refSceneData;
     private Dictionary<string, RoomInfo> roomDic = new Dictionary<string, RoomInfo>();
 
     private string lastStatus;
@@ -135,7 +136,8 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
 
         startingGame = true;
         PhotonNetwork.CurrentRoom.IsOpen = false;
-        PhotonNetwork.LoadLevel(sceneIndex);
+        GameSceneManager.m_Instance.MoveScene(m_refSceneData);
+        //PhotonNetwork.LoadLevel(sceneIndex);
     }
 
     public void OnClickTransferMaster()
