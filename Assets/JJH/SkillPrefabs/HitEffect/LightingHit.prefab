@@ -14835,8 +14835,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitEffect
   rootParticle: {fileID: 198456117258960258}
-  hitSound: {fileID: 7049735999665050851}
-  hitSoundClip: {fileID: 8300000, guid: 651777a571c007749af1cce341d37081, type: 3}
+  hitSound: {fileID: 11400000, guid: 09484ca1b48bd0745b25a31214b06902, type: 2}
 --- !u!82 &7049735999665050851
 AudioSource:
   m_ObjectHideFlags: 0

@@ -4,8 +4,7 @@ using UnityEngine;
 public class HitEffect : MonoBehaviour
 {
     public ParticleSystem rootParticle;
-    public AudioSource hitSound;
-    public AudioClip hitSoundClip;
+    public SOAudio hitSound;
 
     private void Awake()
     {
@@ -15,7 +14,7 @@ public class HitEffect : MonoBehaviour
     private void OnEnable()
     {
         if(hitSound != null)
-            hitSound.PlayOneShot(hitSoundClip);
+            SoundManager.m_Instance.PlaySfx(hitSound, transform.position);
     }
 
     private void OnDisable()
