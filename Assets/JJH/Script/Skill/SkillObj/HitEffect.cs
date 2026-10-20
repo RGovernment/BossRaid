@@ -4,10 +4,17 @@ using UnityEngine;
 public class HitEffect : MonoBehaviour
 {
     public ParticleSystem rootParticle;
+    public AudioSource hitSound;
 
     private void Awake()
     {
         if (rootParticle == null) rootParticle = GetComponent<ParticleSystem>();
+    }
+
+    private void OnEnable()
+    {
+        if(hitSound != null)
+            hitSound.PlayOneShot(hitSound.clip);
     }
 
     private void OnDisable()
