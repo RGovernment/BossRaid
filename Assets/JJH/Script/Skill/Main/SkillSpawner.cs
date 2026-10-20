@@ -606,6 +606,8 @@ public class SkillSpawner : MonoBehaviourPunCallbacks
         obj.transform.SetParent(transform);
 
         Quaternion rotate = Quaternion.identity;
+        if(obj.TryGetComponent(out BladeDance _))
+            rotate = Quaternion.Euler(BLADE_DANCE_ROTATE_X, BLADE_DANCE_ROTATE_Y, BLADE_DANCE_ROTATE_Z);
         if (obj.TryGetComponent(out Slash _))
             rotate = Quaternion.Euler(SLASH_BASE_ROTATE_X, SLASH_BASE_ROTATE_Y, SLASH_BASE_ROTATE_Z);
 
