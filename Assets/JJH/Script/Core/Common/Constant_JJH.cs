@@ -22,5 +22,9 @@ public static class Constant_JJH
     public const float SLASH_BASE_ROTATE_Y = 45f;
     public const float SLASH_BASE_ROTATE_Z = -180f;
 
+    public const float BLADE_DANCE_ROTATE_X = 0f;
+    public const float BLADE_DANCE_ROTATE_Y = 0f;
+    public const float BLADE_DANCE_ROTATE_Z = -90f;
+
     public const float COOLDOWN_MILL_DIV = 1000f;
 }
