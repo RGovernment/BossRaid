@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd5b4296ca2c8454da34e6b9262a8b90, type: 3}
+  m_Name: LightningVortex
+  m_EditorClassIdentifier: Assembly-CSharp::SOAudio
+  m_listClips:
+  - {fileID: 8300000, guid: 18c469adf409c8b43ae4904930ba7cd5, type: 3}
+  m_refOutputGroup: {fileID: 5188309829077704168, guid: 4cb9c8a73e6bee14cb792af5fb7545b4, type: 2}
+  m_fVolume: 1
+  m_fPitchMin: 1
+  m_fPitchMax: 1
+  m_fSpatialBlend: 0
+  m_iPriority: 128
+  m_bLoop: 0
