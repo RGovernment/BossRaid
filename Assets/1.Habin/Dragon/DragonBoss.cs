@@ -27,10 +27,13 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
     [SerializeField] private float attack;
 
     private bool deathHandled;
+    public event System.Action OnHpChanged;
 
     public float Attack => attack;
     public float CurrentHp => currentHp;
+    public float MaxHp => monsterData != null ? monsterData.MaxHp : 0f;
     public bool IsDead => currentHp <= 0f;
+    public bool IsInvincible { get; private set; }
 
     private void Awake()
     {
@@ -52,15 +55,17 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
         currentHp = monsterData.MaxHp;
         attack = monsterData.Attack;
     }
-
+#if UNITY_EDITOR
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.H))
-            TakeDamage(new tAttackInfo(transform.position, 100f));
+            TakeDamage(new tAttackInfo(transform.position, 10f));
+        Debug.Log($"보스 {CurrentHp}/{MaxHp}");
     }
+#endif
     public void TakeDamage(tAttackInfo attackInfo)
     {
-        if (monsterData == null || IsDead)
+        if (monsterData == null || IsDead || IsInvincible)
             return;
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
         {
@@ -82,14 +87,16 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
 
     private void ApplyDamage(float requestedDamage)
     {
-        if (monsterData == null || IsDead)
+        if (monsterData == null || IsDead || IsInvincible)
             return;
-
         float damage = Mathf.Max(0f, requestedDamage);
+        float previousHp = currentHp;
+
         currentHp = Mathf.Max(0f, currentHp - damage);
 
+        if (currentHp != previousHp)
+            OnHpChanged?.Invoke();
         Debug.LogWarning($"보스 피격: {damage}, 남은 HP: {currentHp}", this);
-
         if (IsDead)
             Die();
     }
@@ -102,7 +109,13 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
         }
         else
         {
-            currentHp = (float)stream.ReceiveNext();
+            float receivedHp = (float)stream.ReceiveNext();
+
+            if (currentHp != receivedHp)
+            {
+                currentHp = receivedHp;
+                OnHpChanged?.Invoke();
+            }
 
             if (IsDead)
                 Die();
@@ -156,5 +169,15 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
 
         if (clearPortal != null)
             clearPortal.SetActive(true);
+    }
+    public void SetInvincible(bool value)
+    {
+        IsInvincible = value;
+    }
+    public void MultiplyAttack(float multiplier)
+    {
+        attack *= Mathf.Max(1f, multiplier);
+
+        Debug.Log($"보스 공격력 증가: {attack}", this);
     }
 }

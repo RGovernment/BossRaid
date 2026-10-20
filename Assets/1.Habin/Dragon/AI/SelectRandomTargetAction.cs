@@ -61,7 +61,6 @@ public partial class SelectRandomTargetAction : Action
 
     private bool TrySelectTarget()
     {
-        Debug.Log($"타겟 탐색 시각: {Time.time:F3}");
         candidates.Clear();
 
         GameObject[] players = GameObject.FindGameObjectsWithTag(playerTag);

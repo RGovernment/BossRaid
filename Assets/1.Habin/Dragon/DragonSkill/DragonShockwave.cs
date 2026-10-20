@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DragonShockwave : MonoBehaviour
@@ -15,6 +16,10 @@ public class DragonShockwave : MonoBehaviour
     [SerializeField] private float warningHeightOffset = 0.03f;
     [Header("애니메이션")]
     [SerializeField] private string animationState = "Base Layer.Shockwave";
+
+    [Header("사운드")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip shockwaveSound;
 
     [Min(0f)]
     [SerializeField] private float transitionTime = 0.1f;
@@ -35,6 +40,9 @@ public class DragonShockwave : MonoBehaviour
     {
         if (animator == null)
             animator = GetComponent<Animator>();
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
     }
     public void Shockwave()
     {
@@ -71,8 +79,6 @@ public class DragonShockwave : MonoBehaviour
         float diameter = shockwavePrefab.EndRadius * RadiusToDiameter;
         currentWarning.transform.localScale = new Vector3(diameter, 1f, diameter);
     }
-
-    // Shockwave 클립의 타격 순간에 연결합니다.
     public void SpawnShockwave()
     {
         if (!isAttacking || hasSpawned)
@@ -81,12 +87,13 @@ public class DragonShockwave : MonoBehaviour
         hasSpawned = true;
         RemoveWarning();
 
+        if (audioSource != null && shockwaveSound != null)
+            audioSource.PlayOneShot(shockwaveSound);
+
         currentRing = Instantiate(shockwavePrefab, attackCenter, shockwavePrefab.transform.rotation);
         currentRing.SetBoss(GetComponent<DragonBoss>());
         attackRoutine = StartCoroutine(WaitForEnd());
     }
-
-    // Shockwave 클립의 종료 직전에 연결합니다.
     public void ShockwaveMotionEnd()
     {
         if (!isAttacking)
@@ -102,7 +109,6 @@ public class DragonShockwave : MonoBehaviour
 
     private IEnumerator WaitForEnd()
     {
-        // 고리 확산과 공격 모션이 모두 끝나야 공격을 종료합니다.
         while (currentRing != null || !motionEnded)
             yield return null;
 
