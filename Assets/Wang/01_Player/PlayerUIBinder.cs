@@ -4,6 +4,8 @@ using UnityEngine;
 public class PlayerUIBinder : MonoBehaviour
 {
     [SerializeField] private UISlider m_refPlayerHPSlider;
+
+    //[SerializeField] private 
     private Player m_refPlayer;
 
     private async UniTaskVoid Start()
