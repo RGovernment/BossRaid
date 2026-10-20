@@ -1439,6 +1439,7 @@ GameObject:
   - component: {fileID: 2235389113903654814}
   - component: {fileID: 5855902700359744762}
   - component: {fileID: 7504758546623508065}
+  - component: {fileID: 2586259174342614459}
   - component: {fileID: 1433901157744199083}
   m_Layer: 6
   m_Name: Player
@@ -1610,9 +1611,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
+  observableSearch: 0
   ObservedComponents:
-  - {fileID: 7504758546623508065}
+  - {fileID: 2586259174342614459}
   - {fileID: 1433901157744199083}
   sceneViewId: 0
   InstantiationId: 0
@@ -1624,7 +1625,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 445185023578420057}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 182c279f633bf604f85e271fbb97d334, type: 3}
   m_Name: 
@@ -1633,6 +1634,39 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &2586259174342614459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445185023578420057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f8aeda1ef290e44cacbf879994ba9bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonTransformViewClassic
+  m_PositionModel:
+    SynchronizeEnabled: 1
+    TeleportEnabled: 1
+    TeleportIfDistanceGreaterThan: 3
+    InterpolateOption: 4
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 30
+    ExtrapolateOption: 0
+    ExtrapolateSpeed: 1
+    ExtrapolateIncludingRoundTripTime: 1
+    ExtrapolateNumberOfStoredPositions: 1
+  m_RotationModel:
+    SynchronizeEnabled: 1
+    InterpolateOption: 2
+    InterpolateRotateTowardsSpeed: 180
+    InterpolateLerpSpeed: 30
+  m_ScaleModel:
+    SynchronizeEnabled: 0
+    InterpolateOption: 0
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 0
 --- !u!114 &1433901157744199083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38213,7 +38247,8 @@ MonoBehaviour:
   - {fileID: 6337506343531890366, guid: eca9466c0f915f4478f0907bc29116fa, type: 3}
   - {fileID: 7739968402300561426, guid: 7ef039bfb3ff56144b0dccfa5df0d073, type: 3}
   - {fileID: 6470620243002109106, guid: 4058f0ea81461664887f9383c1b6ecc3, type: 3}
-  - {fileID: 930000201, guid: b084aafa154f4e9dbc0ffc5ab79055df, type: 3}
+  - {fileID: 7824541553539761767, guid: faab9dce52b5b20438794b42555ccd5e, type: 3}
+  - {fileID: 8285667749849238674, guid: 01e6cb7773e86bf48bf88733acb37164, type: 3}
   ProjectileHit: 0
   queuedSkillId: 0
   player: {fileID: 3985597358038621170}

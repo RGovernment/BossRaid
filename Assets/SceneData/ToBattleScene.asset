@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: ToBattleScene
   m_EditorClassIdentifier: Assembly-CSharp::SOSceneData
   m_strNextSceneName: PhotonPlayerTest
-  m_vSpawnPos: {x: 0, y: 0.2, z: 0}
+  m_vSpawnPos: {x: 21.87, y: 0.24, z: 35.6}
+  m_refBGMAudio: {fileID: 11400000, guid: d59173f4a7041be4a85d0fa996207db9, type: 2}

@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
 
         m_Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        PhotonNetwork.SerializationRate = 20;
+        PhotonNetwork.SendRate = 30;
     }
 
     public void OnEnterPlayer(Player _refPlayer)
@@ -69,9 +72,20 @@ public class GameManager : MonoBehaviour
                 ++iCount;
         }
 
-
         return iCount;
     }
+
+    public Player GetLocalPlayer()
+    {
+        foreach(Player refPlayer in m_listPlayer)
+        {
+            if (refPlayer.IsMine)
+                return refPlayer;
+        }
+
+        return null;
+    }
+
 
     private void OnDestroy()
     {
