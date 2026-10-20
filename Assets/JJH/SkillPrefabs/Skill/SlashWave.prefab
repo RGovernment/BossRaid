@@ -19670,6 +19670,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SlashWave
   hitbox: {fileID: 0}
   skillSound: {fileID: 8815150463605236368}
+  hitSoundClip: {fileID: 8300000, guid: 555fb40b2a955bd49be9a52a3f56d9a3, type: 3}
   rootParticle: {fileID: 3730359321362822037}
   hitEffect: {fileID: 4976469336287650362}
   Id: 1001
@@ -19684,7 +19685,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 555fb40b2a955bd49be9a52a3f56d9a3, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

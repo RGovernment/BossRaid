@@ -5,6 +5,7 @@ public class HitEffect : MonoBehaviour
 {
     public ParticleSystem rootParticle;
     public AudioSource hitSound;
+    public AudioClip hitSoundClip;
 
     private void Awake()
     {
@@ -14,7 +15,7 @@ public class HitEffect : MonoBehaviour
     private void OnEnable()
     {
         if(hitSound != null)
-            hitSound.PlayOneShot(hitSound.clip);
+            hitSound.PlayOneShot(hitSoundClip);
     }
 
     private void OnDisable()

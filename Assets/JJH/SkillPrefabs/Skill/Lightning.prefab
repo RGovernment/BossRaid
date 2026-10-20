@@ -103758,6 +103758,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Lightning
   hitbox: {fileID: 303697242630616113}
   skillSound: {fileID: 1351800647243755068}
+  hitSoundClip: {fileID: 8300000, guid: c9297fc32b5b45548899cb29bcc1a89c, type: 3}
   rootParticle: {fileID: 6718294366338344039}
   hitEffect: {fileID: 82962387264071907}
   Id: 1003
@@ -103773,7 +103774,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: c9297fc32b5b45548899cb29bcc1a89c, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

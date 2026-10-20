@@ -34450,6 +34450,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Slash
   hitbox: {fileID: 6811186335417789572}
   skillSound: {fileID: 2481416062455985996}
+  hitSoundClip: {fileID: 8300000, guid: 0fe36ba7a3fdc5e43bad373008b145ca, type: 3}
   rootParticle: {fileID: 3286054171839378015}
   hitEffect: {fileID: 2061753175673533502}
   Id: 1000
@@ -34464,7 +34465,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 0fe36ba7a3fdc5e43bad373008b145ca, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

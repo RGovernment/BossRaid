@@ -9,6 +9,7 @@ public abstract class SkillBase : MonoBehaviourPunCallbacks
     [Header("필요시 설정")]
     public Collider hitbox;
     public AudioSource skillSound;
+    public AudioClip hitSoundClip;
 
     [Header("필수 설정")]
     public ParticleSystem rootParticle;
@@ -21,7 +22,7 @@ public abstract class SkillBase : MonoBehaviourPunCallbacks
     public override void OnEnable()
     {
         if(skillSound != null)
-            skillSound.PlayOneShot(skillSound.clip);
+            skillSound.PlayOneShot(hitSoundClip);
     }
 
     public void Init(int id, IObjectPool<SkillBase> pool,Player UsePlayer, int UpgradeType = 0)

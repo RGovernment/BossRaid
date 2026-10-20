@@ -5089,6 +5089,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LightningBolt
   hitbox: {fileID: 0}
   skillSound: {fileID: 7123971053945148979}
+  hitSoundClip: {fileID: 8300000, guid: 53ec4a34f96a57a47b4b2e80c46ad93b, type: 3}
   rootParticle: {fileID: 2279137850114066724}
   hitEffect: {fileID: 6506388896266517871}
   Id: 1004
@@ -5154,7 +5155,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 53ec4a34f96a57a47b4b2e80c46ad93b, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -5434,6 +5435,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitEffect
   rootParticle: {fileID: 3399899020243176199}
+  hitSound: {fileID: 0}
+  hitSoundClip: {fileID: 0}
 --- !u!1 &3308719314532451455 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1903841016889560, guid: df365974c854a33438e5aea62ca4b975, type: 3}

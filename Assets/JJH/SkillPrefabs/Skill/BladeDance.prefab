@@ -29575,6 +29575,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BladeDance
   hitbox: {fileID: 5419627092859808638}
   skillSound: {fileID: -4328231411083354881}
+  hitSoundClip: {fileID: 8300000, guid: 05fdb883453aae345b21b8880e82737c, type: 3}
   rootParticle: {fileID: 3434095939401722315}
   hitEffect: {fileID: 241742606019206005}
   Id: 1002
@@ -29589,7 +29590,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 05fdb883453aae345b21b8880e82737c, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

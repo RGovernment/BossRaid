@@ -98,6 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LightingSphere
   hitbox: {fileID: 0}
   skillSound: {fileID: 5173529674751800655}
+  hitSoundClip: {fileID: 8300000, guid: 18c469adf409c8b43ae4904930ba7cd5, type: 3}
   rootParticle: {fileID: 8419789151368525017}
   hitEffect: {fileID: 1193993843361831609}
   Id: 1005
@@ -115,7 +116,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 18c469adf409c8b43ae4904930ba7cd5, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -39464,6 +39465,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitEffect
   rootParticle: {fileID: 1129417687759306192}
+  hitSound: {fileID: 0}
+  hitSoundClip: {fileID: 0}
 --- !u!198 &1129417687759306192 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 198459042000340154, guid: e90b0a20dc997ef4c9e67b1c8b6db6c9, type: 3}
