@@ -36,8 +36,7 @@ public class DragonRush : MonoBehaviourPun
     [SerializeField] private string rushState = "Base Layer.Run";
     [SerializeField] private string endState = "Base Layer.Idle";
     [Header("사운드")]
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip rushSound;
+    [SerializeField] private SOAudio rushSound;
 
     [Min(0f)]
     [SerializeField] private float transitionTime = 0.1f;
@@ -57,8 +56,7 @@ public class DragonRush : MonoBehaviourPun
     {
         if (animator == null)
             animator = GetComponent<Animator>();
-        if (audioSource == null)
-            audioSource = GetComponent<AudioSource>();
+
     }
 
     private void Update()
@@ -154,8 +152,6 @@ public class DragonRush : MonoBehaviourPun
             FinishAttack();
             yield break;
         }
-
-        // 준비가 끝난 순간의 목적지를 확정합니다.
         UpdateAim();
         isPreparing = false;
 
@@ -164,13 +160,11 @@ public class DragonRush : MonoBehaviourPun
 
         PlayAnimation(rushState);
 
-        if (audioSource != null && rushSound != null)
-            audioSource.PlayOneShot(rushSound);
+        if (SoundManager.m_Instance != null)
+            SoundManager.m_Instance.PlaySfx(rushSound, bossRoot.position);
 
         rushHitBox.GetComponent<AttackDamage>().ResetHits();
         rushHitBox.enabled = true;
-
-        // 이 코루틴은 방장 또는 오프라인 테스트에서만 실행됩니다.
         moveTween = bossRoot.DOMove(rushDestination, rushDuration).SetEase(Ease.Linear).SetLink(gameObject);
 
         yield return moveTween.WaitForCompletion();
@@ -251,8 +245,8 @@ public class DragonRush : MonoBehaviourPun
         UpdateTelegraph(startPosition, destination);
         PlayAnimation(rushState);
 
-        if (audioSource != null && rushSound != null)
-            audioSource.PlayOneShot(rushSound);
+        if (SoundManager.m_Instance != null)
+            SoundManager.m_Instance.PlaySfx(rushSound, bossRoot.position);
     }
 
     [PunRPC]
