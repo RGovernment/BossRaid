@@ -53,6 +53,7 @@ public class BattleEndController : MonoBehaviour
         toggleGroup = new();
     }
 
+
     private void Start()
     {
         ForceConnectDragonScript(this.GetCancellationTokenOnDestroy()).Forget();
@@ -84,14 +85,16 @@ public class BattleEndController : MonoBehaviour
     private void OnEnable()
     {
         portal.OnPlayerInPortal += PlayerReadyCheck;
+        GameManager.OnAnnihilationPlayer += PanelOpenEvent;
     }
 
     private void OnDisable()
     {
         portal.OnPlayerInPortal -= PlayerReadyCheck;
+        GameManager.OnAnnihilationPlayer -= PanelOpenEvent;
     }
 
-    private void PanelOpenEvent()
+    public void PanelOpenEvent()
     {
         PanelOpen().Forget();
     }
@@ -100,7 +103,7 @@ public class BattleEndController : MonoBehaviour
     {
         bttleEndPanel.alpha = 0;
         bttleEndPanel.gameObject.SetActive(true);
-        await bttleEndPanel.DOFade(0, UI_FADE_TIME).ToUniTask();
+        await bttleEndPanel.DOFade(1, UI_FADE_TIME).ToUniTask();
 
         //상태 초기화
         toggleGroup.Clear();

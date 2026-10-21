@@ -15,3 +15,4 @@ MonoBehaviour:
   m_strNextSceneName: Mainvillage
   m_vSpawnPos: {x: -8.53897, y: 0.61, z: 55.41}
   m_refBGMAudio: {fileID: 11400000, guid: 47a35b6d658173543b9a669511ff3337, type: 2}
+  m_bDirect: 0

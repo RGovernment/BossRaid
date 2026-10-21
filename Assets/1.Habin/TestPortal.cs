@@ -24,7 +24,9 @@ public class TestPortal : MonoBehaviour
 
         m_hashPlayersInside.Add(player);
         OnPlayerInPortal?.Invoke(player);
-        m_bIsLoading = GameSceneManager.m_Instance.MoveScene(m_refSceneData, m_hashPlayersInside);
+
+        if(m_refSceneData.m_bDirect)
+            m_bIsLoading = GameSceneManager.m_Instance.MoveScene(m_refSceneData, m_hashPlayersInside);
     }
 
     private void OnTriggerExit(Collider other)
