@@ -1611,6 +1611,7 @@ GameObject:
   - component: {fileID: 7018362692768412918}
   - component: {fileID: 5887246365707289351}
   - component: {fileID: 9032723652122989076}
+  - component: {fileID: 3714385439950757762}
   m_Layer: 5
   m_Name: ExitBtn
   m_TagString: Untagged
@@ -1720,6 +1721,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3714385439950757762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6509049855802397462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be18938e1143fa4d82a16f1f2045e6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
+  mouseClick: {fileID: 11400000, guid: dc8f890262416b845b73ebc215c1a5f0, type: 2}
+  mouseHover: {fileID: 11400000, guid: 9e2b330d5e1d681419a0eeee892e8786, type: 2}
 --- !u!1 &6616091126039982812
 GameObject:
   m_ObjectHideFlags: 0
@@ -2333,6 +2348,7 @@ GameObject:
   - component: {fileID: 7138260766606667640}
   - component: {fileID: 1560628772606342070}
   - component: {fileID: 4869542602977028439}
+  - component: {fileID: 4969935000948818323}
   m_Layer: 5
   m_Name: LoginBtn
   m_TagString: Untagged
@@ -2442,3 +2458,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4969935000948818323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9051834531606221657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be18938e1143fa4d82a16f1f2045e6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
+  mouseClick: {fileID: 11400000, guid: dc8f890262416b845b73ebc215c1a5f0, type: 2}
+  mouseHover: {fileID: 11400000, guid: 9e2b330d5e1d681419a0eeee892e8786, type: 2}

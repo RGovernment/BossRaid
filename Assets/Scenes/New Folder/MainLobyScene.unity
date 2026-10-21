@@ -1543,6 +1543,7 @@ GameObject:
   - component: {fileID: 615836792}
   - component: {fileID: 615836791}
   - component: {fileID: 615836790}
+  - component: {fileID: 615836793}
   m_Layer: 5
   m_Name: CancelButton
   m_TagString: Untagged
@@ -1664,6 +1665,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 615836788}
   m_CullTransparentMesh: 1
+--- !u!114 &615836793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615836788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be18938e1143fa4d82a16f1f2045e6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
+  mouseClick: {fileID: 11400000, guid: dc8f890262416b845b73ebc215c1a5f0, type: 2}
+  mouseHover: {fileID: 11400000, guid: 9e2b330d5e1d681419a0eeee892e8786, type: 2}
 --- !u!1 &717387878
 GameObject:
   m_ObjectHideFlags: 0
@@ -2742,6 +2757,7 @@ GameObject:
   - component: {fileID: 1284905294}
   - component: {fileID: 1284905293}
   - component: {fileID: 1284905292}
+  - component: {fileID: 1284905295}
   m_Layer: 5
   m_Name: CreateRoomBtn
   m_TagString: Untagged
@@ -2864,6 +2880,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1284905290}
   m_CullTransparentMesh: 1
+--- !u!114 &1284905295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284905290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be18938e1143fa4d82a16f1f2045e6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
+  mouseClick: {fileID: 11400000, guid: dc8f890262416b845b73ebc215c1a5f0, type: 2}
+  mouseHover: {fileID: 11400000, guid: 9e2b330d5e1d681419a0eeee892e8786, type: 2}
 --- !u!1 &1292255813
 GameObject:
   m_ObjectHideFlags: 0
@@ -3013,6 +3043,7 @@ GameObject:
   - component: {fileID: 1384775692}
   - component: {fileID: 1384775691}
   - component: {fileID: 1384775690}
+  - component: {fileID: 1384775693}
   m_Layer: 5
   m_Name: PrevBtn
   m_TagString: Untagged
@@ -3123,6 +3154,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1384775688}
   m_CullTransparentMesh: 1
+--- !u!114 &1384775693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1384775688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be18938e1143fa4d82a16f1f2045e6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
+  mouseClick: {fileID: 11400000, guid: dc8f890262416b845b73ebc215c1a5f0, type: 2}
+  mouseHover: {fileID: 11400000, guid: 9e2b330d5e1d681419a0eeee892e8786, type: 2}
 --- !u!1 &1472767317
 GameObject:
   m_ObjectHideFlags: 0
@@ -3135,6 +3180,7 @@ GameObject:
   - component: {fileID: 1472767321}
   - component: {fileID: 1472767320}
   - component: {fileID: 1472767319}
+  - component: {fileID: 1472767322}
   m_Layer: 5
   m_Name: ConfirmButton
   m_TagString: Untagged
@@ -3256,6 +3302,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1472767317}
   m_CullTransparentMesh: 1
+--- !u!114 &1472767322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472767317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be18938e1143fa4d82a16f1f2045e6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
+  mouseClick: {fileID: 11400000, guid: dc8f890262416b845b73ebc215c1a5f0, type: 2}
+  mouseHover: {fileID: 11400000, guid: 9e2b330d5e1d681419a0eeee892e8786, type: 2}
 --- !u!1 &1535302440
 GameObject:
   m_ObjectHideFlags: 0
