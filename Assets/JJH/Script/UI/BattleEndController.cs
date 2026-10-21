@@ -160,10 +160,11 @@ public class BattleEndController : MonoBehaviour
         });
 
         int requiredCount = Mathf.CeilToInt(GameManager.Players.Count / 2f);
-
+        int result = 0;
         // 모두 포탈에 들어온 경우 && 아직 포탈의 제한시간이 5초 이상인 경우
         if (insideCount == GameManager.Players.Count && 
-            int.TryParse(timerText.text, out int result) && 
+            (GameManager.Players.Count == 1 || 
+            int.TryParse(timerText.text, out result)) && 
             result > BattleTimerSkip) 
             TimerStart(BattleTimerSkip);
 
