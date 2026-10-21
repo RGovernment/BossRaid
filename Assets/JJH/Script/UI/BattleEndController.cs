@@ -40,7 +40,7 @@ public class BattleEndController : MonoBehaviour
     [Header("타이머 수치")]
     [SF] private int BattleTimerNormal = 60;
     [SF] private int BattleTimerSkip = 5;
-
+    private int insideCount = 0;
     #endregion
 
     private CancellationTokenSource endTimerLoopToken;
@@ -142,23 +142,29 @@ public class BattleEndController : MonoBehaviour
     private void PlayerReadyCheck(Player player)
     {
         if (player == null) return;
-        int insideCount = 0;
+        
         toggleGroup.ForEach(toggle =>
         {
             if (toggle.player == player)
             {
-                toggle.toggle.isOn = true;
-                insideCount++;
+                if (toggle.toggle.isOn)
+                {
+                    toggle.toggle.isOn = false;
+                    insideCount--;
+                }else
+                {
+                    toggle.toggle.isOn = true;
+                    insideCount++;
+                }
             }
         });
 
         int requiredCount = Mathf.CeilToInt(GameManager.Players.Count / 2f);
 
-        
-
         // 모두 포탈에 들어온 경우 && 아직 포탈의 제한시간이 5초 이상인 경우
-         if (insideCount == GameManager.Players.Count && 
-            Convert.ToInt32(timerText.text) > BattleTimerSkip) 
+        if (insideCount == GameManager.Players.Count && 
+            int.TryParse(timerText.text, out int result) && 
+            result > BattleTimerSkip) 
             TimerStart(BattleTimerSkip);
 
         // 절반 이상이 포탈에 들어온 경우
