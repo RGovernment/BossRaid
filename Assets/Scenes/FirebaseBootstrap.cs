@@ -13,6 +13,7 @@ public class FirebaseBootstrap : MonoBehaviour
         if(status == DependencyStatus.Available)
         {
             Auth = FirebaseAuth.DefaultInstance;
+            Auth.SignOut();
             Debug.Log("Firebase 준비 완료");
         }
         else
