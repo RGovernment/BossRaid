@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json.Bson;
 using Photon.Pun;
 using UnityEngine;
 
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour
         PhotonNetwork.SerializationRate = 20;
         PhotonNetwork.SendRate = 30;
     }
+
 
     public void OnEnterPlayer(Player _refPlayer)
     {

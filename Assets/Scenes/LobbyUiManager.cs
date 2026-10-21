@@ -1,18 +1,21 @@
-using ExitGames.Client.Photon.StructWrapping;
 using Firebase.Auth;
 using Firebase.Database;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
-using Unity.AppUI.UI;
 using UnityEngine;
-using System.Text;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using PhotonPlayer = Photon.Realtime.Player;
 using UIButton = UnityEngine.UI.Button;
+using UnityEditor;
 
 public class LobbyUiManager : MonoBehaviourPunCallbacks
 {
+    [Header("타이틀")]
+
+    [SerializeField] private GameObject Title;
+    [SerializeField] private GameObject MainPanel;
+
     [Header("UI Panels")]
     [SerializeField] private GameObject loginPanel;
     [SerializeField] private GameObject nicknamePanel;
@@ -119,7 +122,6 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
         if (string.IsNullOrEmpty(inputName)) return;
 
         var auth = FirebaseBootstrap.Auth;
-
         if (auth == null)
         {
             Debug.LogWarning("Firebase가 아직 준비되지 않았습니다.");
@@ -536,4 +538,22 @@ public class LobbyUiManager : MonoBehaviourPunCallbacks
 
         ClearRoomList();
     }
+
+    public void InLogin()
+    {
+        Title.SetActive(false);
+    }
+    public void ExitGame()
+    {
+#if UNITY_EDITOR
+        EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif        
+    }
+    //private void OnDestroy()
+    //{
+    //    var auth = FirebaseBootstrap.Auth;
+    //    auth.SignOut();
+    //}
 }
