@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 5023683838046039338}
   - component: {fileID: 4236600941098455745}
   - component: {fileID: 9017146129162246034}
+  - component: {fileID: 1161280014117889117}
   m_Layer: 5
   m_Name: ConfirmButton
   m_TagString: Untagged
@@ -224,6 +225,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1161280014117889117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 514945909996197479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be18938e1143fa4d82a16f1f2045e6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
+  mouseClick: {fileID: 11400000, guid: dc8f890262416b845b73ebc215c1a5f0, type: 2}
+  mouseHover: {fileID: 11400000, guid: 9e2b330d5e1d681419a0eeee892e8786, type: 2}
 --- !u!1 &1270392730364236163
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,6 +251,7 @@ GameObject:
   - component: {fileID: 5692212171127888346}
   - component: {fileID: 3728820023422348272}
   - component: {fileID: 2833824532473867292}
+  - component: {fileID: 3490762605138670560}
   m_Layer: 5
   m_Name: SignUpButton
   m_TagString: Untagged
@@ -357,6 +373,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &3490762605138670560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270392730364236163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be18938e1143fa4d82a16f1f2045e6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
+  mouseClick: {fileID: 11400000, guid: dc8f890262416b845b73ebc215c1a5f0, type: 2}
+  mouseHover: {fileID: 11400000, guid: 9e2b330d5e1d681419a0eeee892e8786, type: 2}
 --- !u!1 &1796273509628221766
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,6 +533,7 @@ GameObject:
   - component: {fileID: 9041628569518223785}
   - component: {fileID: 7937306814109395041}
   - component: {fileID: 5123051589320931444}
+  - component: {fileID: 7197141811201213239}
   m_Layer: 5
   m_Name: SignOutButton
   m_TagString: Untagged
@@ -624,6 +655,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &7197141811201213239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3245544804377355652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be18938e1143fa4d82a16f1f2045e6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
+  mouseClick: {fileID: 11400000, guid: dc8f890262416b845b73ebc215c1a5f0, type: 2}
+  mouseHover: {fileID: 11400000, guid: 9e2b330d5e1d681419a0eeee892e8786, type: 2}
 --- !u!1 &3306664331614086039
 GameObject:
   m_ObjectHideFlags: 0
@@ -2297,6 +2342,7 @@ GameObject:
   - component: {fileID: 6219640852266578552}
   - component: {fileID: 1636374775411478507}
   - component: {fileID: 7322466923048879783}
+  - component: {fileID: 3967429110163900149}
   m_Layer: 5
   m_Name: SignInButton
   m_TagString: Untagged
@@ -2418,6 +2464,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &3967429110163900149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5897979819943059974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be18938e1143fa4d82a16f1f2045e6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
+  mouseClick: {fileID: 11400000, guid: dc8f890262416b845b73ebc215c1a5f0, type: 2}
+  mouseHover: {fileID: 11400000, guid: 9e2b330d5e1d681419a0eeee892e8786, type: 2}
 --- !u!1 &6439365882128493006
 GameObject:
   m_ObjectHideFlags: 0
@@ -3496,6 +3556,7 @@ GameObject:
   - component: {fileID: 5339225404599840636}
   - component: {fileID: 5691281623411389491}
   - component: {fileID: 1682678326563065693}
+  - component: {fileID: 5682048970252835000}
   m_Layer: 5
   m_Name: CancelButton
   m_TagString: Untagged
@@ -3617,6 +3678,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &5682048970252835000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7666166924731313083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be18938e1143fa4d82a16f1f2045e6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
+  mouseClick: {fileID: 11400000, guid: dc8f890262416b845b73ebc215c1a5f0, type: 2}
+  mouseHover: {fileID: 11400000, guid: 9e2b330d5e1d681419a0eeee892e8786, type: 2}
 --- !u!1 &7779572860796307728
 GameObject:
   m_ObjectHideFlags: 0
