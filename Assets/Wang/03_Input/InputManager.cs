@@ -60,7 +60,7 @@ public sealed class InputManager : MonoBehaviour
     public bool IsRunHeld => HasGameplayInput && m_refRunAction.IsPressed();
 
     private void Awake()
-    {
+    {   
         if (m_Instance != null && m_Instance != this)
         {
             enabled = false;
@@ -71,6 +71,9 @@ public sealed class InputManager : MonoBehaviour
         m_Instance = this;
         DontDestroyOnLoad(gameObject);
         Init();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Init()

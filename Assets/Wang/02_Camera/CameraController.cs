@@ -15,7 +15,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Vector3 m_vCameraOffset = new Vector3(0f, 2.3f, -4f);
 
     [FormerlySerializedAs("cameraLookHeight")]
-    [SerializeField] private float m_fCameraLookHeight = 1.3f;
+    [SerializeField] private float m_fCameraLookHeight = 2.0f;
     [SerializeField, Min(0f)] private float m_fPitchSensitivity = 0.15f;
     [SerializeField] private float m_fMinPitch = -35f;
     [SerializeField] private float m_fMaxPitch = 60f;
@@ -69,7 +69,7 @@ public class CameraController : MonoBehaviour
 
     private void RefreshFollowTarget()
     {
-        if (m_refPlayer == null)
+        if (m_refPlayer == null || m_refPlayer.IsAlive)
             return;
 
         m_refCurPlayer = m_refPlayer;
