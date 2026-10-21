@@ -10,12 +10,12 @@ public class TestPortal : MonoBehaviour
     [SerializeField] private SOSceneData m_refSceneData;
 
     private readonly HashSet<Player> m_hashPlayersInside = new();
-    private bool m_bIsLoading;
+    //private bool m_bIsLoading;
     public event Action<Player> OnPlayerInPortal;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bIsLoading)
+        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient /*|| m_bIsLoading*/)
             return;
 
         Player player = GetPlayer(other);
@@ -24,12 +24,12 @@ public class TestPortal : MonoBehaviour
 
         m_hashPlayersInside.Add(player);
         OnPlayerInPortal?.Invoke(player);
-        m_bIsLoading = GameSceneManager.m_Instance.MoveScene(m_refSceneData, m_hashPlayersInside);
+        //m_bIsLoading = GameSceneManager.m_Instance.MoveScene(m_refSceneData, m_hashPlayersInside);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bIsLoading)
+        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient /*|| m_bIsLoading*/)
             return;
 
         Player player = GetPlayer(other);
