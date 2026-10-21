@@ -103,8 +103,7 @@ public class BattleEndController : MonoBehaviour
     {
         bttleEndPanel.alpha = 0;
         bttleEndPanel.gameObject.SetActive(true);
-        await bttleEndPanel.DOFade(1, UI_FADE_TIME).ToUniTask();
-
+        
         //상태 초기화
         toggleGroup.Clear();
         foreach (Toggle toggle in toggles)
@@ -123,7 +122,15 @@ public class BattleEndController : MonoBehaviour
             winImage.gameObject.SetActive(false);
             defeatImage.gameObject.SetActive(true);
         }
-            
+
+        await bttleEndPanel.DOFade(1, UI_FADE_TIME).ToUniTask();
+
+        if (GameManager.m_Instance.GetAlivePlayerCount() <= 0)
+        {
+            TimerStart(BattleTimerSkip);
+
+            return;
+        }
 
         for(int i = 0; i < GameManager.Players.Count; i++)
         {
@@ -147,14 +154,16 @@ public class BattleEndController : MonoBehaviour
 
         int requiredCount = Mathf.CeilToInt(GameManager.Players.Count / 2f);
 
-        // 절반 이상이 포탈에 들어온 경우
-        if (insideCount >= requiredCount)
-            TimerStart(BattleTimerNormal);
         
+
         // 모두 포탈에 들어온 경우 && 아직 포탈의 제한시간이 5초 이상인 경우
-        else if (insideCount == GameManager.Players.Count && 
+         if (insideCount == GameManager.Players.Count && 
             Convert.ToInt32(timerText.text) > BattleTimerSkip) 
             TimerStart(BattleTimerSkip);
+
+        // 절반 이상이 포탈에 들어온 경우
+        else if (insideCount >= requiredCount)
+            TimerStart(BattleTimerNormal);
 
         // 포탈의 남은 인원수가 절반 미만이 된 경우
         else
