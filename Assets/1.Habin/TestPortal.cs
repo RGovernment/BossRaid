@@ -15,9 +15,6 @@ public class TestPortal : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bIsLoading)
-            return;
-
         Player player = GetPlayer(other);
         if (player == null || !player.IsAlive)
             return;
@@ -25,19 +22,24 @@ public class TestPortal : MonoBehaviour
         m_hashPlayersInside.Add(player);
         OnPlayerInPortal?.Invoke(player);
 
-        if(m_refSceneData.m_bDirect)
+        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bIsLoading)
+            return;
+
+        if (m_refSceneData.m_bDirect)
             m_bIsLoading = GameSceneManager.m_Instance.MoveScene(m_refSceneData, m_hashPlayersInside);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bIsLoading)
-            return;
+
 
         Player player = GetPlayer(other);
 
         m_hashPlayersInside.Remove(player);
         OnPlayerInPortal?.Invoke(player);
+
+        if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient || m_bIsLoading)
+            return;
     }
 
     private Player GetPlayer(Collider other)

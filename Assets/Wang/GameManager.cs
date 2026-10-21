@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour
 
     private void OnPlayerDead()
     {
-        if (!PhotonNetwork.IsMasterClient || GetAlivePlayerCount() != 0)
+        if (GetAlivePlayerCount() != 0)
             return;
 
         OnAnnihilationPlayer?.Invoke();
