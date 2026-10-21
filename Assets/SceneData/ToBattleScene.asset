@@ -15,3 +15,4 @@ MonoBehaviour:
   m_strNextSceneName: BattleScene
   m_vSpawnPos: {x: 21.87, y: 0.24, z: 35.6}
   m_refBGMAudio: {fileID: 11400000, guid: d59173f4a7041be4a85d0fa996207db9, type: 2}
+  m_bDirect: 1
