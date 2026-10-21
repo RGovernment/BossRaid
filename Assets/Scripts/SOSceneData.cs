@@ -7,4 +7,6 @@ public sealed class SOSceneData : ScriptableObject
     public Vector3 m_vSpawnPos;
 
     public SOAudio m_refBGMAudio;
+
+    public bool m_bDirect;
 }
