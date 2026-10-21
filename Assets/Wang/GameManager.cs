@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Bson;
 using Photon.Pun;
@@ -12,7 +13,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private SOSceneData m_refVillageSceneData;
     private readonly List<Player> m_listPlayer = new();
 
- 
+    public event Action OnAnnihilationPlayer;
+
+
     private void Awake()
     {
         if (m_Instance != null && m_Instance != this)
@@ -51,7 +54,9 @@ public class GameManager : MonoBehaviour
         if (!PhotonNetwork.IsMasterClient || GetAlivePlayerCount() != 0)
             return;
 
-        GameSceneManager.m_Instance.MoveScene(m_refVillageSceneData);
+        OnAnnihilationPlayer?.Invoke();
+
+        //GameSceneManager.m_Instance.MoveScene(m_refVillageSceneData);
     }
 
     public void RefreshPlayer(Vector3 _vSpawnPos)
