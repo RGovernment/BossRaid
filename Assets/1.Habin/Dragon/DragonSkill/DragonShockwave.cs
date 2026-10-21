@@ -18,8 +18,7 @@ public class DragonShockwave : MonoBehaviour
     [SerializeField] private string animationState = "Base Layer.Shockwave";
 
     [Header("사운드")]
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip shockwaveSound;
+    [SerializeField] private SOAudio shockwaveSound;
 
     [Min(0f)]
     [SerializeField] private float transitionTime = 0.1f;
@@ -41,8 +40,6 @@ public class DragonShockwave : MonoBehaviour
         if (animator == null)
             animator = GetComponent<Animator>();
 
-        if (audioSource == null)
-            audioSource = GetComponent<AudioSource>();
     }
     public void Shockwave()
     {
@@ -87,8 +84,8 @@ public class DragonShockwave : MonoBehaviour
         hasSpawned = true;
         RemoveWarning();
 
-        if (audioSource != null && shockwaveSound != null)
-            audioSource.PlayOneShot(shockwaveSound);
+        if (SoundManager.m_Instance != null)
+            SoundManager.m_Instance.PlaySfx(shockwaveSound, attackCenter);
 
         currentRing = Instantiate(shockwavePrefab, attackCenter, shockwavePrefab.transform.rotation);
         currentRing.SetBoss(GetComponent<DragonBoss>());

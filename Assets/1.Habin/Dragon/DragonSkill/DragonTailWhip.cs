@@ -25,8 +25,8 @@ public class DragonTailWhip : MonoBehaviour
     [SerializeField]
     private string animationState = "Base Layer.Tail Whip R";
     [Header("사운드")]
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip tailWhipSound;
+    [Header("사운드")]
+    [SerializeField] private SOAudio tailWhipSound;
 
     [Min(0f)]
     [SerializeField] private float transitionTime = 0.1f;
@@ -50,9 +50,6 @@ public class DragonTailWhip : MonoBehaviour
     {
         if (animator == null)
             animator = GetComponent<Animator>();
-
-        if (audioSource == null)
-            audioSource = GetComponent<AudioSource>();
     }
 
     public void TailWhip()
@@ -127,8 +124,8 @@ public class DragonTailWhip : MonoBehaviour
         isSwinging = true;
         animator.speed = originalAnimatorSpeed;
 
-        if (audioSource != null && tailWhipSound != null)
-            audioSource.PlayOneShot(tailWhipSound);
+        if (SoundManager.m_Instance != null)
+            SoundManager.m_Instance.PlaySfx(tailWhipSound, attackPoint.position);
     }
     public void TailWhipHit()
     {

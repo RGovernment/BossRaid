@@ -2396,7 +2396,6 @@ MonoBehaviour:
   shockwavePrefab: {fileID: 4293226930731430624, guid: f58bbf6ed00dac247883e953c8b1ad1c, type: 3}
   warningHeightOffset: 0.03
   animationState: Base Layer.Shockwave
-  audioSource: {fileID: 0}
   shockwaveSound: {fileID: 0}
   transitionTime: 0.1
 --- !u!54 &1672889457
@@ -2445,7 +2444,7 @@ PrefabInstance:
     - target: {fileID: 1238736059458102295, guid: a662202b0a3a87b4b83cf4284c5f6bd0, type: 3}
       propertyPath: shockwaveSound
       value: 
-      objectReference: {fileID: 8300000, guid: 6129d63fba0f66c44982e923e53db004, type: 3}
+      objectReference: {fileID: 11400000, guid: 954a95dc83b8b8246b51d312becb0c76, type: 2}
     - target: {fileID: 3817392517247720302, guid: a662202b0a3a87b4b83cf4284c5f6bd0, type: 3}
       propertyPath: m_Name
       value: Dragon (1)
@@ -2509,7 +2508,7 @@ PrefabInstance:
     - target: {fileID: 6859999469539522588, guid: a662202b0a3a87b4b83cf4284c5f6bd0, type: 3}
       propertyPath: slamSound
       value: 
-      objectReference: {fileID: 8300000, guid: 358cdf99bd0223542b10ccdf8c23cb77, type: 3}
+      objectReference: {fileID: 11400000, guid: 8d77c13d0054ec146bf555d2bb17ddaa, type: 2}
     - target: {fileID: 6859999469539522588, guid: a662202b0a3a87b4b83cf4284c5f6bd0, type: 3}
       propertyPath: audioSource
       value: 
@@ -2545,7 +2544,7 @@ PrefabInstance:
     - target: {fileID: 8245444854444107681, guid: a662202b0a3a87b4b83cf4284c5f6bd0, type: 3}
       propertyPath: rushSound
       value: 
-      objectReference: {fileID: 8300000, guid: 83b4c78ba95ad2146bd126b092084e91, type: 3}
+      objectReference: {fileID: 11400000, guid: 5ccc50d9b68b18b4c8ceb349bd24a31c, type: 2}
     - target: {fileID: 8245444854444107681, guid: a662202b0a3a87b4b83cf4284c5f6bd0, type: 3}
       propertyPath: audioSource
       value: 
@@ -2557,7 +2556,7 @@ PrefabInstance:
     - target: {fileID: 9171084556075576760, guid: a662202b0a3a87b4b83cf4284c5f6bd0, type: 3}
       propertyPath: tailWhipSound
       value: 
-      objectReference: {fileID: 8300000, guid: 16fd0372b2e564d42bee724654d41774, type: 3}
+      objectReference: {fileID: 11400000, guid: 1cdb7f9d799b239478704dd9d468f40c, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -195,10 +195,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   maxLifetime: 5
-  fallSound: {fileID: 8300000, guid: 85676ed2c2570ad44ac790232da0378b, type: 3}
-  impactSound: {fileID: 8300000, guid: 1bd108e64086a1b4c9d122279283543e, type: 3}
-  fallVolume: 0.3
-  impactVolume: 0.4
+  fallSound: {fileID: 11400000, guid: 9f91ab2de8f02724a941f3fd56d37e7e, type: 2}
+  impactSound: {fileID: 11400000, guid: cb1b10a78e8bf36418e4b562e1cd4631, type: 2}
 --- !u!114 &-7388149306935455327
 MonoBehaviour:
   m_ObjectHideFlags: 0
