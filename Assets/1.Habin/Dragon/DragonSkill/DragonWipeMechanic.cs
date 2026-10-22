@@ -176,18 +176,13 @@ public class DragonWipeMechanic : MonoBehaviourPun
     {
         if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient)
             return;
-
         if (hasStarted || boss.IsDead || boss.MaxHp <= 0f)
             return;
-
         if (boss.CurrentHp > boss.MaxHp * triggerHpRatio)
             return;
-
         if (!ValidateReferences())
             return;
-
-        int playerCount = Mathf.Clamp(PhotonNetwork.CurrentRoom.PlayerCount, 1, 4);
-
+        int playerCount = Mathf.Clamp(PhotonNetwork.CurrentRoom.PlayerCount, 1, 4);=
         BeginMechanic(playerCount);
         photonView.RPC(nameof(ReceiveMechanicStart), RpcTarget.Others, playerCount);
     }

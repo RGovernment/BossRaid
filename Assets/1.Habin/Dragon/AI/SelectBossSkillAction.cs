@@ -50,7 +50,9 @@ public partial class SelectBossSkillAction : Action
         //직전 쓴 스킬 제외
         foreach (BossSkillType skill in skills)
         {
-            if (skill == BossSkillType.None || skill == BossSkillType.Wipe || skill == LastSkill.Value)
+            if (skill == BossSkillType.None 
+                || skill == BossSkillType.Wipe 
+                || skill == LastSkill.Value)
                 continue;
 
             if (!candidates.Contains(skill))

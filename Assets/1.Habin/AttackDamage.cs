@@ -33,6 +33,5 @@ public class AttackDamage : MonoBehaviour
             return;
         var tInfo = new tAttackInfo(transform.position, boss.Attack);
         player.TakeDamage(tInfo);
-        Debug.Log($"대미지 피해 {tInfo.Damage} 위치:{tInfo.Pos}");
     }
 }
