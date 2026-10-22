@@ -7,8 +7,6 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
 {
     [Header("설정")]
     [SerializeField] private MonsterData monsterData;
-    [Header("클리어 포탈")]
-    [SerializeField] private GameObject clearPortal;
 
     [Header("참조")]
     [SerializeField] private Animator animator;
@@ -23,20 +21,14 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
     [SerializeField] private float deathAnimationSpeed = 1f;
 
     [Header("현재 상태")]
-    [SerializeField] private float maxHp;
     [SerializeField] private float currentHp;
     [SerializeField] private float attack;
 
-
-    [SerializeField] private BattleEndController battleEndController;
     private bool deathHandled;
-    public event System.Action OnHpChanged;
 
     public float Attack => attack;
     public float CurrentHp => currentHp;
-    public float MaxHp => maxHp;
     public bool IsDead => currentHp <= 0f;
-    public bool IsInvincible { get; private set; }
 
     private void Awake()
     {
@@ -46,47 +38,19 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
         if (behaviorAgent == null)
             behaviorAgent = GetComponent<BehaviorGraphAgent>();
 
-        if (clearPortal != null)
-            clearPortal.SetActive(false);
-
         if (monsterData == null)
         {
             Debug.LogError("Monster Data를 연결하세요.", this);
             return;
         }
 
-        maxHp = monsterData.MaxHp;
-        currentHp = maxHp;
+        currentHp = monsterData.MaxHp;
         attack = monsterData.Attack;
     }
-    private void Start()
-    {
-        if (monsterData == null)
-            return;
 
-        if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
-            return;
-
-        int playerCount = PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.PlayerCount : 1;
-
-        maxHp = monsterData.MaxHp * Mathf.Max(1, playerCount);
-        currentHp = maxHp;
-
-        OnHpChanged?.Invoke();
-
-        Debug.Log($"보스 체력 설정: {playerCount}명, {currentHp}/{maxHp}", this);
-    }
-#if UNITY_EDITOR
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.H))
-            TakeDamage(new tAttackInfo(transform.position, 10f));
-        Debug.Log($"보스 {CurrentHp}/{MaxHp}");
-    }
-#endif
     public void TakeDamage(tAttackInfo attackInfo)
     {
-        if (monsterData == null || IsDead || IsInvincible)
+        if (monsterData == null || IsDead)
             return;
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
         {
@@ -108,16 +72,14 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
 
     private void ApplyDamage(float requestedDamage)
     {
-        if (monsterData == null || IsDead || IsInvincible)
+        if (monsterData == null || IsDead)
             return;
-        float damage = Mathf.Max(0f, requestedDamage);
-        float previousHp = currentHp;
 
+        float damage = Mathf.Max(0f, requestedDamage);
         currentHp = Mathf.Max(0f, currentHp - damage);
 
-        if (currentHp != previousHp)
-            OnHpChanged?.Invoke();
-        Debug.LogWarning($"보스 피격: {damage}, 남은 HP: {currentHp}", this);
+        Debug.Log($"보스 피격: {damage}, 남은 HP: {currentHp}", this);
+
         if (IsDead)
             Die();
     }
@@ -127,20 +89,10 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(currentHp);
-            stream.SendNext(maxHp);
         }
         else
         {
-            float receivedHp = (float)stream.ReceiveNext();
-            float receivedMaxHp = (float)stream.ReceiveNext();
-
-            bool changed = currentHp != receivedHp || maxHp != receivedMaxHp;
-
-            currentHp = receivedHp;
-            maxHp = receivedMaxHp;
-
-            if (changed)
-                OnHpChanged?.Invoke();
+            currentHp = (float)stream.ReceiveNext();
 
             if (IsDead)
                 Die();
@@ -189,22 +141,5 @@ public class DragonBoss : MonoBehaviourPun, ITakeDamgeable, IPunObservable
             bodyCollider.enabled = false;
 
         Debug.Log("보스 사망", this);
-        Debug.Log($"Die 호출 — 방장: {PhotonNetwork.IsMasterClient}, HP: {currentHp}", this);
-        battleEndController.PanelOpenEvent();
-
-        if (clearPortal != null)
-            clearPortal.SetActive(true);
-
-        GameManager.m_Instance.RefreshPlayerAll();
-    }
-    public void SetInvincible(bool value)
-    {
-        IsInvincible = value;
-    }
-    public void MultiplyAttack(float multiplier)
-    {
-        attack *= Mathf.Max(1f, multiplier);
-
-        Debug.Log($"보스 공격력 증가: {attack}", this);
     }
 }

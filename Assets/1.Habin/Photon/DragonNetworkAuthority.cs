@@ -35,18 +35,9 @@ public class DragonNetworkAuthority : MonoBehaviourPunCallbacks
     {
         if (behaviorAgent == null)
             return;
-
-        DragonBoss boss = GetComponent<DragonBoss>();
-        DragonWipeMechanic mechanic = GetComponent<DragonWipeMechanic>();
-
         bool canRunAI = PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient;
-
-        if (boss != null && boss.IsDead)
-            canRunAI = false;
-
-        if (mechanic != null && mechanic.IsActive)
-            canRunAI = false;
-
         behaviorAgent.enabled = canRunAI;
+
+        Debug.Log($"보스 AI 실행 권한: {canRunAI}", this);
     }
 }

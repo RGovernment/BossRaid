@@ -5,7 +5,7 @@ public class SlashWave : SkillBase
     public override void DamageTrigger(ITakeDamgeable target, Player player)
     {
         int damage =
-            Mathf.RoundToInt(player.ObjectInfo.AtkPoint
+            Mathf.RoundToInt(player.ObjectInfo.CurrentHP
             * (SkillDataLoader.Instance.SkillData[Id].Value / 100f));
 
         tAttackInfo info = new()

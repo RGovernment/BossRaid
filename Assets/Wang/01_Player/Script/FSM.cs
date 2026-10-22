@@ -1,7 +1,4 @@
-using Photon.Pun;
 using System.Collections.Generic;
-using Unity.AppUI.UI;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -25,14 +22,10 @@ public sealed class FSM : MonoBehaviour
     [SerializeField] private eStateType m_eInitialState = eStateType.Idle;
     [SerializeField] private LayerMask m_iGroundLayers = ~0;
 
-    [SerializeField] private GameObject m_refPlayerView;
-
     private readonly Dictionary<eStateType, AnimatorEvent> m_hashAnimEvent = new Dictionary<eStateType, AnimatorEvent>();
     private readonly Dictionary<eStateType, PlayerState> m_hashState = new Dictionary<eStateType, PlayerState>();
     private PlayerState m_refCurState;
     private Player m_refPlayer;
-    public Player Player => m_refPlayer;
-
     private Collider m_refGroundCollider;
 
     public PlayerState CurrentState => m_refCurState;
@@ -45,7 +38,6 @@ public sealed class FSM : MonoBehaviour
         m_refPlayer.ObjectInfo.CurrentHP > 0f && m_Instance != null && m_Instance.HasGameplayInput;
     public bool IsGrounded => m_refGroundCollider != null && Rigidbody.linearVelocity.y <= 0.1f;
 
-    public bool IsMine => m_refPlayer.IsMine;
     public bool Init(Player _refController)
     {
         m_refPlayer = _refController;
@@ -107,7 +99,7 @@ public sealed class FSM : MonoBehaviour
         if (m_Instance.HasGameplayInput)
             return;
 
-        if (m_refCurState?.Type != eStateType.Hit && m_refCurState?.Type != eStateType.Dead)
+        if (m_refCurState?.Type != eStateType.Hit)
             Stop();
     }
 
@@ -131,9 +123,6 @@ public sealed class FSM : MonoBehaviour
 
     public void UpdateState()
     {
-        if (m_refCurState?.Type == eStateType.Dead)
-            return;
-
         if (m_Instance.HasGameplayInput == false &&
             m_refCurState?.Type != eStateType.Hit)
         {
@@ -146,11 +135,11 @@ public sealed class FSM : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.P))
         {
             Vector3 vFoward = transform.position + (transform.forward * 2.0f);
-            m_refPlayer.TakeDamage(new tAttackInfo(vFoward, 10));
+            TakeDamage(new tAttackInfo(vFoward, 10));
         }
         else if (Input.GetKeyDown(KeyCode.O))
         {
-            m_refPlayer.TakeDamage(new tAttackInfo(transform.position, m_refPlayer.ObjectInfo.CurrentHP));
+            ChangeState(eStateType.Dead);
         }
 
     }
@@ -194,13 +183,10 @@ public sealed class FSM : MonoBehaviour
         m_refCurState.Exit();
         m_refCurState = null;
 
-        if (!Rigidbody.isKinematic)
-        {
-            Vector3 vVelocity = Rigidbody.linearVelocity;
-            vVelocity.x = 0f;
-            vVelocity.z = 0f;
-            Rigidbody.linearVelocity = vVelocity;
-        }
+        Vector3 vVelocity = Rigidbody.linearVelocity;
+        vVelocity.x = 0f;
+        vVelocity.z = 0f;
+        Rigidbody.linearVelocity = vVelocity;
     }
 
     public T FindState<T>(eStateType _eType) where T : PlayerState
@@ -223,27 +209,15 @@ public sealed class FSM : MonoBehaviour
 
     private void OnCollisionEnter(Collision _refCollision)
     {
-        int collidedLayerMask = 1 << _refCollision.gameObject.layer;
-        if ((m_iGroundLayers.value & collidedLayerMask) == 0)
-            return;
-
         UpdateGroundContact(_refCollision);
     }
     private void OnCollisionStay(Collision _refCollision)
     {
-        int collidedLayerMask = 1 << _refCollision.gameObject.layer;
-        if ((m_iGroundLayers.value & collidedLayerMask) == 0)
-            return;
-
         UpdateGroundContact(_refCollision);
     }
 
     private void OnCollisionExit(Collision _refCollision)
     {
-        int iCollidedLayerMask = 1 << _refCollision.gameObject.layer;
-        if ((m_iGroundLayers.value & iCollidedLayerMask) == 0)
-            return;
-
         if (_refCollision.collider == m_refGroundCollider)
             ClearGroundContact();
     }
@@ -268,80 +242,5 @@ public sealed class FSM : MonoBehaviour
             m_refGroundCollider = _refCollision.collider;
         else if (_refCollision.collider == m_refGroundCollider)
             ClearGroundContact();
-    }
-
-    public void Dead()
-    {
-        m_refPlayerView.gameObject.SetActive(false);
-        enabled = false;
-    }
-
-    public void ResetRigidbody(Vector3 _vSpawnPos)
-    {
-        Rigidbody.position = _vSpawnPos;
-        transform.position = _vSpawnPos;
-        if (!Rigidbody.isKinematic)
-        {
-            Rigidbody.linearVelocity = Vector3.zero;
-            Rigidbody.angularVelocity = Vector3.zero;
-        }
-    }
-
-    public void RefreshPlayer(Vector3 _vSpawnPos)
-    {
-        //ChangeState(eStateType.Idle);
-        Stop();
-        ResetRigidbody(_vSpawnPos);
-        ClearGroundContact();
-        m_refPlayerView.SetActive(true);
-        enabled = true;
-
-        Animator.Rebind();
-        Animator.Update(0f);
-        if (IsMine)
-            StartState();
-    }
-
-
-    [PunRPC]
-    private void UseSkillOther(int id, int acNr)
-    {
-        m_refPlayer.SkillSpawner.UseSkillOther(id, acNr);
-    }
-
-    [PunRPC]
-    private void UseSkillAOEOther(int id, Vector3 pos, int acNr)
-    {
-        m_refPlayer.SkillSpawner.UseSkillAOEOther(id, pos, acNr);
-    }
-
-    [PunRPC]
-    private void ShootProjectileOther(Vector3 rayPosition)
-    {
-        m_refPlayer.SkillSpawner.ShootProjectileOther(rayPosition);
-    }
-
-    [PunRPC]
-    private void MasterCooldownSet(int acNr, int skillId, float cooldown)
-    {
-        m_refPlayer.SkillSpawner.MasterCooldownSet(acNr, skillId, cooldown);
-    }
-
-    [PunRPC]
-    private void MasterCooldownCheck(int skillId, int acNr)
-    {
-        m_refPlayer.SkillSpawner.MasterCooldownCheck(skillId, acNr);
-    }
-
-    [PunRPC]
-    private void IsSkillUseable(int skillId, bool useable)
-    {
-        m_refPlayer.SkillSpawner.IsSkillUseable(skillId, useable);
-    }
-
-    [PunRPC]
-    private void PlayerLoadSet()
-    {
-        m_refPlayer.SkillSpawner.PlayerLoadSet();
     }
 }

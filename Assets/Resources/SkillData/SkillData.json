@@ -1,6 +1,6 @@
 [
   {
-    "Name": "Slash",
+    "Name": "베기",
     "Id": 1000,
     "Value": "250",
     "OtherValue": 0,
@@ -8,10 +8,10 @@
     "UpgradeType": 0,
     "projectileCount": 1,
     "AnimationType": "Horizontal",
-    "Description": "Slashes the sword forward, Deals [Value]% damage."
+    "Description": "전방에 검을 휘둘러 [Value]%의 피해를 가한다."
   },
   {
-    "Name": "Slash Wave",
+    "Name": "검기",
     "Id": 1001,
     "Value": "300",
     "OtherValue": 0,
@@ -19,10 +19,10 @@
     "UpgradeType": 0,
     "projectileCount": 1,
     "AnimationType": "Horizontal",
-    "Description": "Unleashes a sword wave forward, Deals [Value]% damage."
+    "Description": "전방으로 검기를 내보내 [Value]%의 피해를 가한다."
   },
   {
-    "Name": "Blade Dance",
+    "Name": "난참",
     "Id": 1002,
     "Value": "500",
     "OtherValue": 0,
@@ -30,21 +30,21 @@
     "UpgradeType": 0,
     "projectileCount": 1,
     "AnimationType": "Vertical",
-    "Description": "Rapidly slashes forward multiple times, Deals [Value]% damage."
+    "Description": "전방을 수 없이 베어 [Value]%의 피해를 가한다."
   },
   {
-    "Name": "Lightning",
+    "Name": "번개",
     "Id": 1003,
-    "Value": "550",
+    "Value": "500",
     "OtherValue": 0,
     "Cooldown": 15,
     "UpgradeType": 0,
     "projectileCount": 1,
     "AnimationType": "GroundAttack",
-    "Description": "• Strikes down lightning, Deals [Value]% damage."
+    "Description": "번개를 내리쳐 [Value]%의 피해를 가한다."
   },
   {
-    "Name": "Lightning Bolt",
+    "Name": "라이트닝 볼트",
     "Id": 1004,
     "Value": "150",
     "OtherValue": 0,
@@ -52,17 +52,17 @@
     "UpgradeType": 0,
     "projectileCount": 1,
     "AnimationType": "Hand",
-    "Description": "Shoots a bolt of lightning forward, Deals [Value]% damage."
+    "Description": "번개를 쏘아보내 [Value]%의 피해를 가한다."
   },
   {
-    "Name": "Lightning Voltex",
+    "Name": "라이트닝 볼트",
     "Id": 1005,
-    "Value": "150",
+    "Value": "130",
     "OtherValue": 0,
     "Cooldown": 7,
     "UpgradeType": 0,
     "projectileCount": 3,
     "AnimationType": "Hand",
-    "Description": "Fires 3 lightning orbs, each Deals [Value]% damage."
+    "Description": "3개의 번개 구체를 쏘아보내 각각 [Value]%의 피해를 가한다."
   }
 ]

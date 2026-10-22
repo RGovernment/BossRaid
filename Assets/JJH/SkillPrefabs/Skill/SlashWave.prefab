@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4028848439741785156}
   - component: {fileID: 2118467992731875414}
   - component: {fileID: 3677042737396250819}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Derbis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4917,7 +4917,7 @@ GameObject:
   - component: {fileID: 8487585394195909367}
   - component: {fileID: 4630496842099220877}
   - component: {fileID: 1493057379995424596}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SlashSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9833,7 +9833,7 @@ GameObject:
   - component: {fileID: 5424852245913622643}
   - component: {fileID: 8658547281440974595}
   - component: {fileID: 6351511233283561192}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SlashWind
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13675,10 +13675,10 @@ ParticleSystem:
         m_RotationOrder: 4
     minKillSpeed: 0
     maxKillSpeed: 10000
-    radiusScale: 1
+    radiusScale: 2
     collidesWith:
       serializedVersion: 2
-      m_Bits: 279
+      m_Bits: 439
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
@@ -14754,7 +14754,7 @@ GameObject:
   - component: {fileID: 3730359321362822037}
   - component: {fileID: 1223065887793218702}
   - component: {fileID: 6337506343531890366}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SlashWave
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19668,7 +19668,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlashWave
   hitbox: {fileID: 0}
-  skillSound: {fileID: 11400000, guid: 08530666fd3c50c4eb1a0bd7281c2f44, type: 2}
   rootParticle: {fileID: 3730359321362822037}
   hitEffect: {fileID: 4976469336287650362}
   Id: 1001
@@ -19683,7 +19682,7 @@ GameObject:
   - component: {fileID: 2905528052358831991}
   - component: {fileID: 1695223866178920437}
   - component: {fileID: 6496426049024340294}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SlashPath
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24589,7 +24588,7 @@ GameObject:
   - component: {fileID: 6486066741567138028}
   - component: {fileID: 5531078226860422802}
   - component: {fileID: 7760591982823747096}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29492,26 +29491,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3746754256614166046}
     m_Modifications:
-    - target: {fileID: 46393352192471500, guid: 333bffde0d61262498343d889bbd561e, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 118259294267065716, guid: 333bffde0d61262498343d889bbd561e, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 3780329088155444704, guid: 333bffde0d61262498343d889bbd561e, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 4928836938352568153, guid: 333bffde0d61262498343d889bbd561e, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 5773804890504776052, guid: 333bffde0d61262498343d889bbd561e, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 6843683707610604515, guid: 333bffde0d61262498343d889bbd561e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -29555,10 +29534,6 @@ PrefabInstance:
     - target: {fileID: 7621419604017512664, guid: 333bffde0d61262498343d889bbd561e, type: 3}
       propertyPath: m_Name
       value: SlashHit
-      objectReference: {fileID: 0}
-    - target: {fileID: 7621419604017512664, guid: 333bffde0d61262498343d889bbd561e, type: 3}
-      propertyPath: m_Layer
-      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 7621419604017512664, guid: 333bffde0d61262498343d889bbd561e, type: 3}
       propertyPath: m_IsActive

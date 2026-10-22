@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class DragonShockwave : MonoBehaviour
@@ -16,9 +15,6 @@ public class DragonShockwave : MonoBehaviour
     [SerializeField] private float warningHeightOffset = 0.03f;
     [Header("애니메이션")]
     [SerializeField] private string animationState = "Base Layer.Shockwave";
-
-    [Header("사운드")]
-    [SerializeField] private SOAudio shockwaveSound;
 
     [Min(0f)]
     [SerializeField] private float transitionTime = 0.1f;
@@ -39,7 +35,6 @@ public class DragonShockwave : MonoBehaviour
     {
         if (animator == null)
             animator = GetComponent<Animator>();
-
     }
     public void Shockwave()
     {
@@ -55,6 +50,7 @@ public class DragonShockwave : MonoBehaviour
 
         if (animator == null || warningPrefab == null || shockwavePrefab == null)
         {
+            Debug.LogError("Animator, Warning Prefab, Shockwave Prefab을 연결하세요.", this);
             return;
         }
 
@@ -76,6 +72,8 @@ public class DragonShockwave : MonoBehaviour
         float diameter = shockwavePrefab.EndRadius * RadiusToDiameter;
         currentWarning.transform.localScale = new Vector3(diameter, 1f, diameter);
     }
+
+    // Shockwave 클립의 타격 순간에 연결합니다.
     public void SpawnShockwave()
     {
         if (!isAttacking || hasSpawned)
@@ -84,13 +82,12 @@ public class DragonShockwave : MonoBehaviour
         hasSpawned = true;
         RemoveWarning();
 
-        if (SoundManager.m_Instance != null)
-            SoundManager.m_Instance.PlaySfx(shockwaveSound, attackCenter);
-
         currentRing = Instantiate(shockwavePrefab, attackCenter, shockwavePrefab.transform.rotation);
         currentRing.SetBoss(GetComponent<DragonBoss>());
         attackRoutine = StartCoroutine(WaitForEnd());
     }
+
+    // Shockwave 클립의 종료 직전에 연결합니다.
     public void ShockwaveMotionEnd()
     {
         if (!isAttacking)
@@ -100,17 +97,21 @@ public class DragonShockwave : MonoBehaviour
 
         if (!hasSpawned)
         {
+            Debug.LogWarning("충격파 타격 이벤트가 실행되지 않았습니다.", this);
             CleanupAttack();
         }
     }
 
     private IEnumerator WaitForEnd()
     {
+        // 고리 확산과 공격 모션이 모두 끝나야 공격을 종료합니다.
         while (currentRing != null || !motionEnded)
             yield return null;
 
         attackRoutine = null;
         CleanupAttack();
+
+        Debug.Log("충격파 공격 종료", this);
     }
 
     private void RemoveWarning()

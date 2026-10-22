@@ -29573,7 +29573,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BladeDance
   hitbox: {fileID: 5419627092859808638}
-  skillSound: {fileID: 11400000, guid: 4d162b575add17346ab52571a36ab198, type: 2}
   rootParticle: {fileID: 3434095939401722315}
   hitEffect: {fileID: 241742606019206005}
   Id: 1002

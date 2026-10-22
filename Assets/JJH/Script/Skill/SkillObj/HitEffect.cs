@@ -4,17 +4,10 @@ using UnityEngine;
 public class HitEffect : MonoBehaviour
 {
     public ParticleSystem rootParticle;
-    public SOAudio hitSound;
 
     private void Awake()
     {
         if (rootParticle == null) rootParticle = GetComponent<ParticleSystem>();
-    }
-
-    private void OnEnable()
-    {
-        if(hitSound != null)
-            SoundManager.m_Instance.PlaySfx(hitSound, transform.position);
     }
 
     private void OnDisable()

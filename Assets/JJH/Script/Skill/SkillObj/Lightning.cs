@@ -6,15 +6,17 @@ public class Lightning : SkillBase
 {
     [SF] Animator animator;
 
-    public void AnimatorCk()
+    public override void OnEnable()
     {
-        if (UsePlayer == null || UsePlayer.photonView == null) return;
+        base.OnEnable();
+        if (photonView == null) return;
 
-        if (UsePlayer.photonView.IsMine)
+        if (photonView.IsMine)
             animator.enabled = true;
-
+        
         else
             animator.enabled = false;
+        
     }
 
     public override void DamageTrigger(ITakeDamgeable target, Player player)

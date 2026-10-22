@@ -11,6 +11,7 @@ public class SkillTest : MonoBehaviour
     [SF] private SkillSpawner skillSpawner;
     [SF] private Animator animator;
     [SF] private SkillPointer pointer;
+
     private float skill1Cooldown = 3;
     
     private float skill2Cooldown = 10;

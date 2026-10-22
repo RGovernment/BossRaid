@@ -21,10 +21,6 @@ public partial class SelectBossSkillAction : Action
     {
         if (Self == null || Self.Value == null || Target == null || Target.Value == null || SelectedSkill == null || LastSkill == null)
             return Status.Failure;
-
-        if (!Target.Value.TryGetComponent<Player>(out var targetPlayer) || !targetPlayer.IsAlive)
-            return Status.Failure;
-
         //초기화
         SelectedSkill.Value = BossSkillType.None;
 
@@ -50,9 +46,7 @@ public partial class SelectBossSkillAction : Action
         //직전 쓴 스킬 제외
         foreach (BossSkillType skill in skills)
         {
-            if (skill == BossSkillType.None 
-                || skill == BossSkillType.Wipe 
-                || skill == LastSkill.Value)
+            if (skill == BossSkillType.None || skill == BossSkillType.Wipe || skill == LastSkill.Value)
                 continue;
 
             if (!candidates.Contains(skill))

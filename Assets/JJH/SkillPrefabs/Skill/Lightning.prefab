@@ -103729,7 +103729,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7734009477575284865}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: ec79612f69400ab4baed0d973f64d038, type: 2}
   m_CullingMode: 0
@@ -103756,7 +103756,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Lightning
   hitbox: {fileID: 303697242630616113}
-  skillSound: {fileID: 11400000, guid: ae2eb4c2c8fbb4240bbe809405dc73ff, type: 2}
   rootParticle: {fileID: 6718294366338344039}
   hitEffect: {fileID: 82962387264071907}
   Id: 1003

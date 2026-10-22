@@ -35,7 +35,7 @@ MonoBehaviour:
   - rid: 8784441769820946973
   - rid: 8784441769820947062
   - rid: 8784441769820947159
-  m_VersionTimestamp: 639277443732379113
+  m_VersionTimestamp: 639275725092036077
   m_SerializedVersion: 3
   m_DebugInfo: {fileID: -4106027976860937109}
   m_RuntimeGraph: {fileID: 7013029970494127133}
@@ -1080,8 +1080,8 @@ MonoBehaviour:
           rid: 8784441769820946689
         BlackboardGroupReferences: []
         Root:
-          rid: 8784441861520490692
-        m_VersionTimestamp: 639277443732379113
+          rid: 8784441815039475803
+        m_VersionTimestamp: 639275725092036077
     - rid: 8784441769820946689
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -1097,6 +1097,34 @@ MonoBehaviour:
         - rid: 8784441815039475807
         - rid: 8784441815039475808
         - rid: 8784441815039475809
+    - rid: 8784441815039475803
+      type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 14854889698066180011
+          m_Value1: 4479973634233562674
+        Graph:
+          rid: 8784441769820946688
+        m_Parent:
+          rid: -2
+        m_Child:
+          rid: 8784441815039475804
+        Repeat: 1
+        AllowMultipleRepeatsPerTick: 0
+    - rid: 8784441815039475804
+      type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 47625419038559248
+          m_Value1: 10376436522772938908
+        Graph:
+          rid: 8784441769820946688
+        m_Parent:
+          rid: 8784441815039475803
+        m_Children:
+        - rid: 8784441815039475810
+        - rid: 8784441815039475811
+        m_RegisteredObservers: []
     - rid: 8784441815039475805
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -1137,35 +1165,7 @@ MonoBehaviour:
           m_Value1: 8705409248735834068
         Name: AttackInterval
         m_Value: 1.5
-    - rid: 8784441861520490692
-      type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        ID:
-          m_Value0: 14854889698066180011
-          m_Value1: 4479973634233562674
-        Graph:
-          rid: 8784441769820946688
-        m_Parent:
-          rid: -2
-        m_Child:
-          rid: 8784441861520490693
-        Repeat: 1
-        AllowMultipleRepeatsPerTick: 0
-    - rid: 8784441861520490693
-      type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        ID:
-          m_Value0: 47625419038559248
-          m_Value1: 10376436522772938908
-        Graph:
-          rid: 8784441769820946688
-        m_Parent:
-          rid: 8784441861520490692
-        m_Children:
-        - rid: 8784441861520490694
-        - rid: 8784441861520490695
-        m_RegisteredObservers: []
-    - rid: 8784441861520490694
+    - rid: 8784441815039475810
       type: {class: SelectRandomTargetAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -1174,14 +1174,13 @@ MonoBehaviour:
         Graph:
           rid: 8784441769820946688
         m_Parent:
-          rid: 8784441861520490693
+          rid: 8784441815039475804
         Target:
           rid: 8784441815039475806
         Self:
           rid: 8784441815039475805
         playerTag: Player
-        searchInterval: 0.5
-    - rid: 8784441861520490695
+    - rid: 8784441815039475811
       type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -1190,12 +1189,12 @@ MonoBehaviour:
         Graph:
           rid: 8784441769820946688
         m_Parent:
-          rid: 8784441861520490693
+          rid: 8784441815039475804
         m_Children:
-        - rid: 8784441861520490696
-        - rid: 8784441861520490697
+        - rid: 8784441815039475812
+        - rid: 8784441815039475813
         m_RegisteredObservers: []
-    - rid: 8784441861520490696
+    - rid: 8784441815039475812
       type: {class: MoveToTargetAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -1204,7 +1203,7 @@ MonoBehaviour:
         Graph:
           rid: 8784441769820946688
         m_Parent:
-          rid: 8784441861520490695
+          rid: 8784441815039475811
         Self:
           rid: 8784441815039475805
         Target:
@@ -1216,7 +1215,7 @@ MonoBehaviour:
         walkState: Base Layer.Walk
         idleState: Base Layer.Idle
         transitionTime: 0.1
-    - rid: 8784441861520490697
+    - rid: 8784441815039475813
       type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -1225,12 +1224,12 @@ MonoBehaviour:
         Graph:
           rid: 8784441769820946688
         m_Parent:
-          rid: 8784441861520490695
+          rid: 8784441815039475811
         m_Children:
-        - rid: 8784441861520490698
-        - rid: 8784441861520490699
+        - rid: 8784441815039475814
+        - rid: 8784441815039475815
         m_RegisteredObservers: []
-    - rid: 8784441861520490698
+    - rid: 8784441815039475814
       type: {class: SelectBossSkillAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -1239,7 +1238,7 @@ MonoBehaviour:
         Graph:
           rid: 8784441769820946688
         m_Parent:
-          rid: 8784441861520490697
+          rid: 8784441815039475813
         Self:
           rid: 8784441815039475805
         Target:
@@ -1248,7 +1247,7 @@ MonoBehaviour:
           rid: 8784441815039475807
         LastSkill:
           rid: 8784441815039475808
-    - rid: 8784441861520490699
+    - rid: 8784441815039475815
       type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -1257,12 +1256,12 @@ MonoBehaviour:
         Graph:
           rid: 8784441769820946688
         m_Parent:
-          rid: 8784441861520490697
+          rid: 8784441815039475813
         m_Children:
-        - rid: 8784441861520490700
-        - rid: 8784441861520490701
+        - rid: 8784441815039475816
+        - rid: 8784441815039475817
         m_RegisteredObservers: []
-    - rid: 8784441861520490700
+    - rid: 8784441815039475816
       type: {class: ExecuteBossSkillAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -1271,7 +1270,7 @@ MonoBehaviour:
         Graph:
           rid: 8784441769820946688
         m_Parent:
-          rid: 8784441861520490699
+          rid: 8784441815039475815
         Self:
           rid: 8784441815039475805
         Target:
@@ -1280,7 +1279,7 @@ MonoBehaviour:
           rid: 8784441815039475807
         LastSkill:
           rid: 8784441815039475808
-    - rid: 8784441861520490701
+    - rid: 8784441815039475817
       type: {class: WaitAction, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -1289,6 +1288,6 @@ MonoBehaviour:
         Graph:
           rid: 8784441769820946688
         m_Parent:
-          rid: 8784441861520490699
+          rid: 8784441815039475815
         SecondsToWait:
           rid: 8784441815039475809
