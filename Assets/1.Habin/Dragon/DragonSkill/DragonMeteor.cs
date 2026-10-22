@@ -88,7 +88,6 @@ public class DragonMeteor : MonoBehaviourPun
 
         if (impactPoints.Length == 0)
         {
-            Debug.LogWarning("운석이 떨어질 바닥을 찾지 못했습니다.", this);
             return;
         }
 
@@ -102,7 +101,6 @@ public class DragonMeteor : MonoBehaviourPun
         if (animator != null && boss != null && telegraphPrefab != null && meteorPrefab != null)
             return true;
 
-        Debug.LogError("Animator, Boss, Telegraph Prefab, Meteor Prefab을 연결하세요.", this);
         return false;
     }
     private Vector3[] CalculateImpactPoints(Vector3 center)
@@ -167,8 +165,6 @@ public class DragonMeteor : MonoBehaviourPun
 
         isAttacking = false;
         attackRoutine = null;
-
-        Debug.Log("운석 공격 종료", this);
     }
 
     private void CreateWarning(Vector3 impactPoint)

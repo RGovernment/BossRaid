@@ -8,6 +8,7 @@ public abstract class SkillBase : MonoBehaviourPunCallbacks
 
     [Header("필요시 설정")]
     public Collider hitbox;
+    public SOAudio skillSound;
 
     [Header("필수 설정")]
     public ParticleSystem rootParticle;
@@ -17,7 +18,12 @@ public abstract class SkillBase : MonoBehaviourPunCallbacks
     public int UpgradeType { get; private set; }
     public Player UsePlayer { get; private set; }
 
-    // 활성화/ 비활성화시 상위 이벤트에 구독
+    public override void OnEnable()
+    {
+        if(skillSound != null)
+            SoundManager.m_Instance.PlaySfx(skillSound);
+    }
+
     public void Init(int id, IObjectPool<SkillBase> pool,Player UsePlayer, int UpgradeType = 0)
     {
         Id = id;
@@ -72,7 +78,7 @@ public abstract class SkillBase : MonoBehaviourPunCallbacks
 
     private void OnParticleSystemStopped()
     {
-        if (hitbox.enabled) hitbox.enabled = false;
+        if (hitbox != null && hitbox.enabled) hitbox.enabled = false;
         pool.Release(this);
     }
 

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 58d3f0bc7a6fa504893820bccd94e1ac
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 168396
+  packageName: 'Environment Pack: Free Forest Sample'
+  packageVersion: 2.0.1
+  assetPath: Assets/Supercyan Free Forest Sample/Shaders/SupercyanShader.shader
+  uploadId: 697266

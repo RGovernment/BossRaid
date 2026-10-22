@@ -12,6 +12,9 @@ public class MeteorProjectile : MonoBehaviour
     [Header("삭제")]
     [Min(0.01f)]
     [SerializeField] private float maxLifetime = 5f;
+    [Header("사운드")]
+    [SerializeField] private SOAudio fallSound;
+    [SerializeField] private SOAudio impactSound;
 
     private bool hasImpacted;
 
@@ -24,6 +27,9 @@ public class MeteorProjectile : MonoBehaviour
         rb.useGravity = false;
         rb.linearVelocity = Vector3.down * fallSpeed;
 
+        if (SoundManager.m_Instance != null)
+            SoundManager.m_Instance.PlaySfx(fallSound, transform.position);
+
         Destroy(gameObject, maxLifetime);
     }
 
@@ -33,6 +39,7 @@ public class MeteorProjectile : MonoBehaviour
             return;
 
         int collidedLayerMask = 1 << other.gameObject.layer;
+
         bool hitGround = (groundLayers.value & collidedLayerMask) != 0;
         bool hitPlayer = (playerLayers.value & collidedLayerMask) != 0;
 
@@ -40,6 +47,13 @@ public class MeteorProjectile : MonoBehaviour
             return;
 
         hasImpacted = true;
+
+        PlayImpactSound();
         Destroy(gameObject);
+    }
+    private void PlayImpactSound()
+    {
+        if (SoundManager.m_Instance != null)
+            SoundManager.m_Instance.PlaySfx(impactSound, transform.position);
     }
 }

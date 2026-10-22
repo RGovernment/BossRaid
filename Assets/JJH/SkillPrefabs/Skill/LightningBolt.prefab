@@ -82,7 +82,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -5087,10 +5087,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LightningBolt
   hitbox: {fileID: 0}
+  skillSound: {fileID: 11400000, guid: dc5743945eb77b644a4d8411b1fbcabc, type: 2}
   rootParticle: {fileID: 2279137850114066724}
   hitEffect: {fileID: 6506388896266517871}
   Id: 1004
-  projectileSpeed: 20
+  projectileSpeed: 25
   lifeTime: 5
   rb: {fileID: 11472352443327063}
 --- !u!54 &11472352443327063
@@ -5335,6 +5336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitEffect
   rootParticle: {fileID: 3399899020243176199}
+  hitSound: {fileID: 0}
 --- !u!1 &3308719314532451455 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1903841016889560, guid: df365974c854a33438e5aea62ca4b975, type: 3}

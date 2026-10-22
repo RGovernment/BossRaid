@@ -33,7 +33,9 @@ public sealed class PlayerDeadState : PlayerState
 
     public override void Enter()
     {
-        m_refOwner.Rigidbody.linearVelocity = Vector3.zero;
+        if (!m_refOwner.Rigidbody.isKinematic)
+            m_refOwner.Rigidbody.linearVelocity = Vector3.zero;
+        m_refOwner.Animator.speed = 1f;
         m_refOwner.Animator.SetTrigger(DeadHash);
     }
 
@@ -48,7 +50,7 @@ public sealed class PlayerDeadState : PlayerState
     }
     private void FinishDeadEvent(AnimationEvent _refCallback)
     {
-        m_refOwner.gameObject.SetActive(false);
+         m_refOwner.Dead();
     }
 
 }

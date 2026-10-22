@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Serialization;
+using Photon.Pun;
 using static InputManager;
 
 /*///////////////////////////////////////////
@@ -14,7 +15,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Vector3 m_vCameraOffset = new Vector3(0f, 2.3f, -4f);
 
     [FormerlySerializedAs("cameraLookHeight")]
-    [SerializeField] private float m_fCameraLookHeight = 1.3f;
+    [SerializeField] private float m_fCameraLookHeight = 2.0f;
     [SerializeField, Min(0f)] private float m_fPitchSensitivity = 0.15f;
     [SerializeField] private float m_fMinPitch = -35f;
     [SerializeField] private float m_fMaxPitch = 60f;
@@ -22,23 +23,28 @@ public class CameraController : MonoBehaviour
     [SerializeField] private LayerMask m_iCollisionLayers = ~0;
 
     private Player m_refPlayer;
+    private Player m_refCurPlayer;
     private float m_fPitch;
     private readonly RaycastHit[] m_arrCameraHits = new RaycastHit[16];
 
     private void Awake()
     {
         m_refPlayer = m_refTarget.GetComponent<Player>();
+        m_refCurPlayer = m_refPlayer;
     }
 
     private void LateUpdate()
     {
-        if (m_Instance.HasGameplayInput)
+        RefreshFollowTarget();
+        if (m_refCurPlayer == null)
+            return;
+
+        if (m_Instance != null && m_Instance.HasGameplayInput)
             m_fPitch = Mathf.Clamp(m_fPitch - m_Instance.InputInfo.Delta.y * m_fPitchSensitivity, m_fMinPitch, m_fMaxPitch);
 
-        Quaternion qYaw = m_refPlayer.ViewRotation;
+        Quaternion qYaw = m_refCurPlayer.ViewRotation;
         Vector3 vPivot = m_refTarget.position + Vector3.up * m_fCameraLookHeight;
-        Vector3 vOffset = qYaw * Quaternion.Euler(m_fPitch, 0f, 0f)
-            * (m_vCameraOffset - Vector3.up * m_fCameraLookHeight);
+        Vector3 vOffset = qYaw * Quaternion.Euler(m_fPitch, 0f, 0f)* (m_vCameraOffset - Vector3.up * m_fCameraLookHeight);
 
         float fDistance = vOffset.magnitude;
         if (fDistance <= 0.001f)
@@ -50,14 +56,41 @@ public class CameraController : MonoBehaviour
             fDistance, m_iCollisionLayers, QueryTriggerInteraction.Ignore);
 
         //맞은 타겟 살짝 앞으로
-        for (int i = 0; i < iHitCount; i++)
-        {
-            RaycastHit tHit = m_arrCameraHits[i];
-            if (!tHit.transform.IsChildOf(m_refTarget))
-                fDistance = Mathf.Min(fDistance, Mathf.Max(0.05f, tHit.distance - 0.05f));
-        }
+        //for (int i = 0; i < iHitCount; i++)
+        //{
+        //    RaycastHit tHit = m_arrCameraHits[i];
+        //    if (!tHit.transform.IsChildOf(m_refTarget))
+        //        fDistance = Mathf.Min(fDistance, Mathf.Max(0.05f, tHit.distance - 0.05f));
+        //}
 
         transform.position = vPivot + vDirection * fDistance;
         transform.LookAt(vPivot);
+    }
+
+    private void RefreshFollowTarget()
+    {
+        if (m_refPlayer == null || m_refPlayer.IsAlive)
+            return;
+
+        m_refCurPlayer = m_refPlayer;
+        if (PhotonNetwork.InRoom && !m_refPlayer.IsAlive)
+        {
+            foreach (Player player in GameManager.m_Instance.Players)
+            {
+                if (player != null && player != m_refPlayer && player.IsAlive && player.photonView.OwnerActorNr > 0)
+                {
+                    m_refCurPlayer = player;
+                    break;
+                }
+            }
+        }
+        m_refTarget = m_refCurPlayer.transform;
+    }
+
+    public void RestorePlayerTarget(Player _refPlayer)
+    {
+        m_refPlayer = _refPlayer;
+        m_refCurPlayer = _refPlayer;
+        m_refTarget = _refPlayer.transform;
     }
 }

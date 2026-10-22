@@ -61,7 +61,6 @@ public partial class SelectRandomTargetAction : Action
 
     private bool TrySelectTarget()
     {
-        Debug.Log($"타겟 탐색 시각: {Time.time:F3}");
         candidates.Clear();
 
         GameObject[] players = GameObject.FindGameObjectsWithTag(playerTag);
@@ -69,6 +68,10 @@ public partial class SelectRandomTargetAction : Action
 
         foreach (GameObject player in players)
         {
+            //Hp가 0인 캐릭터는 타겟안됨 
+            Player playerComponent = player.GetComponent<Player>();
+            if (playerComponent == null || !playerComponent.IsAlive)
+                continue;
             Vector3 offset = player.transform.position - Self.Value.transform.position;
             offset.y = 0f;
 

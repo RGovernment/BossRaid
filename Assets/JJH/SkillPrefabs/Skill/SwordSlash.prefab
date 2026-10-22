@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1814895167936609840}
   - component: {fileID: 766081673794477181}
   - component: {fileID: 6075360313365638656}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Hit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4919,7 +4919,7 @@ GameObject:
   - component: {fileID: 8632932518060087482}
   - component: {fileID: 3647181506678284277}
   - component: {fileID: 4438002542187825868}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9825,7 +9825,7 @@ GameObject:
   - component: {fileID: 8275909720499576886}
   - component: {fileID: 2136598711575007186}
   - component: {fileID: 223132339254193195}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Distortion(Delete for Mobile)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14731,7 +14731,7 @@ GameObject:
   - component: {fileID: 8535260854869343334}
   - component: {fileID: 980986589690150322}
   - component: {fileID: 8884650637903869485}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Flare
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19637,7 +19637,7 @@ GameObject:
   - component: {fileID: 1555560036488647766}
   - component: {fileID: 6811186335417789572}
   - component: {fileID: 5840522428522837738}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: HitBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19703,7 +19703,7 @@ GameObject:
   - component: {fileID: 8979871348442180745}
   - component: {fileID: 5858273153226122961}
   - component: {fileID: 8979699308572526863}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SparksCore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24618,7 +24618,7 @@ GameObject:
   - component: {fileID: 1628473934416772473}
   - component: {fileID: 8870507720770176393}
   - component: {fileID: 8330966654932987447}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29525,7 +29525,7 @@ GameObject:
   - component: {fileID: 3286054171839378015}
   - component: {fileID: 2804674186944804486}
   - component: {fileID: 2149734916138580870}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SwordSlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34448,6 +34448,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Slash
   hitbox: {fileID: 6811186335417789572}
+  skillSound: {fileID: 11400000, guid: 9e5c75fd1908d5647b845f6be896b452, type: 2}
   rootParticle: {fileID: 3286054171839378015}
   hitEffect: {fileID: 2061753175673533502}
   Id: 1000

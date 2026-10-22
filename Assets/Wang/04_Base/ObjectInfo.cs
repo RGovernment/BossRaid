@@ -19,6 +19,7 @@ public interface ITakeDamgeable
 
 public class ObjectInfo 
 {
+    public float MaxHP = 100.0f;
     public float CurrentHP = 100.0f;
     public float CurrentSpeed;
     public float AtkPoint;

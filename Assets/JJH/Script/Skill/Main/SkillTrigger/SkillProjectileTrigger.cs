@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
@@ -9,7 +10,7 @@ public class SkillProjectileTrigger : MonoBehaviour
     [SF] private SkillBase skillRoot;
     [SF] private ParticleSystem ps;
     private readonly List<ParticleCollisionEvent> collisionEvents = new();
-
+    private bool onHit = false;
     void Start()
     {
         ps = GetComponent<ParticleSystem>();
@@ -21,12 +22,14 @@ public class SkillProjectileTrigger : MonoBehaviour
         Debug.Log("일단 부딪치긴 함");
         if (other.TryGetComponent(out ITakeDamgeable target))
         {
-            if(skillRoot.UsePlayer)
-
-            skillRoot.DamageTrigger(target, skillRoot.UsePlayer);
-            skillRoot.HealTrigger(skillRoot.UsePlayer);
-            skillRoot.BuffTrigger(skillRoot.UsePlayer);
-            skillRoot.DebuffTrigger(skillRoot.UsePlayer);
+            // 이후 Player에 콜백이 달린다면 그것으로 교체
+            if(skillRoot.UsePlayer.photonView.IsMine)
+            {
+                skillRoot.DamageTrigger(target, skillRoot.UsePlayer);
+                skillRoot.HealTrigger(skillRoot.UsePlayer);
+                skillRoot.BuffTrigger(skillRoot.UsePlayer);
+                skillRoot.DebuffTrigger(skillRoot.UsePlayer);
+            }
         }
 
         int numCollisionEvents = ps.GetCollisionEvents(other, collisionEvents);

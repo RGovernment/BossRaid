@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: f3bafb5b6e291244ea12f2f79680c5c7
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 168396
+  packageName: 'Environment Pack: Free Forest Sample'
+  packageVersion: 2.0.1
+  assetPath: Assets/Supercyan Free Forest Sample/Shaders/Legacy/CelShader.shader
+  uploadId: 697266

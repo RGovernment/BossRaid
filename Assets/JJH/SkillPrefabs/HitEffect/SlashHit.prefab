@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6322038762444289854}
   - component: {fileID: 7289934754421313841}
   - component: {fileID: 2675276330736052795}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ShockWave
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4917,7 +4917,7 @@ GameObject:
   - component: {fileID: 431312152047145583}
   - component: {fileID: 6535132774134156389}
   - component: {fileID: 5619482487570029942}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9823,7 +9823,7 @@ GameObject:
   - component: {fileID: 8646769693394999887}
   - component: {fileID: 4212938202232260018}
   - component: {fileID: 4625405362094438784}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14729,7 +14729,7 @@ GameObject:
   - component: {fileID: 8992145387784060436}
   - component: {fileID: 497280448758227076}
   - component: {fileID: 6754806363584071844}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Flash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19635,7 +19635,7 @@ GameObject:
   - component: {fileID: 5681540931347840264}
   - component: {fileID: 2902052409009798623}
   - component: {fileID: 5175670924106642567}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Dust
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24544,7 +24544,8 @@ GameObject:
   - component: {fileID: 6574363537167583947}
   - component: {fileID: 2248922545443730176}
   - component: {fileID: -9124363482445800458}
-  m_Layer: 0
+  - component: {fileID: 4483511699471267754}
+  m_Layer: 9
   m_Name: SlashHit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29551,3 +29552,101 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitEffect
   rootParticle: {fileID: 6309386350002541597}
+  hitSound: {fileID: 11400000, guid: e32633f17ad871745b3e9559cbcf900f, type: 2}
+--- !u!82 &4483511699471267754
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7621419604017512664}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

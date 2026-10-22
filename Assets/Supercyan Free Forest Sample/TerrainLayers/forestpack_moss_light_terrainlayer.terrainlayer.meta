@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4acc44e24321c0b4688857dd6e67edca
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 8574412962073106934
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 168396
+  packageName: 'Environment Pack: Free Forest Sample'
+  packageVersion: 2.0.1
+  assetPath: Assets/Supercyan Free Forest Sample/TerrainLayers/forestpack_moss_light_terrainlayer.terrainlayer
+  uploadId: 697266
